@@ -13,13 +13,13 @@ services:
     networks:
       - desktop-ims
 
-  backend:
-    container_name: desktop-ims-backend
+  server:
+    container_name: desktop-ims-server
     build:
       context: ./
-      dockerfile: dockerfile.backend.dev
+      dockerfile: dockerfile.server.dev
     volumes:
-      - ./backend:/opt/desktop-ims-backend/
+      - ./server:/opt/desktop-ims-server/
     ports:
       - "4000:3000"
     networks:
