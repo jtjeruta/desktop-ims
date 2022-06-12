@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useCallback, useEffect } from 'react'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { Notification } from '../../contexts/AppContext/types'
@@ -12,14 +12,14 @@ type Props = {
 const NotificationBadge: FC<Props> = ({ notif }) => {
     const { removeNotification } = useAppContext()
 
-    const closeNotif = () => {
+    const closeNotif = useCallback(() => {
         timeout && clearTimeout(timeout)
         removeNotification(notif.id)
-    }
+    }, [notif.id, removeNotification])
 
     useEffect(() => {
         timeout = setTimeout(() => closeNotif(), 4000)
-    }, [])
+    }, [closeNotif])
 
     return (
         <div
