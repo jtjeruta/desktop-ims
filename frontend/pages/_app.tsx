@@ -1,8 +1,21 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import { AppContextProvider } from '../contexts/AppContext/AppContext'
 
-function MyApp({ Component, pageProps }: AppProps) {
-    return <Component {...pageProps} />
+function AppContent({ Component, pageProps }: AppProps) {
+    return (
+        <>
+            <Component {...pageProps} />
+        </>
+    )
 }
 
-export default MyApp
+function App(props: AppProps) {
+    return (
+        <AppContextProvider>
+            <AppContent {...props} />
+        </AppContextProvider>
+    )
+}
+
+export default App
