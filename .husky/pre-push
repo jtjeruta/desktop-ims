@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+cd frontend
+echo "Running linter on frontend..."
+npm run lint
+
+cd ../server
+echo "\nRunning linter on server..."
+npm run lint
+echo "\n"

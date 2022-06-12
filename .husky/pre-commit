@@ -2,9 +2,11 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd frontend
+echo "Formatting frontend..."
 npx pretty-quick --staged
-npm run lint
 
 cd ../server
+echo "\nFormatting backend..."
 npx pretty-quick --staged
-npm run lint
+echo "\n"
+
