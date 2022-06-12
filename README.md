@@ -18,7 +18,12 @@
 
 ### Installation with docker
 
-1. run the app with
+1. install development dependencies
+```
+  npm install
+```
+
+2. run the app with
 
 ```
   npm start
