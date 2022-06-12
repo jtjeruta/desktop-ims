@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: desktop-ims-frontend
+    build:
+      context: ./
+      dockerfile: dockerfile.frontend.dev
+    volumes:
+      - ./frontend:/opt/desktop-ims-frontend/
+    ports:
+      - "3000:3000"
+    networks:
+      - desktop-ims
+
+  backend:
+    container_name: desktop-ims-backend
+    build:
+      context: ./
+      dockerfile: dockerfile.backend.dev
+    volumes:
+      - ./backend:/opt/desktop-ims-backend/
+    ports:
+      - "4000:3000"
+    networks:
+      - desktop-ims
+
+  mongodb_container:
+    container_name: desktop-ims-db
+    image: mongo:5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27017:27017
+    volumes:
+      - desktop-ims-db:/data/db
+
+networks:
+  desktop-ims:
+    name: desktop-ims
+    external: false
+
+volumes:
+  desktop-ims-db:
+

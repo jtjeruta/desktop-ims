@@ -1,0 +1,6 @@
+FROM node:16-bullseye
+
+COPY backend /opt/desktop-ims-backend/
+WORKDIR /opt/desktop-ims-backend/
+
+CMD [ "bash", "start-dev.sh" ]
