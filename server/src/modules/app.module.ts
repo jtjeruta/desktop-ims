@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common'
-import { AppController } from '../controllers/app.controller'
-import { AppService } from '../services/app.service'
+import { MongooseModule } from '@nestjs/mongoose'
+
+import { UsersModule } from './users.module'
+
+const MONGO_CONNECTION_STRING =
+    process.env.MONGO_CONNECTION_STRING || 'mongodb://desktop-ims-db:27017/ims'
 
 @Module({
-    imports: [],
-    controllers: [AppController],
-    providers: [AppService],
+    imports: [MongooseModule.forRoot(MONGO_CONNECTION_STRING), UsersModule],
 })
 export class AppModule {}
