@@ -7,5 +7,5 @@ npm run lint
 
 cd ../server
 echo "\nRunning linter on server..."
-npm run lint
+npm run lint:strict
 echo "\n"
