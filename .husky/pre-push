@@ -3,7 +3,7 @@
 
 cd frontend
 echo "Running linter on frontend..."
-npm run lint
+npm run lint:strict
 
 cd ../server
 echo "\nRunning linter on server..."
