@@ -1,10 +1,10 @@
-import { MongoUser } from 'src/types/mongo-user'
+import { UserDocument } from 'src/schemas/user.schema'
 
-export const getUsersView = (users: MongoUser[]) => {
+export const getUsersView = (users: UserDocument[]) => {
     return users.map((user) => getUserView(user))
 }
 
-export const getUserView = (user: MongoUser) => {
+export const getUserView = (user: UserDocument) => {
     return {
         id: user._id,
         firstName: user.firstName,
