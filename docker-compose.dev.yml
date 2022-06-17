@@ -21,7 +21,7 @@ services:
         volumes:
             - ./server:/opt/desktop-ims-server/
         ports:
-            - '4000:3000'
+            - '4000:4000'
         networks:
             - desktop-ims
 
