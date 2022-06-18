@@ -1,8 +1,10 @@
 const { getMongoError } = require('../lib/mongo-errors')
+const bcrypt = require('bcrypt')
 const { UserModel } = require('../schemas/user-schema')
 
-module.exports.createUser = async (rawUser) => {
-    const user = new UserModel(rawUser)
+module.exports.createUser = async ({ password, ...rawUser }) => {
+    const encryptedPassword = await bcrypt.hash(password || '', 10)
+    const user = new UserModel({ ...rawUser, password: encryptedPassword })
 
     try {
         const createUser = await user.save()

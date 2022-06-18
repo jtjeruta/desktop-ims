@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const AuthModule = require('../modules/auth-module')
 const UsersModule = require('../modules/users-module')
 
@@ -10,7 +11,16 @@ module.exports.login = async (req, res) => {
         return res.status(getUserResponse[0]).json(getUserResponse[1])
     }
 
-    if (!getUserResponse[1] || getUserResponse[1].password !== password) {
+    if (!getUserResponse[1]) {
+        return res.status(404).json({ message: 'Wrong username or password.' })
+    }
+
+    const validatePassword = await bcrypt.compare(
+        password,
+        getUserResponse[1].password
+    )
+
+    if (!validatePassword) {
         return res.status(404).json({ message: 'Wrong username or password.' })
     }
 
