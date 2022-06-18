@@ -25,6 +25,16 @@ module.exports.listUsers = async () => {
     }
 }
 
+module.exports.getUserById = async (id) => {
+    try {
+        const user = await UserModel.findOne({ id })
+        return [200, user]
+    } catch (error) {
+        console.error('Failed to find user')
+        return getMongoError(error)
+    }
+}
+
 module.exports.getUserByEmail = async (email) => {
     try {
         const user = await UserModel.findOne({ email })

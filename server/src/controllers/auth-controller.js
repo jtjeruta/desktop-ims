@@ -28,13 +28,30 @@ module.exports.login = async (req, res) => {
     return res.status(200).json({ token })
 }
 
-module.exports.verifyToken = async (req, res) => {
+module.exports.isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization || ''
     const response = AuthModule.verifyToken(token)
 
     if (response[0]) {
-        return res.status(200).json(response[1])
+        return next()
     } else {
-        return res.status(500).json({ message: 'Something went wrong.' })
+        return res.status(401).json({ message: 'Unauthorized.' })
     }
+}
+
+module.exports.isAdmin = async (req, res, next) => {
+    const token = req.headers.authorization || ''
+    const tokenResponse = AuthModule.verifyToken(token)
+
+    if (!tokenResponse[0]) {
+        return res.status(401).json({ message: 'Unauthorized.' })
+    }
+
+    const userResponse = await UsersModule.getUserById(tokenResponse[1].id)
+
+    if (!userResponse[0] || userResponse[1].role !== 'admin') {
+        return res.status(401).json({ message: 'Unauthorized.' })
+    }
+
+    return next()
 }
