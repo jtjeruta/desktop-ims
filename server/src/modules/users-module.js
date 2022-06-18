@@ -19,7 +19,16 @@ module.exports.listUsers = async () => {
         return [200, users]
     } catch (error) {
         console.error('Failed to list users')
-        console.error(error)
+        return getMongoError(error)
+    }
+}
+
+module.exports.getUserByEmail = async (email) => {
+    try {
+        const user = await UserModel.findOne({ email })
+        return [200, user]
+    } catch (error) {
+        console.error('Failed to find user')
         return getMongoError(error)
     }
 }
