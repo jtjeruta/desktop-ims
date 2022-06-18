@@ -27,4 +27,4 @@ const UserModel = mongoose.model('User', UserSchema)
 
 UserModel.createIndexes()
 
-module.exports = UserModel
+module.exports = { UserModel, UserSchema }

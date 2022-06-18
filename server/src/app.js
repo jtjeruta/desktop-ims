@@ -1,12 +1,9 @@
-const createError = require('http-errors')
 const express = require('express')
-const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const mongoose = require('mongoose')
 
-const usersAPI = require('./apis/users')
-const errorController = require('./lib/error-controller')
+const Routes = require('./routes')
 
 const mongoDB =
     process.env.MONGO_CONNECTION_STRING || 'mongodb://desktop-ims-db/ims'
@@ -25,16 +22,11 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/', usersAPI)
+app.use('/', Routes)
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    next(createError(404))
+app.use(function (req, res) {
+    return res.status(404).json({ message: 'Route does not exist.' })
 })
-
-// error handler
-app.use(errorController)
 
 module.exports = app
