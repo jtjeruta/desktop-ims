@@ -1,10 +1,13 @@
 const UsersModule = require('../modules/users-module')
-const { UsersView } = require('../views/user-view')
+const { UsersView, UserView } = require('../views/user-view')
 
 module.exports.createUser = async (req, res) => {
     const rawUser = req.body
     const [status, data] = await UsersModule.createUser(rawUser)
-    return res.status(status).json(data)
+
+    if (status !== 201) return res.status(status).json(data)
+
+    return res.status(201).json(UserView(data))
 }
 
 module.exports.listUsers = async (req, res) => {
