@@ -1,22 +1,12 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
-const mongoose = require('mongoose')
 
 const Routes = require('./routes')
-
-const mongoDB =
-    process.env.MONGO_CONNECTION_STRING || 'mongodb://desktop-ims-db/ims'
-
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+const { dbConnect } = require('./lib/db')
 
 const app = express()
-app.db = mongoose.connection
-
-app.db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-app.db.once('open', function () {
-    console.log('Connected to DB successfully')
-})
+app.db = dbConnect()
 
 app.use(logger('dev'))
 app.use(express.json())
