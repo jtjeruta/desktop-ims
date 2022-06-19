@@ -12,7 +12,7 @@ module.exports.login = async (req, res) => {
     }
 
     if (!getUserResponse[1]) {
-        return res.status(404).json({ message: 'Wrong username or password.' })
+        return res.status(400).json({ message: 'Wrong username or password.' })
     }
 
     const validatePassword = await bcrypt.compare(
@@ -21,7 +21,7 @@ module.exports.login = async (req, res) => {
     )
 
     if (!validatePassword) {
-        return res.status(404).json({ message: 'Wrong username or password.' })
+        return res.status(400).json({ message: 'Wrong username or password.' })
     }
 
     const token = AuthModule.generateAccessToken(getUserResponse[1])

@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
 
-const mongoDB =
+const MONGO_CONNECTION_STRING =
     process.env.MONGO_CONNECTION_STRING || 'mongodb://desktop-ims-db/ims'
 
 function dbConnect() {
-    mongoose.connect(mongoDB, {
+    mongoose.connect(MONGO_CONNECTION_STRING, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -19,8 +19,4 @@ function dbConnect() {
     return db
 }
 
-function dbClose() {
-    return mongoose.disconnect()
-}
-
-module.exports = { dbConnect, dbClose }
+module.exports = { dbConnect }

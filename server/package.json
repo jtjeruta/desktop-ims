@@ -5,7 +5,8 @@
     "scripts": {
         "start": "nodemon ./src/index.js",
         "lint": "eslint ./src/**/*.js",
-        "lint:strict": "eslint ./src/**/*.js --max-warnings 0"
+        "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
+        "test": "mocha 'src/tests/**/*.test.js' --recursive --exit --timeout 10000"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -20,7 +21,10 @@
         "validator": "^13.7.0"
     },
     "devDependencies": {
+        "chai": "^4.3.6",
         "eslint": "^8.17.0",
-        "eslint-config-prettier": "^8.5.0"
+        "eslint-config-prettier": "^8.5.0",
+        "mocha": "^10.0.0",
+        "supertest": "^6.2.3"
     }
 }

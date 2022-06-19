@@ -25,6 +25,16 @@ services:
         networks:
             - desktop-ims
 
+    # server_test:
+    #     container_name: desktop-ims-server-test
+    #     build:
+    #         context: ./
+    #         dockerfile: dockerfile.server.dev
+    #     environment:
+    #         - MONGO_CONNECTION_STRING:mongodb://desktop-ims-db/ims-test
+    #     volumes:
+    #         - ./server:/opt/desktop-ims-server/
+
     mongodb_container:
         container_name: desktop-ims-db
         image: mongo:5

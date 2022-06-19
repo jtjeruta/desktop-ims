@@ -10,6 +10,7 @@ module.exports.createUser = async ({ password, ...rawUser }) => {
         const createUser = await user.save()
         return [201, createUser]
     } catch (error) {
+        console.log(error)
         console.error('Failed to create user')
         return getMongoError(error)
     }
@@ -27,7 +28,7 @@ module.exports.listUsers = async () => {
 
 module.exports.getUserById = async (id) => {
     try {
-        const user = await UserModel.findOne({ id })
+        const user = await UserModel.findById(id)
         return [200, user]
     } catch (error) {
         console.error('Failed to find user')

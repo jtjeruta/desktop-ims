@@ -1,8 +1,8 @@
 {
     "scripts": {
-        "start": "docker-compose -f docker-compose.dev.yml up",
-        "start:build": "docker-compose -f docker-compose.dev.yml up --build",
-        "prepare-husky": "husky install"
+        "start": "docker-compose -f docker-compose.dev.yml up --remove-orphans",
+        "start:build": "docker-compose -f docker-compose.dev.yml up --build --remove-orphans",
+        "test:server": "docker exec -it desktop-ims-server sh -c \"./start-test.sh\""
     },
     "devDependencies": {
         "husky": "^8.0.1"
