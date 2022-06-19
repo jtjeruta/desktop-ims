@@ -13,7 +13,7 @@ function dbConnect() {
 
     db.on('error', console.error.bind(console, 'MongoDB connection error:'))
     db.once('open', function () {
-        console.log('Connected to DB successfully')
+        console.info('Connected to DB successfully')
     })
 
     return db

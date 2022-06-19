@@ -10,7 +10,6 @@ module.exports.createUser = async ({ password, ...rawUser }) => {
         const createUser = await user.save()
         return [201, createUser]
     } catch (error) {
-        console.log(error)
         console.error('Failed to create user')
         return getMongoError(error)
     }

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const AuthModule = require('../modules/auth-module')
 const UsersModule = require('../modules/users-module')
+const { UserView } = require('../views/user-view')
 
 module.exports.login = async (req, res) => {
     const { email, password } = req.body
@@ -25,7 +26,7 @@ module.exports.login = async (req, res) => {
     }
 
     const token = AuthModule.generateAccessToken(getUserResponse[1])
-    return res.status(200).json({ token })
+    return res.status(200).json({ token, user: UserView(getUserResponse[1]) })
 }
 
 module.exports.isAuthenticated = async (req, res, next) => {

@@ -5,7 +5,13 @@ export type Notification = {
     body?: string
 }
 
-export type AddNotification = (notif: Notification) => void
+export type AddNotifDoc = {
+    type: 'primary' | 'success' | 'danger'
+    title: string
+    body?: string
+}
+
+export type AddNotification = (notif: AddNotifDoc) => void
 export type RemoveNotification = (id: string) => void
 export type AddLoading = (key: string) => void
 export type RemoveLoading = (key: string) => void
