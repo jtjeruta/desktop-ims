@@ -2,6 +2,7 @@ import { FC } from 'react'
 import Button from '../../components/Button/Button'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
+import UserLayout from '../../components/UserLayout/UserLayout'
 import { User } from '../../contexts/UserContext/types'
 
 const UsersPage: FC = () => {
@@ -16,7 +17,7 @@ const UsersPage: FC = () => {
     ]
 
     return (
-        <div className="md:container md:mx-auto p-5">
+        <UserLayout>
             <PageHeader title="Manage Users" buttons={[{ text: 'Add User' }]} />
 
             <Table
@@ -50,7 +51,7 @@ const UsersPage: FC = () => {
                     },
                 ]}
             />
-        </div>
+        </UserLayout>
     )
 }
 
