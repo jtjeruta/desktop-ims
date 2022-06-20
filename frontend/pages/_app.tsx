@@ -23,16 +23,22 @@ function AppContent({ Component, pageProps }: AppProps) {
     }, [AuthContext])
 
     useEffect(() => {
-        if (!AuthContext.user && !noUserPaths.includes(router.pathname)) {
+        if (
+            !AuthContext.user &&
+            !noUserPaths.includes(router.pathname) &&
+            [...employeePaths, ...adminPaths].includes(router.pathname)
+        ) {
             router.replace('/login')
         } else if (
             AuthContext.user?.role === 'employee' &&
-            !employeePaths.includes(router.pathname)
+            !employeePaths.includes(router.pathname) &&
+            [...noUserPaths, ...adminPaths].includes(router.pathname)
         ) {
             router.replace('/login')
         } else if (
             AuthContext.user?.role === 'admin' &&
-            !adminPaths.includes(router.pathname)
+            !adminPaths.includes(router.pathname) &&
+            [...noUserPaths, ...employeePaths].includes(router.pathname)
         ) {
             router.replace('/users')
         }
