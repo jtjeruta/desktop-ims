@@ -44,8 +44,8 @@ const UsersPage: FC = () => {
                         title: ' ',
                         format: () => (
                             <div className="flex gap-10">
-                                <Button type="link">Edit</Button>
-                                <Button type="link">Delete</Button>
+                                <Button color="link">Edit</Button>
+                                <Button color="link">Delete</Button>
                             </div>
                         ),
                     },

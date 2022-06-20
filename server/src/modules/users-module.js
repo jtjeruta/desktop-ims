@@ -44,3 +44,14 @@ module.exports.getUserByEmail = async (email) => {
         return getMongoError(error)
     }
 }
+
+// For testing only
+module.exports.deleteUserById = async (id) => {
+    try {
+        await UserModel.deleteOne({ _id: id })
+        return [200]
+    } catch (error) {
+        console.error('Failed to find user')
+        return getMongoError(error)
+    }
+}

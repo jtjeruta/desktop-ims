@@ -6,7 +6,7 @@ type Props = {
     children: string | JSX.Element
     type?: 'submit' | 'button'
     color?: 'primary' | 'link'
-    loading: boolean
+    loading?: boolean
     className?: string
     onClick?: () => void
 }

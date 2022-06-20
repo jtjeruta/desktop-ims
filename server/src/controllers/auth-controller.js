@@ -29,6 +29,26 @@ module.exports.login = async (req, res) => {
     return res.status(200).json({ token, user: UserView(getUserResponse[1]) })
 }
 
+module.exports.verifyToken = async (req, res) => {
+    const { token } = req.body
+
+    const verifyTokenResponse = AuthModule.verifyToken(token)
+
+    if (!verifyTokenResponse[0]) {
+        return res.status(403).json({ message: 'Token failed to be verified.' })
+    }
+
+    const getUserResponse = await UsersModule.getUserById(
+        verifyTokenResponse[1].id
+    )
+
+    if (!getUserResponse[1]) {
+        return res.status(404).json({ message: 'User not found.' })
+    }
+
+    return res.status(200).json({ user: UserView(getUserResponse[1]) })
+}
+
 module.exports.isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization || ''
     const response = AuthModule.verifyToken(token)

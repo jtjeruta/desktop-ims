@@ -1,8 +1,5 @@
-import type { NextPage } from 'next'
-import Login from '../components/LoginPage/LoginPage'
-
-const Home: NextPage = () => {
-    return <Login />
+const Home = () => {
+    return <></>
 }
 
 export default Home

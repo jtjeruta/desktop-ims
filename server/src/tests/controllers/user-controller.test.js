@@ -31,7 +31,7 @@ describe('List users', () => {
 
     it('Success: run as admin', (done) => {
         login({ email: 'admin@gmail.com', password: 'password' }).then(
-            (token) => {
+            ({ token }) => {
                 request(app)
                     .get('/api/v1/users')
                     .set('Authorization', token)
@@ -47,7 +47,7 @@ describe('List users', () => {
 
     it('Fail: run as employee', (done) => {
         login({ email: 'employee@gmail.com', password: 'password' }).then(
-            (token) => {
+            ({ token }) => {
                 request(app)
                     .get('/api/v1/users')
                     .set('Authorization', token)

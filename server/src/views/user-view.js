@@ -8,5 +8,6 @@ module.exports.UserView = (userDocument) => {
         firstName: userDocument.firstName,
         lastName: userDocument.lastName,
         email: userDocument.email,
+        role: userDocument.role,
     }
 }

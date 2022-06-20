@@ -10,7 +10,7 @@ export const login = (email: string, password: string) =>
         ])
         .catch((err): [false, AxiosResponse] => [false, err.response])
 
-export const verify = (token: string) =>
+export const verifyToken = (token: string) =>
     Axios.post('/api/v1/auth/verify-token', { token })
-        .then((response): [true, User] => [true, response.data])
+        .then((response): [true, User] => [true, response.data.user])
         .catch((err): [false, string] => [false, err.response.data])

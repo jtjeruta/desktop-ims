@@ -13,6 +13,6 @@ module.exports.verifyToken = (token) => {
         return [true, data]
     } catch (error) {
         console.error('Failed to verify token')
-        return false
+        return [false]
     }
 }

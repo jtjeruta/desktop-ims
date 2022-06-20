@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import * as AuthAPI from '../../apis/AuthAPI'
 import Cookies from 'js-cookie'
 import { useAppContext } from '../AppContext/AppContext'
-import { Context, User, Login } from './types'
+import { Context, User, Login, VerifyToken } from './types'
 import { COOKIES } from '../../constants'
 
 const AuthContext = React.createContext<Context | any>({})
@@ -33,10 +33,28 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return resp
     }
 
-    const value: Context = {
-        user,
-        login,
+    const verifyToken: VerifyToken = async () => {
+        const key = 'auth-verify-token'
+        AppContext.addLoading(key)
+        const resp = await AuthAPI.verifyToken(
+            Cookies.get(COOKIES.SERVER_TOKEN) || ''
+        )
+
+        AppContext.removeLoading(key)
+
+        if (resp[0] && (!user || user.id !== resp[1].id)) {
+            setUser(resp[1])
+        }
     }
+
+    const value: Context = useMemo(
+        () => ({
+            user,
+            login,
+            verifyToken,
+        }),
+        [user]
+    )
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

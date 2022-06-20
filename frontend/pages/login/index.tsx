@@ -1,9 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import Image from 'next/image'
-import Button from '../Button/Button'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
-import TextField from '../TextField/TextField'
+import Button from '../../components/Button/Button'
+import TextField from '../../components/TextField/TextField'
 
 const Login = () => {
     const AppContext = useAppContext()

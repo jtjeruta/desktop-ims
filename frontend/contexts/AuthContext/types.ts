@@ -12,7 +12,11 @@ export type Login = (
     email: string,
     password: string
 ) => Promise<[true, { user: User; token: string }] | [false, AxiosResponse]>
+
+export type VerifyToken = () => Promise<void>
+
 export type Context = {
     user: User | null
     login: Login
+    verifyToken: VerifyToken
 }

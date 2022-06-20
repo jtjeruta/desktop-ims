@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { v4 as uuid } from 'uuid'
 import {
     AddLoading,
@@ -38,14 +38,17 @@ const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return loading.includes(key)
     }
 
-    const value: Context = {
-        notifications,
-        addNotification,
-        removeNotification,
-        addLoading,
-        removeLoading,
-        isLoading,
-    }
+    const value: Context = useMemo(
+        () => ({
+            notifications,
+            addNotification,
+            removeNotification,
+            addLoading,
+            removeLoading,
+            isLoading,
+        }),
+        [notifications, loading]
+    )
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
