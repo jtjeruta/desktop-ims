@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import * as AuthAPI from '../../apis/AuthAPI'
 import Cookies from 'js-cookie'
 import { useAppContext } from '../AppContext/AppContext'
-import { Context, User, Login, VerifyToken } from './types'
+import { Context, User, Login, VerifyToken, Logout } from './types'
 import { COOKIES } from '../../constants'
 
 const AuthContext = React.createContext<Context | any>({})
@@ -47,11 +47,17 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     }
 
+    const logout: Logout = async () => {
+        Cookies.remove(COOKIES.SERVER_TOKEN)
+        setUser(null)
+    }
+
     const value: Context = useMemo(
         () => ({
             user,
             login,
             verifyToken,
+            logout,
         }),
         [user]
     )

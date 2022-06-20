@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 
 type LinkType = {
     text: string
@@ -10,6 +11,7 @@ type LinkType = {
 }
 
 const Navbar = () => {
+    const AuthContext = useAuthContext()
     const router = useRouter()
     const links: LinkType[] = [
         {
@@ -58,6 +60,7 @@ const Navbar = () => {
             text: 'Logout',
             active: false,
             roles: ['admin', 'employee'],
+            onClick: () => AuthContext.logout(),
         },
     ]
 

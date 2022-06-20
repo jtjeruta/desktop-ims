@@ -15,8 +15,11 @@ export type Login = (
 
 export type VerifyToken = () => Promise<void>
 
+export type Logout = () => void
+
 export type Context = {
     user: User | null
     login: Login
     verifyToken: VerifyToken
+    logout: Logout
 }
