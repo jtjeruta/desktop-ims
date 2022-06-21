@@ -19,7 +19,9 @@ const PageHeader: FC<Props> = (props) => {
             <div>
                 {props.buttons &&
                     props.buttons.map((button) => (
-                        <Button key={button.text}>{button.text}</Button>
+                        <Button key={button.text} onClick={button.onClick}>
+                            {button.text}
+                        </Button>
                     ))}
             </div>
         </div>

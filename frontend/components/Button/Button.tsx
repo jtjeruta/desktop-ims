@@ -5,27 +5,43 @@ import { FaSpinner } from 'react-icons/fa'
 type Props = {
     children: string | JSX.Element
     type?: 'submit' | 'button'
-    color?: 'primary' | 'link'
     loading?: boolean
     className?: string
     onClick?: () => void
-}
+} & (
+    | {
+          style?: 'default'
+          color?: 'primary'
+      }
+    | {
+          style: 'link'
+          color?: 'primary'
+      }
+)
 
 const Button: FC<Props> = (props) => {
-    const classes = {
-        primary:
-            'bg-blue-500 hover:bg-blue-700 disabled:bg-blue-700 text-white font-bold py-2 px-4 rounded',
-        link: 'font-medium text-blue-600 dark:text-blue-500 hover:underline',
+    const styles = {
+        default: 'font-bold rounded',
+        link: 'font-medium hover:underline',
     }
 
-    const btnClass = classes[props.color || 'primary']
+    const colors = {
+        'default-primary':
+            'bg-blue-500 hover:bg-blue-700 disabled:bg-blue-700 text-white',
+        'link-primary': 'text-blue-600 dark:text-blue-500 ',
+    }
+
+    const btnStyle = styles[props.style || 'default']
+    const btnColor =
+        colors[`${props.style || 'default'}-${props.color || 'primary'}`]
 
     return (
         <button
             type={props.type || 'submit'}
             className={clsx(
-                'relative flex justify-center',
-                btnClass,
+                'relative flex justify-center py-2 px-4 ',
+                btnStyle,
+                btnColor,
                 props.className
             )}
             disabled={props.loading}
