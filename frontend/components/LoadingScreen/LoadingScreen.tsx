@@ -64,12 +64,15 @@ const LoadingScreen = () => {
     const [status, setStatus] = useState<'visible' | 'fading' | 'removed'>(
         'visible'
     )
-    const loading = AppContext.isLoading('auth-verify-token')
+    const loading =
+        AppContext.isLoading('auth-verify-token') ||
+        AppContext.isLoading('auth-login')
 
     useEffect(() => {
         // Run animation for atleast 1 second
         if (loading) {
             setTimerDone(false)
+            setStatus('visible')
             setTimeout(() => setTimerDone(true), 1000)
         }
     }, [loading])
