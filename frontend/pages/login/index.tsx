@@ -61,6 +61,35 @@ const Login = () => {
                                 </div>
                             </form>
                         </FormProvider>
+                        {process.env.NODE_ENV === 'development' && (
+                            <div className="flex flex-col gap-5 mt-5">
+                                <div className="text-center">
+                                    [[ Dev Mode Quick Login ]]
+                                </div>
+                                <Button
+                                    loading={AppContext.isLoading('auth-login')}
+                                    onClick={() =>
+                                        AuthContext.login(
+                                            'admin@gmail.com',
+                                            'password'
+                                        )
+                                    }
+                                >
+                                    Login as Admin
+                                </Button>
+                                <Button
+                                    loading={AppContext.isLoading('auth-login')}
+                                    onClick={() =>
+                                        AuthContext.login(
+                                            'employee@gmail.com',
+                                            'password'
+                                        )
+                                    }
+                                >
+                                    Login as Employee
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
