@@ -15,8 +15,11 @@ export type CreateUserDoc = {
 
 export type AddUser = (user: CreateUserDoc) => void
 export type RemoveUser = (id: User['id']) => void
+export type ListUsers = () => void
+
 export type Context = {
-    users: User[]
+    users: User[] | null
     addUser: AddUser
     removeUser: RemoveUser
+    listUsers: ListUsers
 }

@@ -1,16 +1,20 @@
 import clsx from 'clsx'
 import { FC } from 'react'
 
+type Row = { id: string } & { [key: string]: any }
+type Column = { title: string; className?: string } & (
+    | {
+          key: string
+      }
+    | {
+          format: (item: any) => string | JSX.Element
+      }
+)
+
 type Props = {
-    rows: ({ id: string } & { [key: string]: any })[]
-    columns: ({ title: string; className?: string } & (
-        | {
-              key: string
-          }
-        | {
-              format: (item: any) => string | JSX.Element
-          }
-    ))[]
+    rows: Row[]
+    columns: Column[]
+    loading: boolean
 }
 
 const Table: FC<Props> = (props) => {
@@ -31,29 +35,61 @@ const Table: FC<Props> = (props) => {
                 </thead>
 
                 <tbody className="bg-white">
-                    {props.rows.map((row) => (
-                        <tr
-                            key={row.id}
-                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        >
-                            {props.columns.map((col) => (
-                                <td
-                                    key={col.title}
-                                    className={clsx(
-                                        'px-6 py-4 border-b border-gray-200 whitespace-nowrap',
-                                        col.className
-                                    )}
-                                >
-                                    {'key' in col
-                                        ? row[col.key]
-                                        : col.format(row)}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
+                    {props.loading ? (
+                        <>
+                            <TableRow columns={props.columns} loading />
+                            <TableRow columns={props.columns} loading />
+                            <TableRow columns={props.columns} loading />
+                        </>
+                    ) : (
+                        props.rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                row={row}
+                                columns={props.columns}
+                            />
+                        ))
+                    )}
                 </tbody>
             </table>
         </div>
+    )
+}
+
+type TableRow = {
+    columns: Column[]
+} & (
+    | {
+          row: Row
+      }
+    | {
+          loading: true
+      }
+)
+
+const TableRow: FC<TableRow> = (props) => {
+    return (
+        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            {props.columns.map((col) => (
+                <td
+                    key={col.title}
+                    className={clsx(
+                        'px-6 py-4 border-b border-gray-200 whitespace-nowrap',
+                        col.className
+                    )}
+                >
+                    {'loading' in props ? (
+                        <div className="animate-pulse">
+                            <div className="h-4 bg-gray-200" />
+                        </div>
+                    ) : 'key' in col ? (
+                        props.row[col.key]
+                    ) : (
+                        col.format(props.row)
+                    )}
+                </td>
+            ))}
+        </tr>
     )
 }
 

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -6,20 +6,19 @@ import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { User } from '../../contexts/UserContext/types'
+import {
+    UserContextProvider,
+    useUserContext,
+} from '../../contexts/UserContext/UserContext'
 
-const users: User[] = [
-    {
-        id: '123413',
-        firstName: 'Tristan',
-        lastName: 'Jeruta',
-        email: 'jt.jeruta@gmail.com',
-        role: 'admin',
-    },
-]
-
-const UsersPage: FC = () => {
+const PageContent: FC = () => {
     const AppContext = useAppContext()
+    const UserContext = useUserContext()
     const [userToEdit, setUserToEdit] = useState<User | undefined>()
+
+    useEffect(() => {
+        UserContext.users === null && UserContext.listUsers()
+    }, [UserContext])
 
     return (
         <UserLayout>
@@ -35,7 +34,8 @@ const UsersPage: FC = () => {
             />
 
             <Table
-                rows={users}
+                rows={UserContext.users || []}
+                loading={AppContext.isLoading('list-users')}
                 columns={[
                     {
                         title: 'User',
@@ -75,9 +75,16 @@ const UsersPage: FC = () => {
                     },
                 ]}
             />
+
             <AddEditUserDialog user={userToEdit} />
         </UserLayout>
     )
 }
+
+const UsersPage = () => (
+    <UserContextProvider>
+        <PageContent />
+    </UserContextProvider>
+)
 
 export default UsersPage
