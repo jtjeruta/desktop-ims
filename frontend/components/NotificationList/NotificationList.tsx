@@ -5,7 +5,7 @@ import NotificationBadge from './NotificationBadge'
 const NotificationsList = () => {
     const { notifications } = useAppContext()
     return (
-        <div className="fixed p-4 flex flex-col gap-2 right-0">
+        <div className="fixed p-4 flex flex-col gap-2 right-0 z-10">
             {notifications.map((notification) => (
                 <NotificationBadge key={notification.id} notif={notification} />
             ))}
