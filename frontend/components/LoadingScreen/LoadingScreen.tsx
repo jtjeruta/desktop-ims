@@ -58,9 +58,10 @@ const Root = styled.div`
     }
 `
 
+let timeout: NodeJS.Timeout
+
 const LoadingScreen = () => {
     const AppContext = useAppContext()
-    const [timerDone, setTimerDone] = useState<boolean>(false)
     const [status, setStatus] = useState<'visible' | 'fading' | 'removed'>(
         'visible'
     )
@@ -69,20 +70,18 @@ const LoadingScreen = () => {
         AppContext.isLoading('auth-login')
 
     useEffect(() => {
-        // Run animation for atleast 1 second
-        if (loading) {
-            setTimerDone(false)
-            setStatus('visible')
-            setTimeout(() => setTimerDone(true), 1000)
-        }
+        if (loading) return
+        timeout && clearTimeout(timeout)
+        setStatus('visible')
+        timeout = setTimeout(() => setStatus('fading'), 1000)
     }, [loading])
 
     useEffect(() => {
-        if (!loading && timerDone && status === 'visible') {
-            setStatus('fading')
-            setTimeout(() => setStatus('removed'), 500)
+        if (status === 'fading') {
+            timeout && clearTimeout(timeout)
+            timeout = setTimeout(() => setStatus('removed'), 500)
         }
-    }, [loading, status, timerDone])
+    }, [status])
 
     if (status === 'removed') {
         return null
