@@ -15,7 +15,6 @@ const AddEditUserDialog: FC<Props> = (props) => {
         <Dialog
             title={`${props.user ? 'Edit' : 'New'} User`}
             open={AppContext.dialogIsOpen(key)}
-            onClose={() => AppContext.closeDialog()}
             content="Test Content"
         />
     )
