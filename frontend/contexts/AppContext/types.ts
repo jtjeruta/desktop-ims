@@ -6,7 +6,7 @@ export type Notification = {
 }
 
 export type AddNotifDoc = {
-    type: 'primary' | 'success' | 'danger'
+    type?: 'primary' | 'success' | 'danger'
     title: string
     body?: string
 }

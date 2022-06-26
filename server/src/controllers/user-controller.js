@@ -7,7 +7,7 @@ module.exports.createUser = async (req, res) => {
 
     if (status !== 201) return res.status(status).json(data)
 
-    return res.status(201).json(UserView(data))
+    return res.status(201).json({ user: UserView(data) })
 }
 
 module.exports.listUsers = async (req, res) => {

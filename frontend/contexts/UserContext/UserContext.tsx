@@ -11,8 +11,20 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const AppContext = useAppContext()
     const [users, setUsers] = useState<User[] | null>(null)
 
-    const addUser: AddUser = (createUserDoc) => {
-        // Call api here
+    const addUser: AddUser = async (createUserDoc) => {
+        const key = 'add-user'
+
+        AppContext.addLoading(key)
+        const response = await UsersAPI.addUser(createUserDoc)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            console.log(response[1])
+            return [false, response[1].data]
+        }
+
+        setUsers((prev) => [...(prev || []), response[1]])
+        return [true, response[1]]
     }
 
     const removeUser: RemoveUser = (id) => {

@@ -13,9 +13,20 @@ export type CreateUserDoc = {
     email: string
 }
 
-export type AddUser = (user: CreateUserDoc) => void
+export type CreateUserErrors = {
+    firstName?: { message: string }
+    lastName?: { message: string }
+    role?: { message: string }
+    email?: { message: string }
+}
+
+export type AddUser = (
+    user: CreateUserDoc
+) => Promise<
+    [true, User] | [false, { message: string; errors?: CreateUserErrors }]
+>
 export type RemoveUser = (id: User['id']) => void
-export type ListUsers = () => void
+export type ListUsers = () => Promise<void>
 
 export type Context = {
     users: User[] | null

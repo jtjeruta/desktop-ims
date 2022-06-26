@@ -8,7 +8,7 @@ type Props = {
     title: string
     open: boolean
     onClose?: () => void
-    content: string | JSX.Element[]
+    content: string | JSX.Element[] | JSX.Element
     showCancelButton?: boolean
     showCloseButton?: boolean
     showSaveButton?: boolean
@@ -16,6 +16,8 @@ type Props = {
     saveButtonText?: string
     className?: string
     disableOutsideClick?: boolean
+    onSave?: () => void
+    loading?: boolean
 }
 
 let timeout: NodeJS.Timeout
@@ -68,8 +70,12 @@ const Dialog: FC<Props> = (props) => {
                 <div className="p-3">{props.content}</div>
                 <hr />
                 <div className="flex justify-end gap-3 p-3">
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button>Save</Button>
+                    <Button onClick={handleClose} loading={props.loading}>
+                        Cancel
+                    </Button>
+                    <Button onClick={props.onSave} loading={props.loading}>
+                        Save
+                    </Button>
                 </div>
             </div>
         </div>

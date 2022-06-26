@@ -23,7 +23,10 @@ const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [openedDialog, setOpenedDialog] = React.useState<string | null>(null)
 
     const addNotification: AddNotification = ({ type, title, body }) => {
-        setNotifications((prev) => [...prev, { id: uuid(), type, title, body }])
+        setNotifications((prev) => [
+            ...prev,
+            { id: uuid(), type: type || 'primary', title, body },
+        ])
     }
 
     const removeNotification: RemoveNotification = (id) => {
