@@ -30,7 +30,7 @@ module.exports.getUserById = async (id) => {
         const user = await UserModel.findById(id)
         return [200, user]
     } catch (error) {
-        console.error('Failed to find user')
+        console.error('Failed to find user by id')
         return getMongoError(error)
     }
 }
@@ -40,7 +40,7 @@ module.exports.getUserByEmail = async (email) => {
         const user = await UserModel.findOne({ email })
         return [200, user]
     } catch (error) {
-        console.error('Failed to find user')
+        console.error('Failed to find user by email')
         return getMongoError(error)
     }
 }
@@ -51,7 +51,17 @@ module.exports.deleteUserById = async (id) => {
         await UserModel.deleteOne({ _id: id })
         return [200]
     } catch (error) {
-        console.error('Failed to find user')
+        console.error('Failed to delete user by id')
+        return getMongoError(error)
+    }
+}
+
+module.exports.updateUser = async (id, data) => {
+    try {
+        const updateUser = await UserModel.findOneAndUpdate({ _id: id }, data)
+        return [200, updateUser]
+    } catch (error) {
+        console.error('Failed to update user')
         return getMongoError(error)
     }
 }

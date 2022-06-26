@@ -1,16 +1,9 @@
-const mongoose = require('mongoose')
+const { UserModel } = require('../schemas/user-schema')
 
 const setup = () => {
     // eslint-disable-next-line
-    beforeEach((done) => {
-        mongoose.connection.db.dropDatabase(function (err) {
-            if (err) {
-                console.error('Failed to drop database')
-                done(err)
-            }
-
-            done()
-        })
+    beforeEach(async () => {
+        await UserModel.deleteMany({})
     })
 }
 
