@@ -1,5 +1,10 @@
 module.exports.getMongoError = (error) => {
-    if ((error.message || '').includes('validation failed')) {
+    console.log(error.message)
+    if (
+        ['validation failed', 'Validation failed'].some((message) =>
+            (error.message || '').includes(message)
+        )
+    ) {
         return [400, { message: error.message, errors: error.errors }]
     }
 

@@ -58,7 +58,11 @@ module.exports.deleteUserById = async (id) => {
 
 module.exports.updateUser = async (id, data) => {
     try {
-        const updateUser = await UserModel.findOneAndUpdate({ _id: id }, data)
+        const updateUser = await UserModel.findByIdAndUpdate(
+            { _id: id },
+            { $set: data },
+            { new: true, runValidators: true }
+        )
         return [200, updateUser]
     } catch (error) {
         console.error('Failed to update user')

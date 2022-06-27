@@ -68,3 +68,49 @@ describe('List Users', () => {
         expect(users[1].length).to.equal(2)
     })
 })
+
+describe('Update User', () => {
+    setup()
+
+    it('Success: update user using correct data', async () => {
+        const createdUser = await UsersModule.createUser(testdata.admin1)
+        const updatedUser = await UsersModule.updateUser(
+            createdUser[1]._id,
+            testdata.employee1
+        )
+
+        expect(updatedUser[0]).to.equal(200)
+        expect(updatedUser[1].email).to.equal(testdata.employee1.email)
+        expect(updatedUser[1].firstName).to.equal(testdata.employee1.firstName)
+        expect(updatedUser[1].lastName).to.equal(testdata.employee1.lastName)
+        expect(updatedUser[1].role).to.equal(testdata.employee1.role)
+    })
+
+    it('Fail: update user using invalid data', async () => {
+        const createdUser = await UsersModule.createUser(testdata.admin1)
+        const updatedUser = await UsersModule.updateUser(createdUser[1]._id, {
+            email: 'invalid-email',
+            role: 'invalid-role',
+        })
+
+        expect(updatedUser[0]).to.equal(400)
+        expect(updatedUser[1].errors.role.message).to.equal(
+            '`invalid-role` is not a valid enum value for path `role`.'
+        )
+        expect(updatedUser[1].errors.email.message).to.equal(
+            'Validator failed for path `email` with value `invalid-email`'
+        )
+    })
+
+    it('Fail: update user using duplicate email', async () => {
+        await UsersModule.createUser(testdata.employee1)
+        const createdUser = await UsersModule.createUser(testdata.admin1)
+        const updatedUser = await UsersModule.updateUser(
+            createdUser[1]._id,
+            testdata.employee1
+        )
+
+        expect(updatedUser[0]).to.equal(409)
+        expect(updatedUser[1].message).to.equal('Duplicate found.')
+    })
+})
