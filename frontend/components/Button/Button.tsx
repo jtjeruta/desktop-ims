@@ -39,7 +39,7 @@ const Button: FC<Props> = (props) => {
         <button
             type={props.type || 'submit'}
             className={clsx(
-                'relative flex justify-center py-2 px-4 ',
+                'relative flex align-center justify-center gap-2 py-2 px-4 ',
                 btnStyle,
                 btnColor,
                 props.className
@@ -48,10 +48,7 @@ const Button: FC<Props> = (props) => {
             onClick={props.onClick}
         >
             {props.loading && (
-                <div
-                    className="absolute"
-                    style={{ transform: 'translate(-35px, 4px)' }}
-                >
+                <div style={{ transform: 'translateY(4px)' }}>
                     <FaSpinner className="animate-spin" />
                 </div>
             )}
