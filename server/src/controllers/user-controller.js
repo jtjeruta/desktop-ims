@@ -18,3 +18,12 @@ module.exports.listUsers = async (req, res) => {
     const users = UsersView(data)
     return res.status(200).json({ users })
 }
+
+module.exports.updateUser = async (req, res) => {
+    const { userId } = req.params
+    const updateDoc = req.body
+    const [status, data] = await UsersModule.updateUser(userId, updateDoc)
+
+    if (status !== 200) return res.status(status).json(data)
+    return res.status(200).json({ user: UserView(data) })
+}

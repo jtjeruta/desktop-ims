@@ -76,3 +76,17 @@ module.exports.isAdmin = async (req, res, next) => {
 
     return next()
 }
+
+module.exports.notSelf =
+    async (req, res, next) =>
+    (userIdParamKey, message = 'Unauthorized.') => {
+        const userId = req.params[userIdParamKey]
+        const token = req.headers.authorization || ''
+        const tokenResponse = AuthModule.verifyToken(token)
+
+        if (userId === tokenResponse[1].id) {
+            return res.status(401).json({ message })
+        }
+
+        return next()
+    }
