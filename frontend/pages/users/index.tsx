@@ -1,10 +1,12 @@
 import { FC, useEffect } from 'react'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
+import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import { User } from '../../contexts/UserContext/types'
 import {
     UserContextProvider,
@@ -13,6 +15,7 @@ import {
 
 const PageContent: FC = () => {
     const AppContext = useAppContext()
+    const AuthContext = useAuthContext()
     const UserContext = useUserContext()
 
     useEffect(() => {
@@ -75,7 +78,21 @@ const PageContent: FC = () => {
                                     >
                                         Edit
                                     </Button>
-                                    <Button style="link">Delete</Button>
+                                    <Button
+                                        style="link"
+                                        onClick={() => {
+                                            UserContext.setUserToDelete(user)
+                                            AppContext.openDialog(
+                                                'delete-user-dialog'
+                                            )
+                                        }}
+                                        disabled={
+                                            user.id === AuthContext.user?.id
+                                        }
+                                        disabledText="Can not delete self"
+                                    >
+                                        Delete
+                                    </Button>
                                 </div>
                             )
                         },
@@ -84,6 +101,19 @@ const PageContent: FC = () => {
             />
 
             <AddEditUserDialog />
+            <ConfirmDialog
+                text={`Delete user ${UserContext.userToDelete?.firstName} ${UserContext.userToDelete?.lastName}?`}
+                dialogKey="delete-user-dialog"
+                onConfirm={async () => {
+                    if (UserContext.userToDelete) {
+                        await UserContext.removeUser(
+                            UserContext.userToDelete?.id
+                        )
+                        AppContext.closeDialog()
+                    }
+                }}
+                loading={AppContext.isLoading('remove-user')}
+            />
         </UserLayout>
     )
 }

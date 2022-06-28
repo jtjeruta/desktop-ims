@@ -27,3 +27,16 @@ module.exports.updateUser = async (req, res) => {
     if (status !== 200) return res.status(status).json(data)
     return res.status(200).json({ user: UserView(data) })
 }
+
+module.exports.deleteUser = async (req, res) => {
+    const { userId } = req.params
+
+    if (req.con._id.equals(userId)) {
+        return res.status(405).json({ message: 'Not allowed.' })
+    }
+
+    const [status, data] = await UsersModule.deleteUserById(userId)
+
+    if (status !== 200) return res.status(status).json(data)
+    return res.status(200).json({ message: 'User deleted.' })
+}

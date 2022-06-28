@@ -20,6 +20,7 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const AuthContext = useAuthContext()
     const [users, setUsers] = useState<User[] | null>(null)
     const [userToEdit, setUserToEdit] = useState<User | null>(null)
+    const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
     const createUser: CreateUser = async (userDoc) => {
         const key = 'add-user'
@@ -63,8 +64,27 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true, response[1]]
     }
 
-    const removeUser: RemoveUser = (id) => {
-        // Call api here
+    const removeUser: RemoveUser = async (id) => {
+        const key = 'remove-user'
+
+        AppContext.addLoading(key)
+        const response = await UsersAPI.deleteUser(id)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+
+            return [false, response[1].data]
+        }
+
+        // update users
+        setUsers((prev) => prev?.filter((user) => user.id !== id) || [])
+
+        return [true]
     }
 
     const listUsers: ListUsers = async () => {
@@ -95,8 +115,10 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
             listUsers,
             userToEdit,
             setUserToEdit,
+            userToDelete,
+            setUserToDelete,
         }),
-        [users, userToEdit]
+        [users, userToEdit, userToDelete]
     )
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>

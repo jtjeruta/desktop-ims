@@ -43,4 +43,6 @@ export type Context = {
     listUsers: ListUsers
     userToEdit: User | null
     setUserToEdit: (user: User | null) => void
+    userToDelete: User | null
+    setUserToDelete: (user: User | null) => void
 }

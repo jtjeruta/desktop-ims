@@ -85,11 +85,15 @@ const Dialog: FC<Props> = (props) => {
                 <div className="p-3">{props.content}</div>
                 <hr />
                 <div className="flex justify-end gap-3 p-3">
-                    <Button onClick={handleClose} loading={props.loading}>
+                    <Button
+                        color="secondary"
+                        onClick={handleClose}
+                        loading={props.loading}
+                    >
                         Cancel
                     </Button>
                     <Button onClick={props.onSave} loading={props.loading}>
-                        Save
+                        {props.saveButtonText || 'Save'}
                     </Button>
                 </div>
             </div>

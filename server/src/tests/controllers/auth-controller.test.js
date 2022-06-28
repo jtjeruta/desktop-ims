@@ -109,7 +109,7 @@ describe('Verify Token', () => {
                         .then((res) => {
                             expect(res.statusCode).to.equal(404)
                             expect(res.body).to.deep.equal({
-                                message: 'User not found.',
+                                message: 'Not found.',
                             })
                             done()
                         })

@@ -19,3 +19,9 @@ export const updateUser = (id: string, data: CreateUpdateUserDoc) =>
         .put(`/api/v1/users/${id}`, data)
         .then((response): [true, User] => [true, response.data.user])
         .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const deleteUser = (id: string) =>
+    Axios()
+        .delete(`/api/v1/users/${id}`)
+        .then((): [true] => [true])
+        .catch((err): [false, AxiosResponse] => [false, err.response])

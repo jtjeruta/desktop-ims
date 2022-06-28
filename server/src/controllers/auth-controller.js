@@ -42,8 +42,8 @@ module.exports.verifyToken = async (req, res) => {
         verifyTokenResponse[1].id
     )
 
-    if (!getUserResponse[1]) {
-        return res.status(404).json({ message: 'User not found.' })
+    if (getUserResponse[0] !== 200) {
+        return res.status(getUserResponse[0]).json(getUserResponse[1])
     }
 
     return res.status(200).json({ user: UserView(getUserResponse[1]) })
@@ -74,19 +74,6 @@ module.exports.isAdmin = async (req, res, next) => {
         return res.status(401).json({ message: 'Unauthorized.' })
     }
 
+    req.con = userResponse[1]
     return next()
 }
-
-module.exports.notSelf =
-    async (req, res, next) =>
-    (userIdParamKey, message = 'Unauthorized.') => {
-        const userId = req.params[userIdParamKey]
-        const token = req.headers.authorization || ''
-        const tokenResponse = AuthModule.verifyToken(token)
-
-        if (userId === tokenResponse[1].id) {
-            return res.status(401).json({ message })
-        }
-
-        return next()
-    }

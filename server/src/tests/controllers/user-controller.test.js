@@ -247,3 +247,65 @@ describe('Update user', () => {
             .catch((err) => done(err))
     })
 })
+
+describe('Delete user', () => {
+    const createdUsers = {}
+
+    setup()
+    beforeEach(async () => {
+        const admin = await UsersModule.createUser(testdata.admin1)
+        const employee = await UsersModule.createUser(testdata.employee1)
+        createdUsers.admin = admin[1]
+        createdUsers.employee = employee[1]
+    })
+
+    it('Success: run as admin to delete employee', (done) => {
+        login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        }).then(({ token }) => {
+            request(app)
+                .delete(`/api/v1/users/${createdUsers.employee.id}`)
+                .set('Authorization', token)
+                .then((res) => {
+                    expect(res.statusCode).to.equal(200)
+                    done()
+                })
+                .catch((err) => done(err))
+        })
+    })
+
+    it('Fail: run as admin to delete self', (done) => {
+        login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        }).then(({ token }) => {
+            request(app)
+                .delete(`/api/v1/users/${createdUsers.admin.id}`)
+                .set('Authorization', token)
+                .then((res) => {
+                    expect(res.statusCode).to.equal(405)
+                    expect(res.body.message).to.equal('Not allowed.')
+                    done()
+                })
+                .catch((err) => done(err))
+        })
+    })
+
+    it('Fail: run as employee to delete admin', (done) => {
+        login({
+            email: testdata.employee1.email,
+            password: testdata.employee1.password,
+        }).then(({ token }) => {
+            request(app)
+                .delete(`/api/v1/users/${createdUsers.admin.id}`)
+                .set('Authorization', token)
+                .then((res) => {
+                    expect(res.statusCode).to.equal(401)
+                    expect(res.body.message).to.equal('Unauthorized.')
+                    done()
+                })
+                .catch((err) => done(err))
+        })
+    })
+})

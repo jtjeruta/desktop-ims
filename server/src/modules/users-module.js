@@ -28,6 +28,11 @@ module.exports.listUsers = async () => {
 module.exports.getUserById = async (id) => {
     try {
         const user = await UserModel.findById(id)
+
+        if (!user) {
+            return [404, { message: 'Not found.' }]
+        }
+
         return [200, user]
     } catch (error) {
         console.error('Failed to find user by id')
@@ -38,6 +43,11 @@ module.exports.getUserById = async (id) => {
 module.exports.getUserByEmail = async (email) => {
     try {
         const user = await UserModel.findOne({ email })
+
+        if (!user) {
+            return [404, { message: 'Not found.' }]
+        }
+
         return [200, user]
     } catch (error) {
         console.error('Failed to find user by email')
