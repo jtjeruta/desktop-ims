@@ -1,13 +1,18 @@
 import clsx from 'clsx'
 import { FC } from 'react'
 
-type Row = { id: string } & { [key: string]: any }
-type Column = { title: string; className?: string } & (
+// eslint-disable-next-line
+type Row = Record<string, any>
+type Column = {
+    title: string
+    className?: string
+} & (
     | {
           key: string
       }
     | {
-          format: (item: any) => string | JSX.Element
+          // eslint-disable-next-line
+          format: (item: Row) => string | JSX.Element
       }
 )
 

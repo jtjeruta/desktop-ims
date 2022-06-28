@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useUserContext } from '../../contexts/UserContext/UserContext'
 import Dialog from '../Dialog/Dialog'
@@ -29,7 +29,7 @@ const AddEditUserDialog: FC = () => {
         methods.setValue('role', UserContext.userToEdit?.role)
     }, [UserContext.userToEdit, methods])
 
-    const onSubmit = async (data: { [x: string]: any }) => {
+    const onSubmit = async (data: FieldValues) => {
         const doc = {
             email: data.email,
             firstName: data.firstName,

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -40,14 +40,17 @@ const PageContent: FC = () => {
                 columns={[
                     {
                         title: 'User',
-                        format: (user) => (
-                            <>
-                                <div className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                    {user.firstName} {user.lastName}
-                                </div>
-                                <div>{user.email}</div>
-                            </>
-                        ),
+                        format: (row) => {
+                            const user = row as User
+                            return (
+                                <>
+                                    <div className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                        {user.firstName} {user.lastName}
+                                    </div>
+                                    <div>{user.email}</div>
+                                </>
+                            )
+                        },
                         className: 'w-full',
                     },
                     {
@@ -57,22 +60,25 @@ const PageContent: FC = () => {
                     },
                     {
                         title: ' ',
-                        format: (user: User) => (
-                            <div className="flex gap-10">
-                                <Button
-                                    style="link"
-                                    onClick={() => {
-                                        UserContext.setUserToEdit(user)
-                                        AppContext.openDialog(
-                                            'add-edit-user-dialog'
-                                        )
-                                    }}
-                                >
-                                    Edit
-                                </Button>
-                                <Button style="link">Delete</Button>
-                            </div>
-                        ),
+                        format: (row) => {
+                            const user = row as User
+                            return (
+                                <div className="flex gap-10">
+                                    <Button
+                                        style="link"
+                                        onClick={() => {
+                                            UserContext.setUserToEdit(user)
+                                            AppContext.openDialog(
+                                                'add-edit-user-dialog'
+                                            )
+                                        }}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button style="link">Delete</Button>
+                                </div>
+                            )
+                        },
                     },
                 ]}
             />

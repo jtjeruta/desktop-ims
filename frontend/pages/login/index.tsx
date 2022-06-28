@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from 'react-hook-form'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import Image from 'next/image'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
@@ -10,7 +10,7 @@ const Login = () => {
     const AuthContext = useAuthContext()
     const methods = useForm()
 
-    const onSubmit = async (data: { [x: string]: any }) => {
+    const onSubmit = async (data: FieldValues) => {
         const res = await AuthContext.login(data.email, data.password)
         if (!res[0] && res[1].status === 400) {
             methods.setError('email', {
