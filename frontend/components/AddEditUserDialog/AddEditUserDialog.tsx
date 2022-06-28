@@ -1,7 +1,6 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import { User } from '../../contexts/UserContext/types'
 import { useUserContext } from '../../contexts/UserContext/UserContext'
 import Dialog from '../Dialog/Dialog'
 import TextField from '../TextField/TextField'
@@ -9,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import Select from '../Select/Select'
 
-const createUserSchema = yup
+const addEditUserSchema = yup
     .object({
         email: yup.string().email().required(),
         firstName: yup.string().required(),
@@ -18,14 +17,17 @@ const createUserSchema = yup
     })
     .required()
 
-type Props = {
-    user?: User
-}
-
-const AddEditUserDialog: FC<Props> = (props) => {
+const AddEditUserDialog: FC = () => {
     const AppContext = useAppContext()
     const UserContext = useUserContext()
-    const methods = useForm({ resolver: yupResolver(createUserSchema) })
+    const methods = useForm({ resolver: yupResolver(addEditUserSchema) })
+
+    useEffect(() => {
+        methods.setValue('email', UserContext.userToEdit?.email)
+        methods.setValue('firstName', UserContext.userToEdit?.firstName)
+        methods.setValue('lastName', UserContext.userToEdit?.lastName)
+        methods.setValue('role', UserContext.userToEdit?.role)
+    }, [UserContext.userToEdit, methods])
 
     const onSubmit = async (data: { [x: string]: any }) => {
         const doc = {
@@ -35,12 +37,18 @@ const AddEditUserDialog: FC<Props> = (props) => {
             role: data.role,
         }
 
-        const response = await UserContext.addUser(doc)
+        const response = await (UserContext.userToEdit
+            ? UserContext.updateUser(UserContext.userToEdit.id, doc)
+            : UserContext.createUser(doc))
 
         if (response[0]) {
             AppContext.closeDialog()
             methods.reset()
-            AppContext.addNotification({ title: 'User added!' })
+            AppContext.addNotification({
+                title: !UserContext.userToEdit
+                    ? 'User added!'
+                    : 'User updated!',
+            })
         } else if (response[1].errors) {
             const { errors } = response[1]
 
@@ -60,7 +68,7 @@ const AddEditUserDialog: FC<Props> = (props) => {
 
     return (
         <Dialog
-            title={`${props.user ? 'Edit' : 'New'} User`}
+            title={`${UserContext.userToEdit ? 'Edit' : 'New'} User`}
             open={AppContext.dialogIsOpen('add-edit-user-dialog')}
             content={
                 <FormProvider {...methods}>
@@ -70,6 +78,7 @@ const AddEditUserDialog: FC<Props> = (props) => {
                                 label="Email address"
                                 name="email"
                                 required
+                                autoFocus
                             />
                             <TextField
                                 label="First Name"
@@ -81,7 +90,6 @@ const AddEditUserDialog: FC<Props> = (props) => {
                                 name="lastName"
                                 required
                             />
-                            {/* <TextField label="Role" name="role" required /> */}
                             <Select
                                 label="Role"
                                 name="role"
@@ -97,10 +105,6 @@ const AddEditUserDialog: FC<Props> = (props) => {
             }
             onSave={methods.handleSubmit(onSubmit)}
             loading={AppContext.isLoading('add-user')}
-            onClose={() => {
-                methods.reset()
-                AppContext.closeDialog()
-            }}
         />
     )
 }

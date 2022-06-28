@@ -58,6 +58,7 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
             login,
             verifyToken,
             logout,
+            setUser,
         }),
         [user]
     )

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { FaTimes } from 'react-icons/fa'
 import Button from '../Button/Button'
@@ -20,12 +20,16 @@ type Props = {
     loading?: boolean
 }
 
-let timeout: NodeJS.Timeout
 const Dialog: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const [status, setStatus] = useState<
         'open' | 'fading-in' | 'closed' | 'fading-out'
     >('closed')
+
+    const handleClose = useCallback(
+        () => (props.onClose ? props.onClose() : AppContext.closeDialog()),
+        [AppContext, props]
+    )
 
     useEffect(() => {
         if (props.open && status === 'closed') {
@@ -37,15 +41,26 @@ const Dialog: FC<Props> = (props) => {
         }
     }, [props.open, status])
 
-    const handleClose = () =>
-        props.onClose ? props.onClose() : AppContext.closeDialog()
+    useEffect(() => {
+        const handleDialogKeyDown = (event: KeyboardEvent) => {
+            if (status === 'closed') return null
+            event.key === 'Escape' && handleClose()
+            event.key === 'Enter' && props.onSave && props.onSave()
+            event.key === 'Enter' && !props.onSave && handleClose()
+        }
 
-    return (
+        window.addEventListener('keydown', handleDialogKeyDown)
+
+        return () => {
+            window.removeEventListener('keydown', handleDialogKeyDown)
+        }
+    }, [status, handleClose, props])
+
+    return status === 'closed' ? null : (
         <div
             className={clsx(
                 'fixed text-gray-500 flex items-center justify-center p-3',
                 'overflow-auto z-50 bg-black bg-opacity-50 left-0 right-0 top-0 bottom-0',
-                status === 'closed' && 'hidden',
                 status === 'fading-in' && 'animate-fade-in',
                 status === 'fading-out' && 'animate-fade-out'
             )}

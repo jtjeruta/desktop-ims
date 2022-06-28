@@ -14,7 +14,6 @@ import {
 const PageContent: FC = () => {
     const AppContext = useAppContext()
     const UserContext = useUserContext()
-    const [userToEdit, setUserToEdit] = useState<User | undefined>()
 
     useEffect(() => {
         UserContext.users === null && UserContext.listUsers()
@@ -27,8 +26,10 @@ const PageContent: FC = () => {
                 buttons={[
                     {
                         text: 'Add User',
-                        onClick: () =>
-                            AppContext.openDialog('add-edit-user-dialog'),
+                        onClick: () => {
+                            UserContext.setUserToEdit(null)
+                            AppContext.openDialog('add-edit-user-dialog')
+                        },
                     },
                 ]}
             />
@@ -61,7 +62,7 @@ const PageContent: FC = () => {
                                 <Button
                                     style="link"
                                     onClick={() => {
-                                        setUserToEdit(user)
+                                        UserContext.setUserToEdit(user)
                                         AppContext.openDialog(
                                             'add-edit-user-dialog'
                                         )
@@ -76,7 +77,7 @@ const PageContent: FC = () => {
                 ]}
             />
 
-            <AddEditUserDialog user={userToEdit} />
+            <AddEditUserDialog />
         </UserLayout>
     )
 }

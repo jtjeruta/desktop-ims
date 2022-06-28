@@ -17,9 +17,12 @@ export type VerifyToken = () => Promise<void>
 
 export type Logout = () => void
 
+export type SetUser = (user: User) => void
+
 export type Context = {
     user: User | null
     login: Login
     verifyToken: VerifyToken
     logout: Logout
+    setUser: SetUser
 }

@@ -3,7 +3,6 @@ import { FC } from 'react'
 import { useFormContext } from 'react-hook-form'
 
 type Props = {
-    defaultValue?: string | number
     error?: boolean
     helperText?: string
     label: string
@@ -32,7 +31,6 @@ const Select: FC<Props> = (props) => {
                 </label>
             )}
             <select
-                value={props.defaultValue}
                 className={clsx(
                     'form-control block w-full px-4 py-2 text-xl font-normal',
                     'text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300',

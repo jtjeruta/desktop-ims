@@ -1,7 +1,15 @@
 import React, { useMemo, useState } from 'react'
 import * as UsersAPI from '../../apis/UserAPI'
 import { useAppContext } from '../AppContext/AppContext'
-import { AddUser, RemoveUser, Context, User, ListUsers } from './types'
+import { useAuthContext } from '../AuthContext/AuthContext'
+import {
+    CreateUser,
+    RemoveUser,
+    Context,
+    User,
+    ListUsers,
+    UpdateUser,
+} from './types'
 
 const UserContext = React.createContext<Context | any>({})
 
@@ -9,21 +17,49 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const AppContext = useAppContext()
+    const AuthContext = useAuthContext()
     const [users, setUsers] = useState<User[] | null>(null)
+    const [userToEdit, setUserToEdit] = useState<User | null>(null)
 
-    const addUser: AddUser = async (createUserDoc) => {
+    const createUser: CreateUser = async (userDoc) => {
         const key = 'add-user'
 
         AppContext.addLoading(key)
-        const response = await UsersAPI.addUser(createUserDoc)
+        const response = await UsersAPI.createUser(userDoc)
         AppContext.removeLoading(key)
 
         if (!response[0]) {
-            console.log(response[1])
             return [false, response[1].data]
         }
 
         setUsers((prev) => [...(prev || []), response[1]])
+        return [true, response[1]]
+    }
+
+    const updateUser: UpdateUser = async (id, userDoc) => {
+        const key = 'update-user'
+
+        AppContext.addLoading(key)
+        const response = await UsersAPI.updateUser(id, userDoc)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            return [false, response[1].data]
+        }
+
+        // update users
+        setUsers((prev) =>
+            (prev || []).map((user) => {
+                if (user.id !== id) return user
+                return response[1]
+            })
+        )
+
+        // update auth detials
+        if (id === AuthContext.user?.id) {
+            AuthContext.setUser(response[1])
+        }
+
         return [true, response[1]]
     }
 
@@ -53,11 +89,14 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const value: Context = useMemo(
         () => ({
             users,
-            addUser,
+            createUser,
+            updateUser,
             removeUser,
             listUsers,
+            userToEdit,
+            setUserToEdit,
         }),
-        [users]
+        [users, userToEdit]
     )
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>

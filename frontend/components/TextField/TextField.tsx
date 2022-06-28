@@ -1,9 +1,8 @@
-import clsx from 'clsx'
 import { FC } from 'react'
+import clsx from 'clsx'
 import { useFormContext } from 'react-hook-form'
 
 type Props = {
-    defaultValue?: string | number
     error?: boolean
     helperText?: string
     label: string
@@ -11,6 +10,7 @@ type Props = {
     required?: boolean
     type?: 'text' | 'number' | 'password' | 'tel'
     name: string
+    autoFocus?: boolean
 }
 
 const TextField: FC<Props> = (props) => {
@@ -33,7 +33,6 @@ const TextField: FC<Props> = (props) => {
             )}
             <input
                 type={props.type || 'text'}
-                value={props.defaultValue}
                 className={clsx(
                     'form-control block w-full px-4 py-2 text-xl font-normal',
                     'text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300',
@@ -43,6 +42,7 @@ const TextField: FC<Props> = (props) => {
                 )}
                 placeholder={props.placeholder}
                 required={props.required}
+                autoFocus={props.autoFocus}
                 {...register}
             />
             {!errorMessage ? (
