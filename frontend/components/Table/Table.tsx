@@ -5,7 +5,8 @@ import clsx from 'clsx'
 type Row = Record<string, any>
 type Column = {
     title: string
-    className?: string
+    headerClsx?: string
+    bodyClsx?: string
 } & (
     | {
           key: string
@@ -30,7 +31,11 @@ const Table: FC<Props> = (props) => {
                     {props.columns.map((col) => (
                         <th
                             key={col.title}
-                            className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200"
+                            className={clsx(
+                                'px-6 py-3 text-xs font-medium leading-4 tracking-wider',
+                                'text-left text-gray-500 uppercase border-b border-gray-200',
+                                col.headerClsx
+                            )}
                         >
                             {col.title}
                         </th>
@@ -78,7 +83,7 @@ const TableRow: FC<TableRow> = (props) => {
                     key={col.title}
                     className={clsx(
                         'px-6 py-4 border-b border-gray-200 whitespace-nowrap',
-                        col.className
+                        col.bodyClsx
                     )}
                 >
                     {'loading' in props ? (

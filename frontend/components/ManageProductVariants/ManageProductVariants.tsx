@@ -7,8 +7,8 @@ import Card from '../Card/Card'
 
 const ManageProductVariants: FC<{ product: Product }> = (props) => {
     return (
-        <div className="flex basis-0 grow">
-            <Card className="w-full" bodyProps={{ className: 'p-0 h-full' }}>
+        <div className="flex">
+            <Card cardClsx="w-full" bodyClsx="px-0 py-0 h-full">
                 <div className="flex flex-col h-full">
                     <div className="grow">
                         <Table
@@ -31,7 +31,8 @@ const ManageProductVariants: FC<{ product: Product }> = (props) => {
                                             </Button>
                                         )
                                     },
-                                    className: 'w-min',
+                                    headerClsx: 'text-right',
+                                    bodyClsx: 'flex justify-end',
                                 },
                             ]}
                         />

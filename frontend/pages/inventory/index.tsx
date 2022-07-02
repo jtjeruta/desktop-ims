@@ -65,7 +65,7 @@ const InventoryPage = () => {
         <UserLayout>
             <PageHeader title="Inventory" buttons={[{ text: 'Add Product' }]} />
 
-            <Card bodyProps={{ className: 'p-0' }}>
+            <Card bodyClsx="px-0 py-0">
                 <Table
                     rows={products || []}
                     loading={AppContext.isLoading('list-users')}
@@ -82,7 +82,7 @@ const InventoryPage = () => {
                         {
                             title: 'Name',
                             key: 'name',
-                            className: 'w-full',
+                            bodyClsx: 'w-full',
                         },
                         {
                             title: 'Markup',
@@ -98,7 +98,7 @@ const InventoryPage = () => {
                                 const product = row as Product
                                 return `#${product.sku}`
                             },
-                            className: 'font-bold',
+                            bodyClsx: 'font-bold',
                         },
                         {
                             title: 'Category',

@@ -3,6 +3,7 @@ import UserLayout from '../../components/UserLayout/UserLayout'
 import AddEditProductForm from '../../components/AddEditProductForm/AddEditProductForm'
 import { products } from '.'
 import ManageProductVariants from '../../components/ManageProductVariants/ManageProductVariants'
+import ProductDetailsCard from '../../components/ProductDetailsCard/ProductDetailsCard'
 
 const product = products[0]
 
@@ -11,12 +12,13 @@ const ProductPage = () => {
         <UserLayout>
             <PageHeader title={`#${product.sku}`} />
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 pb-4">
                 <AddEditProductForm product={product} />
-                <ManageProductVariants product={product} />
+                <ProductDetailsCard product={product} />
             </div>
-            {/* <Details />
-            <History /> */}
+            <ManageProductVariants product={product} />
+            {/* <div className="basis-0 grow" /> */}
+            {/* <History /> */}
         </UserLayout>
     )
 }

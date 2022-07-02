@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react'
-import { FieldValues, FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import Card from '../Card/Card'
 import { Product } from '../../pages/inventory'
@@ -20,10 +20,10 @@ const AddEditProductForm: FC<Props> = (props) => {
         methods.setValue('brand', props.product.brand)
         methods.setValue('category', props.product.category)
         methods.setValue('subCategory', props.product.subCategory)
-    }, [])
+    }, [props.product, methods])
 
     return (
-        <Card className="grow basis-0" title="Product Details">
+        <Card cardClsx="grow basis-0" title="Product Details">
             {isLoading('get-product') || !props.product ? (
                 <h1>Loading</h1>
             ) : (

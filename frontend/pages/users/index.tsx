@@ -38,7 +38,7 @@ const PageContent: FC = () => {
                 ]}
             />
 
-            <Card bodyProps={{ className: 'p-0' }}>
+            <Card bodyClsx="px-0 py-0">
                 <Table
                     rows={UserContext.users || []}
                     loading={AppContext.isLoading('list-users')}
@@ -56,12 +56,12 @@ const PageContent: FC = () => {
                                     </>
                                 )
                             },
-                            className: 'w-full',
+                            bodyClsx: 'w-full',
                         },
                         {
                             title: 'Role',
                             key: 'role',
-                            className: 'w-full',
+                            bodyClsx: 'w-full',
                         },
                         {
                             title: ' ',
