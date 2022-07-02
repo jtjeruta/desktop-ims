@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
+import Card from '../../components/Card/Card'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
@@ -37,68 +38,72 @@ const PageContent: FC = () => {
                 ]}
             />
 
-            <Table
-                rows={UserContext.users || []}
-                loading={AppContext.isLoading('list-users')}
-                columns={[
-                    {
-                        title: 'User',
-                        format: (row) => {
-                            const user = row as User
-                            return (
-                                <>
-                                    <div className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        {user.firstName} {user.lastName}
+            <Card bodyProps={{ className: 'p-0' }}>
+                <Table
+                    rows={UserContext.users || []}
+                    loading={AppContext.isLoading('list-users')}
+                    columns={[
+                        {
+                            title: 'User',
+                            format: (row) => {
+                                const user = row as User
+                                return (
+                                    <>
+                                        <div className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                            {user.firstName} {user.lastName}
+                                        </div>
+                                        <div>{user.email}</div>
+                                    </>
+                                )
+                            },
+                            className: 'w-full',
+                        },
+                        {
+                            title: 'Role',
+                            key: 'role',
+                            className: 'w-full',
+                        },
+                        {
+                            title: ' ',
+                            format: (row) => {
+                                const user = row as User
+                                return (
+                                    <div className="flex gap-10">
+                                        <Button
+                                            style="link"
+                                            onClick={() => {
+                                                UserContext.setUserToEdit(user)
+                                                AppContext.openDialog(
+                                                    'add-edit-user-dialog'
+                                                )
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            style="link"
+                                            onClick={() => {
+                                                UserContext.setUserToDelete(
+                                                    user
+                                                )
+                                                AppContext.openDialog(
+                                                    'delete-user-dialog'
+                                                )
+                                            }}
+                                            disabled={
+                                                user.id === AuthContext.user?.id
+                                            }
+                                            disabledText="Can not delete self"
+                                        >
+                                            Delete
+                                        </Button>
                                     </div>
-                                    <div>{user.email}</div>
-                                </>
-                            )
+                                )
+                            },
                         },
-                        className: 'w-full',
-                    },
-                    {
-                        title: 'Role',
-                        key: 'role',
-                        className: 'w-full',
-                    },
-                    {
-                        title: ' ',
-                        format: (row) => {
-                            const user = row as User
-                            return (
-                                <div className="flex gap-10">
-                                    <Button
-                                        style="link"
-                                        onClick={() => {
-                                            UserContext.setUserToEdit(user)
-                                            AppContext.openDialog(
-                                                'add-edit-user-dialog'
-                                            )
-                                        }}
-                                    >
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        style="link"
-                                        onClick={() => {
-                                            UserContext.setUserToDelete(user)
-                                            AppContext.openDialog(
-                                                'delete-user-dialog'
-                                            )
-                                        }}
-                                        disabled={
-                                            user.id === AuthContext.user?.id
-                                        }
-                                        disabledText="Can not delete self"
-                                    >
-                                        Delete
-                                    </Button>
-                                </div>
-                            )
-                        },
-                    },
-                ]}
-            />
+                    ]}
+                />
+            </Card>
 
             <AddEditUserDialog />
             <ConfirmDialog

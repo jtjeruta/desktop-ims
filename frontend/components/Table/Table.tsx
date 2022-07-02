@@ -1,5 +1,5 @@
-import clsx from 'clsx'
 import { FC } from 'react'
+import clsx from 'clsx'
 
 // eslint-disable-next-line
 type Row = Record<string, any>
@@ -19,45 +19,43 @@ type Column = {
 type Props = {
     rows: Row[]
     columns: Column[]
-    loading: boolean
+    loading?: boolean
 }
 
 const Table: FC<Props> = (props) => {
     return (
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        {props.columns.map((col) => (
-                            <th
-                                key={col.title}
-                                className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200"
-                            >
-                                {col.title}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    {props.columns.map((col) => (
+                        <th
+                            key={col.title}
+                            className="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200"
+                        >
+                            {col.title}
+                        </th>
+                    ))}
+                </tr>
+            </thead>
 
-                <tbody className="bg-white">
-                    {props.loading ? (
-                        <>
-                            <TableRow columns={props.columns} loading />
-                            <TableRow columns={props.columns} loading />
-                            <TableRow columns={props.columns} loading />
-                        </>
-                    ) : (
-                        props.rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                row={row}
-                                columns={props.columns}
-                            />
-                        ))
-                    )}
-                </tbody>
-            </table>
-        </div>
+            <tbody className="bg-white">
+                {props.loading ? (
+                    <>
+                        <TableRow columns={props.columns} loading />
+                        <TableRow columns={props.columns} loading />
+                        <TableRow columns={props.columns} loading />
+                    </>
+                ) : (
+                    props.rows.map((row) => (
+                        <TableRow
+                            key={row.id}
+                            row={row}
+                            columns={props.columns}
+                        />
+                    ))
+                )}
+            </tbody>
+        </table>
     )
 }
 

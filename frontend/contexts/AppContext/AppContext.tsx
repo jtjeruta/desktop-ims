@@ -19,7 +19,9 @@ const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [notifications, setNotifications] = React.useState<Notification[]>([])
-    const [loading, setLoading] = React.useState<string[]>([])
+    const [loading, setLoading] = React.useState<string[]>([
+        'auth-verify-token',
+    ])
     const [openedDialog, setOpenedDialog] = React.useState<string | null>(null)
 
     const addNotification: AddNotification = ({ type, title, body }) => {

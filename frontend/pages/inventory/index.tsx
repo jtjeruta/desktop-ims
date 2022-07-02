@@ -1,11 +1,12 @@
 import moment from 'moment'
 import Button from '../../components/Button/Button'
+import Card from '../../components/Card/Card'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 
-type Product = {
+export type Product = {
     id: string
     createdAt: number
     name: string
@@ -16,9 +17,16 @@ type Product = {
     subCategory?: string
     warehouseQty: number
     storeQty: number
+    variants: ProductVariant[]
 }
 
-const products: Product[] = [
+export type ProductVariant = {
+    id: string
+    name: string
+    quantity: number
+}
+
+export const products: Product[] = [
     {
         id: '0',
         createdAt: 12312321,
@@ -30,6 +38,23 @@ const products: Product[] = [
         subCategory: 'sub category 1',
         warehouseQty: 0,
         storeQty: 0,
+        variants: [
+            {
+                id: '0',
+                name: 'Variant 1',
+                quantity: 100,
+            },
+            {
+                id: '1',
+                name: 'Variant 1',
+                quantity: 100,
+            },
+            {
+                id: '2',
+                name: 'Variant 1',
+                quantity: 100,
+            },
+        ],
     },
 ]
 
@@ -40,61 +65,62 @@ const InventoryPage = () => {
         <UserLayout>
             <PageHeader title="Inventory" buttons={[{ text: 'Add Product' }]} />
 
-            <Table
-                rows={products || []}
-                loading={AppContext.isLoading('list-users')}
-                columns={[
-                    {
-                        title: 'Created',
-                        format: (row) => {
-                            const product = row as Product
-                            return moment(product.createdAt * 1000).format(
-                                'YYYY/MM/DD'
-                            )
+            <Card bodyProps={{ className: 'p-0' }}>
+                <Table
+                    rows={products || []}
+                    loading={AppContext.isLoading('list-users')}
+                    columns={[
+                        {
+                            title: 'Created',
+                            format: (row) => {
+                                const product = row as Product
+                                return moment(product.createdAt * 1000).format(
+                                    'YYYY/MM/DD'
+                                )
+                            },
                         },
-                    },
-                    {
-                        title: 'Name',
-                        key: 'name',
-                        className: 'w-full',
-                    },
-                    {
-                        title: 'Markup',
-                        key: 'markup',
-                    },
-                    {
-                        title: 'Brand',
-                        key: 'brand',
-                    },
-                    {
-                        title: 'SKU',
-                        key: 'sku',
-                        className: 'font-bold',
-                    },
-                    {
-                        title: 'Category',
-                        key: 'category',
-                    },
-                    {
-                        title: 'Warehouse qty',
-                        key: 'warehouseQty',
-                    },
-                    {
-                        title: 'Store qty',
-                        key: 'storeQty',
-                    },
-                    {
-                        title: ' ',
-                        format: () => {
-                            return (
-                                <div className="flex gap-10">
-                                    <Button style="link">Edit</Button>
-                                </div>
-                            )
+                        {
+                            title: 'Name',
+                            key: 'name',
+                            className: 'w-full',
                         },
-                    },
-                ]}
-            />
+                        {
+                            title: 'Markup',
+                            key: 'markup',
+                        },
+                        {
+                            title: 'Brand',
+                            key: 'brand',
+                        },
+                        {
+                            title: 'SKU',
+                            format: (row) => {
+                                const product = row as Product
+                                return `#${product.sku}`
+                            },
+                            className: 'font-bold',
+                        },
+                        {
+                            title: 'Category',
+                            key: 'category',
+                        },
+                        {
+                            title: 'Warehouse qty',
+                            key: 'warehouseQty',
+                        },
+                        {
+                            title: 'Store qty',
+                            key: 'storeQty',
+                        },
+                        {
+                            title: ' ',
+                            format: () => {
+                                return <Button style="link">View</Button>
+                            },
+                        },
+                    ]}
+                />
+            </Card>
         </UserLayout>
     )
 }

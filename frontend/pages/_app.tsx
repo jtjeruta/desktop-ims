@@ -2,19 +2,20 @@ import '../styles/globals.css'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import type { AppProps } from 'next/app'
-import { AppContextProvider } from '../contexts/AppContext/AppContext'
+import {
+    AppContextProvider,
+    useAppContext,
+} from '../contexts/AppContext/AppContext'
 import {
     AuthContextProvider,
     useAuthContext,
 } from '../contexts/AuthContext/AuthContext'
 import NotificationsList from '../components/NotificationList/NotificationList'
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
-
-const noUserPaths = ['/login']
-const employeePaths: string[] = []
-const adminPaths: string[] = ['/users']
+import { routes } from '../routes'
 
 function AppContent({ Component, pageProps }: AppProps) {
+    const AppContext = useAppContext()
     const AuthContext = useAuthContext()
     const router = useRouter()
 
@@ -23,26 +24,33 @@ function AppContent({ Component, pageProps }: AppProps) {
     }, [AuthContext])
 
     useEffect(() => {
+        if (AppContext.isLoading('auth-verify-token')) return
+
+        const foundRoute = routes.find(
+            (route) => route.pathname === router.pathname
+        )
+
+        if (!foundRoute) return
+
         if (
             !AuthContext.user &&
-            !noUserPaths.includes(router.pathname) &&
-            [...employeePaths, ...adminPaths].includes(router.pathname)
+            !['everyone', 'un-authenticated'].includes(foundRoute.access)
         ) {
             router.replace('/login')
         } else if (
             AuthContext.user?.role === 'employee' &&
-            !employeePaths.includes(router.pathname) &&
-            [...noUserPaths, ...adminPaths].includes(router.pathname)
+            !['everyone', 'employee', 'authenticated'].includes(
+                foundRoute.access
+            )
         ) {
             router.replace('/login')
         } else if (
             AuthContext.user?.role === 'admin' &&
-            !adminPaths.includes(router.pathname) &&
-            [...noUserPaths, ...employeePaths].includes(router.pathname)
+            !['everyone', 'admin', 'authenticated'].includes(foundRoute.access)
         ) {
             router.replace('/users')
         }
-    }, [AuthContext.user, router])
+    }, [AppContext, AuthContext.user, router])
 
     return (
         <>
