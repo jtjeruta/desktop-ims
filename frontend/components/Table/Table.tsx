@@ -50,7 +50,7 @@ const Table: FC<Props> = (props) => {
                         <TableRow columns={props.columns} loading />
                         <TableRow columns={props.columns} loading />
                     </>
-                ) : (
+                ) : props.rows.length ? (
                     props.rows.map((row) => (
                         <TableRow
                             key={row.id}
@@ -58,6 +58,15 @@ const Table: FC<Props> = (props) => {
                             columns={props.columns}
                         />
                     ))
+                ) : (
+                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td
+                            className="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
+                            colSpan={props.columns.length}
+                        >
+                            No data yet.
+                        </td>
+                    </tr>
                 )}
             </tbody>
         </table>

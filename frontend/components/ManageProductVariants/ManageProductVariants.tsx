@@ -1,18 +1,19 @@
-import { FC } from 'react'
-import { FaTrash } from 'react-icons/fa'
-import { Product } from '../../pages/inventory'
+// import { FaTrash } from 'react-icons/fa'
 import Button from '../Button/Button'
-import Table from '../Table/Table'
+// import Table from '../Table/Table'
 import Card from '../Card/Card'
+import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 
-const ManageProductVariants: FC<{ product: Product }> = (props) => {
+const ManageProductVariants = () => {
+    const ProductContext = useProductContext()
+
     return (
         <div className="flex">
-            <Card cardClsx="w-full" bodyClsx="px-0 py-0 h-full">
+            <Card cardClsx="w-full" bodyClsx="!px-0 !py-0 h-full">
                 <div className="flex flex-col h-full">
                     <div className="grow">
-                        <Table
-                            rows={props.product.variants || []}
+                        {/* <Table
+                            rows={ProductContext.product?.variants || []}
                             columns={[
                                 {
                                     title: 'Unit',
@@ -35,7 +36,7 @@ const ManageProductVariants: FC<{ product: Product }> = (props) => {
                                     bodyClsx: 'flex justify-end',
                                 },
                             ]}
-                        />
+                        /> */}
                     </div>
                     <div className="flex justify-end p-4">
                         <Button>Add</Button>
