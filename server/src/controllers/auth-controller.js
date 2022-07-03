@@ -51,13 +51,20 @@ module.exports.verifyToken = async (req, res) => {
 
 module.exports.isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization || ''
-    const response = AuthModule.verifyToken(token)
+    const tokenResponse = AuthModule.verifyToken(token)
 
-    if (response[0]) {
-        return next()
-    } else {
+    if (!tokenResponse[0]) {
         return res.status(401).json({ message: 'Unauthorized.' })
     }
+
+    const userResponse = await UsersModule.getUserById(tokenResponse[1].id)
+
+    if (!userResponse[0]) {
+        return res.status(401).json({ message: 'Unauthorized.' })
+    }
+
+    req.con = userResponse[1]
+    return next()
 }
 
 module.exports.isAdmin = async (req, res, next) => {

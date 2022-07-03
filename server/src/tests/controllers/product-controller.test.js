@@ -1,17 +1,23 @@
-const { expect } = require('chai')
+const { expect, use } = require('chai')
 const request = require('supertest')
+const deepEqualInAnyOrder = require('deep-equal-in-any-order')
 
 const setup = require('../setup')
 const app = require('../../app')
 const UsersModule = require('../../modules/users-module')
+const ProductsModule = require('../../modules/products-module')
 const { login } = require('../helpers')
 const testdata = require('../testdata')
 
-describe('List users', () => {
+use(deepEqualInAnyOrder)
+
+describe('List products', () => {
     setup()
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
         await UsersModule.createUser(testdata.employee1)
+        await ProductsModule.createProduct(testdata.product1)
+        await ProductsModule.createProduct(testdata.product2)
     })
 
     it('Success: run as admin', (done) => {
@@ -20,30 +26,28 @@ describe('List users', () => {
             password: testdata.admin1.password,
         }).then(({ token }) => {
             request(app)
-                .get('/api/v1/users')
+                .get('/api/v1/products')
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(200)
-                    expect(res.body.users.length).to.equal(2)
+                    expect(res.body.products.length).to.equal(2)
                     done()
                 })
                 .catch((err) => done(err))
         })
     })
 
-    it('Fail: run as employee', (done) => {
+    it('Success: run as employee', (done) => {
         login({
             email: testdata.employee1.email,
             password: testdata.employee1.password,
         }).then(({ token }) => {
             request(app)
-                .get('/api/v1/users')
+                .get('/api/v1/products')
                 .set('Authorization', token)
                 .then((res) => {
-                    expect(res.statusCode).to.equal(401)
-                    expect(res.body).to.deep.equal({
-                        message: 'Unauthorized.',
-                    })
+                    expect(res.statusCode).to.equal(200)
+                    expect(res.body.products.length).to.equal(2)
                     done()
                 })
                 .catch((err) => done(err))
@@ -52,7 +56,7 @@ describe('List users', () => {
 
     it('Fail: run as unauthorized', (done) => {
         request(app)
-            .get('/api/v1/users')
+            .get('/api/v1/products')
             .then((res) => {
                 expect(res.statusCode).to.equal(401)
                 expect(res.body).to.deep.equal({
@@ -64,7 +68,7 @@ describe('List users', () => {
     })
 })
 
-describe('Create user', () => {
+describe('Create product', () => {
     setup()
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
@@ -77,16 +81,15 @@ describe('Create user', () => {
             password: testdata.admin1.password,
         }).then(({ token }) => {
             request(app)
-                .post('/api/v1/users')
-                .send(testdata.employee2)
+                .post('/api/v1/products')
+                .send(testdata.product1)
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(201)
-                    expect(res.body.user.email).to.equal(
-                        testdata.employee2.email
+                    expect(res.body.product.name).to.equal(
+                        testdata.product1.name
                     )
-                    expect(res.body.user.role).to.equal(testdata.employee2.role)
-                    expect(Object.keys(res.body.user)).to.include('id')
+                    expect(Object.keys(res.body.product)).to.include('id')
                     done()
                 })
                 .catch((err) => done(err))
@@ -99,21 +102,22 @@ describe('Create user', () => {
             password: testdata.admin1.password,
         }).then(({ token }) => {
             request(app)
-                .post('/api/v1/users')
-                .send({
-                    email: 'micah@gmai',
-                    firstName: '',
-                    lastName: '',
-                    role: 'owner',
-                    password: '',
-                })
+                .post('/api/v1/products')
+                .send({ price: -1, aveUnitCost: -1 })
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(400)
-                    expect(Object.keys(res.body.errors)).to.include('email')
-                    expect(Object.keys(res.body.errors)).to.include('firstName')
-                    expect(Object.keys(res.body.errors)).to.include('lastName')
-                    expect(Object.keys(res.body.errors)).to.include('role')
+                    expect(
+                        Object.keys(res.body.errors)
+                    ).to.deep.equalInAnyOrder([
+                        'name',
+                        'brand',
+                        'category',
+                        'subCategory',
+                        'published',
+                        'price',
+                        'aveUnitCost',
+                    ])
                     done()
                 })
                 .catch((err) => done(err))
@@ -126,7 +130,7 @@ describe('Create user', () => {
             password: testdata.employee1.password,
         }).then(({ token }) => {
             request(app)
-                .post('/api/v1/users')
+                .post('/api/v1/products')
                 .send({})
                 .set('Authorization', token)
                 .then((res) => {
@@ -142,7 +146,7 @@ describe('Create user', () => {
 
     it('Fail: run as unauthorized', (done) => {
         request(app)
-            .post('/api/v1/users')
+            .post('/api/v1/products')
             .then((res) => {
                 expect(res.statusCode).to.equal(401)
                 expect(res.body).to.deep.equal({
@@ -154,15 +158,17 @@ describe('Create user', () => {
     })
 })
 
-describe('Update user', () => {
-    const createdUsers = {}
+describe('Update product', () => {
+    const createdProducts = {}
 
     setup()
     beforeEach(async () => {
-        const admin = await UsersModule.createUser(testdata.admin1)
-        const employee = await UsersModule.createUser(testdata.employee1)
-        createdUsers.admin = admin[1]
-        createdUsers.employee = employee[1]
+        await UsersModule.createUser(testdata.admin1)
+        await UsersModule.createUser(testdata.employee1)
+        const product1 = await ProductsModule.createProduct(testdata.product1)
+        const product2 = await ProductsModule.createProduct(testdata.product2)
+        createdProducts.product1 = product1[1]
+        createdProducts.product2 = product2[1]
     })
 
     it('Success: run as admin with correct data', (done) => {
@@ -171,16 +177,33 @@ describe('Update user', () => {
             password: testdata.admin1.password,
         }).then(({ token }) => {
             request(app)
-                .put(`/api/v1/users/${createdUsers.admin.id}`)
-                .send(testdata.employee2)
+                .put(`/api/v1/products/${createdProducts.product1.id}`)
+                .send(testdata.product3)
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(200)
-                    expect(res.body.user.email).to.equal(
-                        testdata.employee2.email
+                    expect(res.body.product.name).to.equal(
+                        testdata.product3.name
                     )
-                    expect(res.body.user.role).to.equal(testdata.employee2.role)
-                    expect(Object.keys(res.body.user)).to.include('id')
+                    expect(res.body.product.brand).to.equal(
+                        testdata.product3.brand
+                    )
+                    expect(res.body.product.category).to.equal(
+                        testdata.product3.category
+                    )
+                    expect(res.body.product.subCategory).to.equal(
+                        testdata.product3.subCategory
+                    )
+                    expect(res.body.product.price).to.equal(
+                        testdata.product3.price
+                    )
+                    expect(res.body.product.aveUnitCost).to.equal(
+                        testdata.product3.aveUnitCost
+                    )
+                    expect(res.body.product.published).to.equal(
+                        testdata.product3.published
+                    )
+                    expect(Object.keys(res.body.product)).to.include('id')
                     done()
                 })
                 .catch((err) => done(err))
@@ -193,21 +216,30 @@ describe('Update user', () => {
             password: testdata.admin1.password,
         }).then(({ token }) => {
             request(app)
-                .put(`/api/v1/users/${createdUsers.admin.id}`)
+                .put(`/api/v1/products/${createdProducts.product1.id}`)
                 .send({
-                    email: 'micah@gmai',
-                    firstName: '',
-                    lastName: '',
-                    role: 'owner',
-                    password: '',
+                    name: '',
+                    brand: '',
+                    category: '',
+                    subCategory: '',
+                    published: null,
+                    price: -1,
+                    aveUnitCost: -1,
                 })
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(400)
-                    expect(Object.keys(res.body.errors)).to.include('email')
-                    expect(Object.keys(res.body.errors)).to.include('firstName')
-                    expect(Object.keys(res.body.errors)).to.include('lastName')
-                    expect(Object.keys(res.body.errors)).to.include('role')
+                    expect(
+                        Object.keys(res.body.errors)
+                    ).to.deep.equalInAnyOrder([
+                        'name',
+                        'brand',
+                        'category',
+                        'subCategory',
+                        'published',
+                        'price',
+                        'aveUnitCost',
+                    ])
                     done()
                 })
                 .catch((err) => done(err))
@@ -220,7 +252,7 @@ describe('Update user', () => {
             password: testdata.employee1.password,
         }).then(({ token }) => {
             request(app)
-                .put(`/api/v1/users/${createdUsers.admin.id}`)
+                .put(`/api/v1/products/${createdProducts.product1.id}`)
                 .send({})
                 .set('Authorization', token)
                 .then((res) => {
@@ -236,8 +268,7 @@ describe('Update user', () => {
 
     it('Fail: run as unauthorized', (done) => {
         request(app)
-            .post('/api/v1/users')
-            .send({})
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
             .then((res) => {
                 expect(res.statusCode).to.equal(401)
                 expect(res.body).to.deep.equal({
@@ -246,67 +277,5 @@ describe('Update user', () => {
                 done()
             })
             .catch((err) => done(err))
-    })
-})
-
-describe('Delete user', () => {
-    const createdUsers = {}
-
-    setup()
-    beforeEach(async () => {
-        const admin = await UsersModule.createUser(testdata.admin1)
-        const employee = await UsersModule.createUser(testdata.employee1)
-        createdUsers.admin = admin[1]
-        createdUsers.employee = employee[1]
-    })
-
-    it('Success: run as admin to delete employee', (done) => {
-        login({
-            email: testdata.admin1.email,
-            password: testdata.admin1.password,
-        }).then(({ token }) => {
-            request(app)
-                .delete(`/api/v1/users/${createdUsers.employee.id}`)
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(200)
-                    done()
-                })
-                .catch((err) => done(err))
-        })
-    })
-
-    it('Fail: run as admin to delete self', (done) => {
-        login({
-            email: testdata.admin1.email,
-            password: testdata.admin1.password,
-        }).then(({ token }) => {
-            request(app)
-                .delete(`/api/v1/users/${createdUsers.admin.id}`)
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(405)
-                    expect(res.body.message).to.equal('Not allowed.')
-                    done()
-                })
-                .catch((err) => done(err))
-        })
-    })
-
-    it('Fail: run as employee to delete admin', (done) => {
-        login({
-            email: testdata.employee1.email,
-            password: testdata.employee1.password,
-        }).then(({ token }) => {
-            request(app)
-                .delete(`/api/v1/users/${createdUsers.admin.id}`)
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(401)
-                    expect(res.body.message).to.equal('Unauthorized.')
-                    done()
-                })
-                .catch((err) => done(err))
-        })
     })
 })

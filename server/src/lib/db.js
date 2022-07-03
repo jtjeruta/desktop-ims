@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const MONGO_CONNECTION_STRING =
     process.env.MONGO_CONNECTION_STRING || 'mongodb://desktop-ims-db/ims'
 
-function dbConnect() {
-    mongoose.connect(MONGO_CONNECTION_STRING, {
+async function dbConnect() {
+    await mongoose.connect(MONGO_CONNECTION_STRING, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
