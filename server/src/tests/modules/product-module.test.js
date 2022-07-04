@@ -170,3 +170,11 @@ describe('Update Product', () => {
         expect(updatedProduct[1].message).to.equal('Duplicate found.')
     })
 })
+
+describe('Generate SKU', () => {
+    it('Suceess: returns 8 characters composed of capital letters and numbers', async () => {
+        const sku = ProductsModule.generateSKU()
+        const regex = /^[A-Z 0-9]{8}$/
+        expect(regex.test(sku)).to.be.true
+    })
+})

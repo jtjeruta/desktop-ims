@@ -1,4 +1,5 @@
 const { default: mongoose } = require('mongoose')
+const { generateSKU } = require('../modules/products-module')
 
 module.exports.admin1 = {
     email: 'dutch@vanderlinde.com',
@@ -33,6 +34,7 @@ module.exports.product1 = {
     aveUnitCost: 10,
     published: true,
     modifiedBy: mongoose.Types.ObjectId(),
+    sku: generateSKU(),
 }
 
 module.exports.product2 = {
@@ -44,6 +46,7 @@ module.exports.product2 = {
     aveUnitCost: 20,
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
+    sku: generateSKU(),
 }
 
 module.exports.product3 = {
@@ -55,4 +58,5 @@ module.exports.product3 = {
     aveUnitCost: 15,
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
+    sku: generateSKU(),
 }

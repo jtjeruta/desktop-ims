@@ -34,6 +34,12 @@ const ProductSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
+    sku: {
+        type: String,
+        required: true,
+        index: true,
+        unique: true,
+    },
 })
 
 const ProductModel = mongoose.model('Product', ProductSchema)

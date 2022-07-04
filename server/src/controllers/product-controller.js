@@ -3,6 +3,7 @@ const { ProductsView, ProductView } = require('../views/product-view')
 
 module.exports.createProduct = async (req, res) => {
     const doc = {
+        sku: ProductsModule.generateSKU(),
         name: req.body.name,
         price: req.body.price,
         brand: req.body.brand,

@@ -1,4 +1,5 @@
 const moment = require('moment')
+const crypto = require('crypto')
 const { getMongoError } = require('../lib/mongo-errors')
 const { ProductModel } = require('../schemas/product-schema')
 
@@ -62,4 +63,8 @@ module.exports.updateProduct = async (id, data) => {
         console.error('Failed to update product')
         return getMongoError(error)
     }
+}
+
+module.exports.generateSKU = () => {
+    return crypto.randomBytes(4).toString('hex').toUpperCase()
 }

@@ -17,5 +17,6 @@ module.exports.ProductView = (productDocument) => {
         createdAt: productDocument.createdAt,
         modifiedAt: productDocument.modifiedAt,
         published: productDocument.published,
+        sku: productDocument.sku,
     }
 }
