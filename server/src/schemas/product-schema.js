@@ -28,7 +28,6 @@ const ProductSchema = new mongoose.Schema({
     },
     aveUnitCost: {
         type: Number,
-        required: true,
         min: [0, 'path aveUnitCost can not be less than 0.'],
     },
     published: {

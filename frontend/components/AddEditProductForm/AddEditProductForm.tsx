@@ -1,69 +1,110 @@
-import React, { FC, useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useEffect } from 'react'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 
-import Card from '../Card/Card'
-import { Product } from '../../pages/inventory'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
 import Button from '../Button/Button'
+import { useProductContext } from '../../contexts/ProductContext/ProductContext'
+import AddEditProductFormSkeleton from './Skeleton'
+import { CreateUpdateProductDoc } from '../../contexts/ProductContext/types'
 
-type Props = {
-    product: Product
-}
-
-const AddEditProductForm: FC<Props> = (props) => {
+const AddEditProductForm = () => {
     const methods = useForm()
-    const { isLoading } = useAppContext()
+    const AppContext = useAppContext()
+    const ProductContext = useProductContext()
+
+    const onSubmit = async (values: FieldValues) => {
+        const doc: CreateUpdateProductDoc = {
+            name: values.name as string,
+            brand: values.brand as string,
+            category: values.category as string,
+            subCategory: values.subCategory as string,
+            price: +values.price,
+        }
+
+        const response = await ProductContext.createProduct(doc)
+
+        if (response[0]) {
+            AppContext.closeDialog()
+            methods.reset()
+            AppContext.addNotification({
+                title: !ProductContext.product
+                    ? 'Product added!'
+                    : 'Product updated!',
+            })
+        } else if (response[1].errors) {
+            const { errors } = response[1]
+
+            ;(Object.keys(errors) as Array<keyof typeof errors>).map((key) => {
+                methods.setError(key, {
+                    type: 'custom',
+                    message: errors[key]?.message,
+                })
+            })
+        } else if (response[1].message) {
+            methods.setError('name', {
+                type: 'custom',
+                message: 'Name already taken',
+            })
+        }
+    }
 
     useEffect(() => {
-        methods.setValue('name', props.product.name)
-        methods.setValue('brand', props.product.brand)
-        methods.setValue('category', props.product.category)
-        methods.setValue('subCategory', props.product.subCategory)
-    }, [props.product, methods])
+        if (!ProductContext.product) return
+        methods.setValue('name', ProductContext.product.name)
+        methods.setValue('brand', ProductContext.product.brand)
+        methods.setValue('category', ProductContext.product.category)
+        methods.setValue('subCategory', ProductContext.product.subCategory)
+    }, [ProductContext.product, methods])
 
-    return (
-        <Card cardClsx="grow basis-0" title="Product Details">
-            {isLoading('get-product') || !props.product ? (
-                <h1>Loading</h1>
-            ) : (
-                <FormProvider {...methods}>
-                    <form>
-                        <div className="grid gap-6 mb-6 lg:grid-cols-2">
-                            <TextField
-                                name="name"
-                                label="Name"
-                                placeholder="Product 1"
-                                required
-                            />
-                            <TextField
-                                name="brand"
-                                label="Brand"
-                                placeholder="Brand 1"
-                                required
-                            />
-                        </div>
-                        <div className="grid gap-6 mb-6 lg:grid-cols-2">
-                            <TextField
-                                name="category"
-                                label="Category"
-                                placeholder="category 1"
-                                required
-                            />
-                            <TextField
-                                name="subCategory"
-                                label="Sub Category"
-                                placeholder="sub category 1"
-                                required
-                            />
-                        </div>
-                        <div className="flex justify-end">
-                            <Button>Update</Button>
-                        </div>
-                    </form>
-                </FormProvider>
-            )}
-        </Card>
+    return AppContext.isLoading('get-product') ? (
+        <AddEditProductFormSkeleton />
+    ) : (
+        <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <div className="mb-6">
+                    <TextField
+                        name="name"
+                        label="Name"
+                        placeholder="Product 1"
+                        required
+                    />
+                </div>
+                <div className="grid gap-6 mb-6 lg:grid-cols-2">
+                    <TextField
+                        name="price"
+                        type="number"
+                        label="Price"
+                        placeholder="100.00"
+                        required
+                        min={0}
+                    />
+                    <TextField
+                        name="brand"
+                        label="Brand"
+                        placeholder="Brand 1"
+                        required
+                    />
+                </div>
+                <div className="grid gap-6 mb-6 lg:grid-cols-2">
+                    <TextField
+                        name="category"
+                        label="Category"
+                        placeholder="category 1"
+                        required
+                    />
+                    <TextField
+                        name="subCategory"
+                        label="Sub Category"
+                        placeholder="sub category 1"
+                        required
+                    />
+                </div>
+                <div className="flex justify-end">
+                    <Button>Update</Button>
+                </div>
+            </form>
+        </FormProvider>
     )
 }
 

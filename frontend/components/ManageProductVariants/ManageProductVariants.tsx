@@ -2,11 +2,8 @@
 import Button from '../Button/Button'
 // import Table from '../Table/Table'
 import Card from '../Card/Card'
-import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 
 const ManageProductVariants = () => {
-    const ProductContext = useProductContext()
-
     return (
         <div className="flex">
             <Card cardClsx="w-full" bodyClsx="!px-0 !py-0 h-full">

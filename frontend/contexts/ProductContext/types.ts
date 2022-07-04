@@ -16,7 +16,6 @@ export type CreateUpdateProductDoc = {
     category: string
     subCategory: string
     price: number
-    aveUnitCost: number
 }
 
 export type CreateUpdateProductErrors = Record<

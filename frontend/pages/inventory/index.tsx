@@ -11,23 +11,33 @@ import {
     useProductContext,
 } from '../../contexts/ProductContext/ProductContext'
 import { Product } from '../../contexts/ProductContext/types'
+import AddEditProductDialog from '../../components/AddProductDialog/AddProductDialog'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
 
     useEffect(() => {
-        ProductContext.listProducts()
+        ProductContext.products === null && ProductContext.listProducts()
     }, [ProductContext])
 
     return (
         <UserLayout>
-            <PageHeader title="Inventory" buttons={[{ text: 'Add Product' }]} />
+            <PageHeader
+                title="Inventory"
+                buttons={[
+                    {
+                        text: 'Add Product',
+                        onClick: () =>
+                            AppContext.openDialog('add-product-dialog'),
+                    },
+                ]}
+            />
 
             <Card bodyClsx="!px-0 !py-0">
                 <Table
                     rows={ProductContext.products || []}
-                    loading={AppContext.isLoading('list-users')}
+                    loading={AppContext.isLoading('list-products')}
                     columns={[
                         {
                             title: 'Created',
@@ -80,6 +90,7 @@ const InventoryPageContent = () => {
                     ]}
                 />
             </Card>
+            <AddEditProductDialog />
         </UserLayout>
     )
 }

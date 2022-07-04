@@ -11,6 +11,8 @@ type Props = {
     type?: 'text' | 'number' | 'password' | 'tel'
     name: string
     autoFocus?: boolean
+    min?: number
+    max?: number
 }
 
 const TextField: FC<Props> = (props) => {
@@ -43,6 +45,8 @@ const TextField: FC<Props> = (props) => {
                 placeholder={props.placeholder}
                 required={props.required}
                 autoFocus={props.autoFocus}
+                min={props.min}
+                max={props.max}
                 {...register}
             />
             {!errorMessage ? (

@@ -3,7 +3,13 @@ const { ProductsView, ProductView } = require('../views/product-view')
 
 module.exports.createProduct = async (req, res) => {
     const doc = {
-        ...req.body,
+        name: req.body.name,
+        price: req.body.price,
+        brand: req.body.brand,
+        category: req.body.category,
+        subCategory: req.body.subCategory,
+        aveUnitCost: null,
+        published: false,
         modifiedBy: req.con._id,
     }
     const [status, data] = await ProductsModule.createProduct(doc)

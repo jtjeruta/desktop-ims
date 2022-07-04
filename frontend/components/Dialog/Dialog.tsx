@@ -46,7 +46,10 @@ const Dialog: FC<Props> = (props) => {
             if (status === 'closed') return null
             event.key === 'Escape' && handleClose()
             event.key === 'Enter' && props.onSave && props.onSave()
-            event.key === 'Enter' && !props.onSave && handleClose()
+            event.key === 'Enter' &&
+                !props.onSave &&
+                props.showSaveButton !== false &&
+                handleClose()
         }
 
         window.addEventListener('keydown', handleDialogKeyDown)
@@ -84,18 +87,21 @@ const Dialog: FC<Props> = (props) => {
                 <hr />
                 <div className="p-3">{props.content}</div>
                 <hr />
-                <div className="flex justify-end gap-3 p-3">
-                    <Button
-                        color="secondary"
-                        onClick={handleClose}
-                        loading={props.loading}
-                    >
-                        Cancel
-                    </Button>
-                    <Button onClick={props.onSave} loading={props.loading}>
-                        {props.saveButtonText || 'Save'}
-                    </Button>
-                </div>
+                {(props.showSaveButton !== false ||
+                    !props.showCancelButton) && (
+                    <div className="flex justify-end gap-3 p-3">
+                        <Button
+                            color="secondary"
+                            onClick={handleClose}
+                            loading={props.loading}
+                        >
+                            Cancel
+                        </Button>
+                        <Button onClick={props.onSave} loading={props.loading}>
+                            {props.saveButtonText || 'Save'}
+                        </Button>
+                    </div>
+                )}
             </div>
         </div>
     )

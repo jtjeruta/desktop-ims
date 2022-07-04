@@ -89,6 +89,8 @@ describe('Create product', () => {
                     expect(res.body.product.name).to.equal(
                         testdata.product1.name
                     )
+                    expect(res.body.product.aveUnitCost).to.be.null
+                    expect(res.body.product.published).to.be.false
                     expect(Object.keys(res.body.product)).to.include('id')
                     done()
                 })
@@ -103,7 +105,7 @@ describe('Create product', () => {
         }).then(({ token }) => {
             request(app)
                 .post('/api/v1/products')
-                .send({ price: -1, aveUnitCost: -1 })
+                .send({ price: -1 })
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(400)
@@ -114,9 +116,7 @@ describe('Create product', () => {
                         'brand',
                         'category',
                         'subCategory',
-                        'published',
                         'price',
-                        'aveUnitCost',
                     ])
                     done()
                 })
