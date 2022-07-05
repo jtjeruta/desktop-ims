@@ -24,7 +24,9 @@ const AddEditProductForm = () => {
             price: +values.price,
         }
 
-        const response = await ProductContext.createProduct(doc)
+        const response = await (ProductContext.product
+            ? ProductContext.updateProduct(ProductContext.product.id, doc)
+            : ProductContext.createProduct(doc))
 
         if (response[0]) {
             AppContext.closeDialog()

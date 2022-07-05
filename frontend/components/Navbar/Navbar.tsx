@@ -28,7 +28,9 @@ const Navbar = () => {
         },
         {
             text: 'Inventory',
-            active: router.asPath === '/inventory',
+            active: ['/inventory', '/inventory/[productId]'].includes(
+                router.pathname
+            ),
             roles: ['admin'],
             onClick: () => router.push('/inventory'),
         },
@@ -78,7 +80,7 @@ const Navbar = () => {
                                     className={clsx([
                                         'inline-block py-3 px-4 font-semibold cursor-pointer',
                                         link.active
-                                            ? 'bg-slate-50 border-slate-300 text-black border-l border-t border-r rounded-t'
+                                            ? 'bg-white border-white text-black border-l border-t border-r rounded-t'
                                             : 'bg-neutral-700 text-white',
                                     ])}
                                 >

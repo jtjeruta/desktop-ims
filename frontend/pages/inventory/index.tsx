@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import moment from 'moment'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
@@ -16,6 +17,7 @@ import AddEditProductDialog from '../../components/AddProductDialog/AddProductDi
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const router = useRouter()
 
     useEffect(() => {
         ProductContext.products === null && ProductContext.listProducts()
@@ -87,8 +89,20 @@ const InventoryPageContent = () => {
                         },
                         {
                             title: ' ',
-                            format: () => {
-                                return <Button style="link">View</Button>
+                            format: (row) => {
+                                const product = row as Product
+                                return (
+                                    <Button
+                                        style="link"
+                                        onClick={() =>
+                                            router.push(
+                                                `/inventory/${product.id}`
+                                            )
+                                        }
+                                    >
+                                        View
+                                    </Button>
+                                )
                             },
                         },
                     ]}
