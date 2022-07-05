@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
 
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
@@ -12,6 +13,7 @@ const AddEditProductForm = () => {
     const methods = useForm()
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const router = useRouter()
 
     const onSubmit = async (values: FieldValues) => {
         const doc: CreateUpdateProductDoc = {
@@ -32,6 +34,8 @@ const AddEditProductForm = () => {
                     ? 'Product added!'
                     : 'Product updated!',
             })
+            !ProductContext.product &&
+                router.push(`/inventory/${response[1].id}`)
         } else if (response[1].errors) {
             const { errors } = response[1]
 
@@ -55,6 +59,7 @@ const AddEditProductForm = () => {
         methods.setValue('brand', ProductContext.product.brand)
         methods.setValue('category', ProductContext.product.category)
         methods.setValue('subCategory', ProductContext.product.subCategory)
+        methods.setValue('price', +ProductContext.product.price)
     }, [ProductContext.product, methods])
 
     return AppContext.isLoading('get-product') ? (

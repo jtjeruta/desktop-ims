@@ -44,7 +44,7 @@ const InventoryPageContent = () => {
                             format: (row) => {
                                 const product = row as Product
                                 return moment(product.createdAt * 1000).format(
-                                    'YYYY/MM/DD'
+                                    'MMM DD, YYYY'
                                 )
                             },
                         },
@@ -52,6 +52,10 @@ const InventoryPageContent = () => {
                             title: 'Name',
                             key: 'name',
                             bodyClsx: 'w-full',
+                        },
+                        {
+                            title: 'Price',
+                            key: 'price',
                         },
                         {
                             title: 'Markup',

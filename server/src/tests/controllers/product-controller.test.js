@@ -68,6 +68,71 @@ describe('List products', () => {
     })
 })
 
+describe('Get product', () => {
+    let createdProduct = null
+
+    setup()
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        await UsersModule.createUser(testdata.employee1)
+        const createProductRes = await ProductsModule.createProduct(
+            testdata.product1
+        )
+        createdProduct = createProductRes[1]
+    })
+
+    it('Success: run as admin', (done) => {
+        login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        }).then(({ token }) => {
+            request(app)
+                .get(`/api/v1/products/${createdProduct._id}`)
+                .set('Authorization', token)
+                .then((res) => {
+                    expect(res.statusCode).to.equal(200)
+                    expect(res.body.product.name).to.equal(
+                        testdata.product1.name
+                    )
+                    done()
+                })
+                .catch((err) => done(err))
+        })
+    })
+
+    it('Fail: run as employee', (done) => {
+        login({
+            email: testdata.employee1.email,
+            password: testdata.employee1.password,
+        }).then(({ token }) => {
+            request(app)
+                .get(`/api/v1/products/${createdProduct._id}`)
+                .set('Authorization', token)
+                .then((res) => {
+                    expect(res.statusCode).to.equal(401)
+                    expect(res.body).to.deep.equal({
+                        message: 'Unauthorized.',
+                    })
+                    done()
+                })
+                .catch((err) => done(err))
+        })
+    })
+
+    it('Fail: run as unauthorized', (done) => {
+        request(app)
+            .get('/api/v1/products')
+            .then((res) => {
+                expect(res.statusCode).to.equal(401)
+                expect(res.body).to.deep.equal({
+                    message: 'Unauthorized.',
+                })
+                done()
+            })
+            .catch((err) => done(err))
+    })
+})
+
 describe('Create product', () => {
     setup()
     beforeEach(async () => {

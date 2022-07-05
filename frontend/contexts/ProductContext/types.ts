@@ -38,14 +38,15 @@ export type UpdateProduct = (
     | [false, { message: string; errors?: CreateUpdateProductErrors }]
 >
 
-export type RemoveProduct = (id: Product['id']) => void
 export type ListProducts = () => Promise<void>
+export type GetProduct = (id: Product['id']) => Promise<void>
 
 export type Context = {
     products: Product[] | null
     createProduct: CreateProduct
     updateProduct: UpdateProduct
     listProducts: ListProducts
+    getProduct: GetProduct
     product: Product | null
     setProduct: (product: Product | null) => void
 }

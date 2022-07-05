@@ -73,12 +73,32 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setProducts(response[1])
     }
 
+    const getProduct: Types.GetProduct = async (id) => {
+        const key = 'get-product'
+
+        AppContext.addLoading(key)
+        const response = await ProductsAPI.getProduct(id)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return
+        }
+
+        setProduct(response[1])
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             products,
             createProduct,
             updateProduct,
             listProducts,
+            getProduct,
             product,
             setProduct,
         }),

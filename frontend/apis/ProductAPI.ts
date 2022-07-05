@@ -11,6 +11,12 @@ export const listProducts = () =>
         .then((response): [true, Product[]] => [true, response.data.products])
         .catch((err): [false, string] => [false, err.response.message])
 
+export const getProduct = (id: string) =>
+    Axios()
+        .get(`/api/v1/products/${id}`)
+        .then((response): [true, Product] => [true, response.data.product])
+        .catch((err): [false, string] => [false, err.response.message])
+
 export const createProduct = (data: CreateUpdateProductDoc) =>
     Axios()
         .post('/api/v1/products', data)

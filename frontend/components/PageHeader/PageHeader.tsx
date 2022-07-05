@@ -2,7 +2,7 @@ import { FC } from 'react'
 import Button from '../Button/Button'
 
 type Props = {
-    title: string
+    title: string | JSX.Element
     buttons?: {
         text: string
         loading?: boolean

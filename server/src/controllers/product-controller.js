@@ -18,6 +18,15 @@ module.exports.createProduct = async (req, res) => {
     return res.status(201).json({ product: ProductView(data) })
 }
 
+module.exports.getProduct = async (req, res) => {
+    const [status, data] = await ProductsModule.getProductById(
+        req.params.productId
+    )
+
+    if (status !== 200) return res.status(status).json(data)
+    return res.status(200).json({ product: ProductView(data) })
+}
+
 module.exports.listProducts = async (req, res) => {
     const [status, data] = await ProductsModule.listProducts()
 

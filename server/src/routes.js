@@ -18,6 +18,7 @@ router.put('/api/v1/users/:userId', isAdmin, UserController.updateUser)
 router.delete('/api/v1/users/:userId', isAdmin, UserController.deleteUser)
 
 // products
+router.get('/api/v1/products/:productId', isAdmin, ProductController.getProduct)
 router.get('/api/v1/products', isAuthenticated, ProductController.listProducts)
 router.post('/api/v1/products', isAdmin, ProductController.createProduct)
 router.put(
