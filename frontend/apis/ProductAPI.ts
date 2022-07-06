@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios'
 import {
-    CreateUpdateProductDoc,
+    CreateProductDoc,
     Product,
+    UpdateProductDoc,
 } from '../contexts/ProductContext/types'
 import Axios from './AxiosAPI'
 
@@ -17,13 +18,13 @@ export const getProduct = (id: string) =>
         .then((response): [true, Product] => [true, response.data.product])
         .catch((err): [false, string] => [false, err.response.message])
 
-export const createProduct = (data: CreateUpdateProductDoc) =>
+export const createProduct = (data: CreateProductDoc) =>
     Axios()
         .post('/api/v1/products', data)
         .then((response): [true, Product] => [true, response.data.product])
         .catch((err): [false, AxiosResponse] => [false, err.response])
 
-export const updateProduct = (id: string, data: CreateUpdateProductDoc) =>
+export const updateProduct = (id: string, data: UpdateProductDoc) =>
     Axios()
         .put(`/api/v1/products/${id}`, data)
         .then((response): [true, Product] => [true, response.data.product])

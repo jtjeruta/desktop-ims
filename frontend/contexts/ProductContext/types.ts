@@ -8,9 +8,10 @@ export type Product = {
     aveUnitCost: number
     createdAt: number
     sku: string
+    published: boolean
 }
 
-export type CreateUpdateProductDoc = {
+export type CreateProductDoc = {
     name: string
     brand: string
     category: string
@@ -18,13 +19,22 @@ export type CreateUpdateProductDoc = {
     price: number
 }
 
+export type UpdateProductDoc = {
+    name?: string
+    brand?: string
+    category?: string
+    subCategory?: string
+    price?: number
+    published?: boolean
+}
+
 export type CreateUpdateProductErrors = Record<
-    keyof CreateUpdateProductDoc,
+    keyof Product,
     { message: string }
 >
 
 export type CreateProduct = (
-    product: CreateUpdateProductDoc
+    product: CreateProductDoc
 ) => Promise<
     | [true, Product]
     | [false, { message: string; errors?: CreateUpdateProductErrors }]
@@ -32,14 +42,16 @@ export type CreateProduct = (
 
 export type UpdateProduct = (
     id: string,
-    product: CreateUpdateProductDoc
+    product: UpdateProductDoc
 ) => Promise<
     | [true, Product]
     | [false, { message: string; errors?: CreateUpdateProductErrors }]
 >
 
 export type ListProducts = () => Promise<void>
-export type GetProduct = (id: Product['id']) => Promise<void>
+export type GetProduct = (
+    id: Product['id']
+) => Promise<[true, Product] | [false, string]>
 
 export type Context = {
     products: Product[] | null

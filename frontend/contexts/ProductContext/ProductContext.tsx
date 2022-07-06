@@ -86,10 +86,11 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
                 type: 'danger',
                 body: 'Please try again later',
             })
-            return
+            return response
         }
 
         setProduct(response[1])
+        return response
     }
 
     const value: Types.Context = useMemo(
