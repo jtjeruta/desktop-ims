@@ -7,7 +7,6 @@ import TextField from '../TextField/TextField'
 import Button from '../Button/Button'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import AddEditProductFormSkeleton from './Skeleton'
-import { CreateUpdateProductDoc } from '../../contexts/ProductContext/types'
 
 const AddEditProductForm = () => {
     const methods = useForm()
@@ -16,7 +15,7 @@ const AddEditProductForm = () => {
     const router = useRouter()
 
     const onSubmit = async (values: FieldValues) => {
-        const doc: CreateUpdateProductDoc = {
+        const doc = {
             name: values.name as string,
             brand: values.brand as string,
             category: values.category as string,
@@ -108,7 +107,14 @@ const AddEditProductForm = () => {
                     />
                 </div>
                 <div className="flex justify-end">
-                    <Button>Update</Button>
+                    <Button
+                        loading={
+                            AppContext.isLoading('update-product') ||
+                            AppContext.isLoading('add-product')
+                        }
+                    >
+                        Update
+                    </Button>
                 </div>
             </form>
         </FormProvider>
