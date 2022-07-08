@@ -54,11 +54,6 @@ module.exports.updateProduct = async (req, res) => {
 
 module.exports.deleteProduct = async (req, res) => {
     const { productId } = req.params
-
-    if (req.con._id.equals(productId)) {
-        return res.status(405).json({ message: 'Not allowed.' })
-    }
-
     const [status, data] = await ProductsModule.deleteProductById(productId)
 
     if (status !== 200) return res.status(status).json(data)

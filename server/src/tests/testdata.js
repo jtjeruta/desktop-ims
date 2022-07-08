@@ -60,3 +60,13 @@ module.exports.product3 = {
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
 }
+
+module.exports.variant1 = {
+    name: 'Variant 1',
+    quantity: 10,
+}
+
+module.exports.variant2 = {
+    name: 'Variant 2',
+    quantity: 20,
+}

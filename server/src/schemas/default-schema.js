@@ -1,5 +1,3 @@
-const { default: mongoose } = require('mongoose')
-
 module.exports = {
     createdAt: {
         type: Number,
@@ -7,10 +5,6 @@ module.exports = {
     },
     modifiedAt: {
         type: Number,
-        required: true,
-    },
-    modifiedBy: {
-        type: mongoose.ObjectId,
         required: true,
     },
 }

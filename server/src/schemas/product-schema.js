@@ -40,6 +40,12 @@ const ProductSchema = new mongoose.Schema({
         index: true,
         unique: true,
     },
+    variants: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Variant',
+        },
+    ],
 })
 
 const ProductModel = mongoose.model('Product', ProductSchema)

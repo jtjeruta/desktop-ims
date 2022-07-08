@@ -2,6 +2,7 @@ const express = require('express')
 const AuthController = require('./controllers/auth-controller')
 const UserController = require('./controllers/user-controller')
 const ProductController = require('./controllers/product-controller')
+const VariantController = require('./controllers/variant-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -25,6 +26,18 @@ router.put(
     '/api/v1/products/:productId',
     isAdmin,
     ProductController.updateProduct
+)
+
+// variants
+router.post(
+    '/api/v1/products/:productId/variants',
+    isAdmin,
+    VariantController.createVariant
+)
+router.delete(
+    '/api/v1/variants/:variantId',
+    isAdmin,
+    VariantController.deleteVariant
 )
 
 module.exports = router

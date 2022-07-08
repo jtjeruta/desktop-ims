@@ -5,8 +5,6 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        index: true,
-        unique: true,
         validate: [validator.isEmail],
     },
     firstName: {
@@ -28,8 +26,7 @@ const UserSchema = new mongoose.Schema({
     },
 })
 
+UserSchema.index({ email: 1 }, { unique: true })
 const UserModel = mongoose.model('User', UserSchema)
-
-UserModel.createIndexes()
 
 module.exports = { UserModel, UserSchema }

@@ -26,6 +26,7 @@ describe('Create Product', () => {
         expect(createdProduct[1].published).to.equal(
             testdata.product1.published
         )
+        expect(createdProduct[1].variants).to.deep.equal([])
     })
 
     it('Fail: create product using invalid data', async () => {

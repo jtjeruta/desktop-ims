@@ -1,3 +1,5 @@
+const { VariantView } = require('./variant-view')
+
 module.exports.ProductsView = (productDocuments) => {
     return productDocuments.map((productDocument) =>
         this.ProductView(productDocument)
@@ -18,5 +20,6 @@ module.exports.ProductView = (productDocument) => {
         modifiedAt: productDocument.modifiedAt,
         published: productDocument.published,
         sku: productDocument.sku,
+        variants: productDocument.variants.map(VariantView),
     }
 }
