@@ -42,7 +42,14 @@ module.exports.createProduct = async (req, res) => {
         return res.status(updateProductRes[0]).json(updateProductRes[1])
     }
 
-    return res.status(201).json({ product: ProductView(updateProductRes[1]) })
+    // fetch product with populated variants
+    const getProductRes = await ProductsModule.getProductById(
+        createProductRes[1]._id
+    )
+    if (getProductRes[0] !== 200)
+        return res.status(getProductRes[0]).json(getProductRes[1])
+
+    return res.status(201).json({ product: ProductView(getProductRes[1]) })
 }
 
 module.exports.getProduct = async (req, res) => {
@@ -70,13 +77,18 @@ module.exports.updateProduct = async (req, res) => {
         modifiedBy: req.con._id,
     }
 
-    const [status, data] = await ProductsModule.updateProduct(
+    const updateProductRes = await ProductsModule.updateProduct(
         productId,
         updateDoc
     )
+    if (updateProductRes[0] !== 200)
+        return res.status(updateProductRes[0]).json(updateProductRes[1])
 
-    if (status !== 200) return res.status(status).json(data)
-    return res.status(200).json({ product: ProductView(data) })
+    const getProductRes = await ProductsModule.getProductById(productId)
+    if (getProductRes[0] !== 200)
+        return res.status(getProductRes[0]).json(getProductRes[1])
+
+    return res.status(200).json({ product: ProductView(getProductRes[1]) })
 }
 
 module.exports.deleteProduct = async (req, res) => {

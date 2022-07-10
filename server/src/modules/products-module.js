@@ -23,7 +23,7 @@ module.exports.createProduct = async (data) => {
 
 module.exports.listProducts = async () => {
     try {
-        const products = await ProductModel.find({})
+        const products = await ProductModel.find({}).populate('variants')
         return [200, products]
     } catch (error) {
         console.error('Failed to list products')

@@ -6,6 +6,7 @@ const setup = require('../setup')
 const app = require('../../app')
 const UsersModule = require('../../modules/users-module')
 const ProductsModule = require('../../modules/products-module')
+const VariantsModule = require('../../modules/variants-module')
 const { login } = require('../helpers')
 const testdata = require('../testdata')
 
@@ -247,8 +248,24 @@ describe('Update product', () => {
         await UsersModule.createUser(testdata.employee1)
         const product1 = await ProductsModule.createProduct(testdata.product1)
         const product2 = await ProductsModule.createProduct(testdata.product2)
-        createdProducts.product1 = product1[1]
-        createdProducts.product2 = product2[1]
+        const variant1 = await VariantsModule.createVariant({
+            ...testdata.variant1,
+            product: product1[1]._id,
+        })
+        const variant2 = await VariantsModule.createVariant({
+            ...testdata.variant1,
+            product: product2[1]._id,
+        })
+        const updatedProduct1 = await ProductsModule.updateProduct(
+            product1[1]._id,
+            { variants: [variant1[1]._id] }
+        )
+        const updatedProduct2 = await ProductsModule.updateProduct(
+            product2[1]._id,
+            { variants: [variant2[1]._id] }
+        )
+        createdProducts.product1 = updatedProduct1[1]
+        createdProducts.product2 = updatedProduct2[1]
     })
 
     it('Success: run as admin with correct data', (done) => {
@@ -282,6 +299,12 @@ describe('Update product', () => {
                     )
                     expect(res.body.product.published).to.equal(
                         testdata.product3.published
+                    )
+                    expect(res.body.product.variants[0].name).to.equal(
+                        testdata.variant1.name
+                    )
+                    expect(res.body.product.variants[0].quantity).to.equal(
+                        testdata.variant1.quantity
                     )
                     expect(Object.keys(res.body.product)).to.include('id')
                     done()
