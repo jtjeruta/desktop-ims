@@ -163,6 +163,21 @@ describe('Create product', () => {
         })
     })
 
+    it('Success: default variant is created for product', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .post('/api/v1/products')
+            .send(testdata.product1)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(201)
+        expect(res.body.product.variants.length).to.equal(1)
+    })
+
     it('Fail: run as admin with incorrect data', (done) => {
         login({
             email: testdata.admin1.email,
