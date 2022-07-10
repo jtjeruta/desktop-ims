@@ -20,6 +20,18 @@ module.exports.createVariant = async (data) => {
     }
 }
 
+module.exports.getVariantById = async (id) => {
+    try {
+        const variant = await VariantModel.findById(id)
+
+        if (!variant) return [404, { message: 'Variant not found.' }]
+        return [200, variant]
+    } catch (error) {
+        console.error('Failed to get variant by id')
+        return getMongoError(error)
+    }
+}
+
 module.exports.deleteVariantById = async (id) => {
     try {
         await VariantModel.deleteOne({ _id: id })

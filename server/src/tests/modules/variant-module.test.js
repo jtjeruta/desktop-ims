@@ -92,3 +92,28 @@ describe('Delete Variant By ID', () => {
         expect(deleteVaraint).to.deep.equal([200])
     })
 })
+
+describe('Get Variant By ID', () => {
+    let createdVariant = null
+    setup()
+    beforeEach(async () => {
+        const product1 = await ProductsModule.createProduct(testdata.product1)
+        const variant1 = await VariantsModule.createVariant({
+            ...testdata.variant1,
+            product: product1[1]._id,
+        })
+        createdVariant = variant1[1]
+    })
+
+    it('Success: get variant using correct id', async () => {
+        const res = await VariantsModule.getVariantById(createdVariant._id)
+        expect(res[0]).to.equal(200)
+        expect(res[1].name).to.equal(createdVariant.name)
+        expect(res[1].quantity).to.equal(createdVariant.quantity)
+    })
+
+    it('Fail: get variant using incorrect id', async () => {
+        const res = await VariantsModule.getVariantById(null)
+        expect(res).to.deep.equal([404, { message: 'Variant not found.' }])
+    })
+})

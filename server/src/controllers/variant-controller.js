@@ -32,6 +32,24 @@ module.exports.createVariant = async (req, res) => {
 
 module.exports.deleteVariant = async (req, res) => {
     const { variantId } = req.params
+
+    const getVariantRes = await VariantsModule.getVariantById(variantId)
+    if (getVariantRes[0] !== 200)
+        return res.status(getVariantRes[0]).json(getVariantRes[1])
+
+    // Check if product has more than one variants
+    const getProductRes = await ProductsModule.getProductById(
+        getVariantRes[1].product
+    )
+    if (getProductRes[0] !== 200)
+        return res.status(getProductRes[0]).json(getProductRes[1])
+
+    if (getProductRes[1].variants.length <= 1) {
+        return res
+            .status(403)
+            .json({ message: 'Product must contain atleast 1 unit/variant.' })
+    }
+
     const [status, data] = await VariantsModule.deleteVariantById(variantId)
     if (status !== 200) return res.status(status).json(data)
     return res.status(200).json({ message: 'Variant deleted.' })

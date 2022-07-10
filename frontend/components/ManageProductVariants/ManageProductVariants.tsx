@@ -12,6 +12,9 @@ const ManageProductVariants = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
 
+    const variantCanBeDeleted =
+        (ProductContext.product?.variants || []).length > 1
+
     return (
         <>
             <div className="flex">
@@ -43,6 +46,12 @@ const ManageProductVariants = () => {
                                                             'delete-variant-dialog'
                                                         )
                                                     }}
+                                                    disabled={
+                                                        !variantCanBeDeleted
+                                                    }
+                                                    disabledText={
+                                                        'Product must contain at least one variant.'
+                                                    }
                                                 >
                                                     <FaTrash />
                                                 </Button>

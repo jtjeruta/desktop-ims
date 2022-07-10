@@ -23,15 +23,15 @@ const Button: FC<Props> = (props) => {
     const colors = {
         default: {
             primary:
-                'bg-blue-500 hover:bg-blue-700 disabled:bg-blue-700 text-white',
+                'bg-blue-500 hover:bg-blue-700 disabled:bg-slate-400 text-white',
             secondary:
-                'bg-slate-500 hover:bg-slate-700 disabled:bg-slate-700 text-white',
+                'bg-slate-500 hover:bg-slate-700 disabled:bg-slate-400 text-white',
         },
         link: {
             primary:
-                'text-blue-600 dark:text-blue-500 disabled:opacity-50 disabled:hover:no-underline',
+                'text-blue-600 dark:text-blue-500 disabled:text-slate-400 disabled:hover:no-underline',
             secondary:
-                'text-slate-600 dark:text-slate-500 disabled:opacity-50 disabled:hover:no-underline',
+                'text-slate-600 dark:text-slate-500 disabled:test-slate-400 disabled:hover:no-underline',
         },
     }
 
@@ -49,7 +49,7 @@ const Button: FC<Props> = (props) => {
             )}
             disabled={props.loading || props.disabled}
             onClick={props.onClick}
-            title={props.disabledText}
+            title={props.disabled ? props.disabledText : ''}
         >
             {props.loading && (
                 <div style={{ transform: 'translateY(4px)' }}>

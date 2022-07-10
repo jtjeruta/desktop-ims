@@ -125,20 +125,25 @@ describe('Create variant', () => {
 })
 
 describe('Delete variant', () => {
-    let createdVariant = null
+    const createdVariants = {}
     setup()
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
         await UsersModule.createUser(testdata.employee1)
         const productRes = await ProductsModule.createProduct(testdata.product1)
-        const variantRes = await VariantsModule.createVariant({
+        const variant1Res = await VariantsModule.createVariant({
             ...testdata.variant1,
             product: productRes[1]._id,
         })
-        await ProductsModule.updateProduct(productRes[1]._id, {
-            variants: [variantRes[1]._id],
+        const variant2Res = await VariantsModule.createVariant({
+            ...testdata.variant2,
+            product: productRes[1]._id,
         })
-        createdVariant = variantRes[1]
+        await ProductsModule.updateProduct(productRes[1]._id, {
+            variants: [variant1Res[1]._id, variant2Res[1]._id],
+        })
+        createdVariants.variant1 = variant1Res[1]
+        createdVariants.variant2 = variant2Res[1]
     })
 
     it('Success: run as admin', async () => {
@@ -148,7 +153,7 @@ describe('Delete variant', () => {
         })
 
         const res = await request(app)
-            .delete(`/api/v1/variants/${createdVariant._id}`)
+            .delete(`/api/v1/variants/${createdVariants.variant1._id}`)
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(200)
@@ -162,15 +167,15 @@ describe('Delete variant', () => {
         })
 
         await request(app)
-            .delete(`/api/v1/variants/${createdVariant._id}`)
+            .delete(`/api/v1/variants/${createdVariants.variant1._id}`)
             .set('Authorization', token)
 
         const res = await request(app)
-            .get(`/api/v1/products/${createdVariant.product}`)
+            .get(`/api/v1/products/${createdVariants.variant1.product}`)
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(200)
-        expect(res.body.product.variants.length).to.equal(0)
+        expect(res.body.product.variants.length).to.equal(1)
     })
 
     it('Fail: run as employee', (done) => {
@@ -179,7 +184,7 @@ describe('Delete variant', () => {
             password: testdata.employee1.password,
         }).then(({ token }) => {
             request(app)
-                .delete(`/api/v1/variants/${createdVariant._id}`)
+                .delete(`/api/v1/variants/${createdVariants.variant1._id}`)
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(401)
@@ -194,7 +199,7 @@ describe('Delete variant', () => {
 
     it('Fail: run as unauthorized', (done) => {
         request(app)
-            .delete(`/api/v1/variants/${createdVariant._id}`)
+            .delete(`/api/v1/variants/${createdVariants.variant1._id}`)
             .then((res) => {
                 expect(res.statusCode).to.equal(401)
                 expect(res.body).to.deep.equal({
@@ -203,5 +208,25 @@ describe('Delete variant', () => {
                 done()
             })
             .catch((err) => done(err))
+    })
+
+    it('Fail: admin cant delete last remaining variant', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        await request(app)
+            .delete(`/api/v1/variants/${createdVariants.variant1._id}`)
+            .set('Authorization', token)
+
+        const res = await request(app)
+            .delete(`/api/v1/variants/${createdVariants.variant2._id}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(403)
+        expect(res.body).to.deep.equal({
+            message: 'Product must contain atleast 1 unit/variant.',
+        })
     })
 })
