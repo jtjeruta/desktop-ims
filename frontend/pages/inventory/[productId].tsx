@@ -10,6 +10,7 @@ import {
 import { useRouter } from 'next/router'
 import Card from '../../components/Card/Card'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
+import ManageProductVariants from '../../components/ManageProductVariants/ManageProductVariants'
 
 const ProductPageContent = () => {
     const AppContext = useAppContext()
@@ -61,7 +62,7 @@ const ProductPageContent = () => {
                 </Card>
                 <ProductDetailsCard />
             </div>
-            {/* <ManageProductVariants product={ProductContext.product} /> */}
+            <ManageProductVariants />
             {/* <div className="basis-0 grow" /> */}
             {/* <History /> */}
         </UserLayout>

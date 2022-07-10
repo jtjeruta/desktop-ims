@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import * as ProductsAPI from '../../apis/ProductAPI'
+import * as VariantsAPI from '../../apis/VariantAPI'
 import { useAppContext } from '../AppContext/AppContext'
 import * as Types from './types'
 
@@ -11,6 +12,8 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const AppContext = useAppContext()
     const [products, setProducts] = useState<Types.Product[] | null>(null)
     const [product, setProduct] = useState<Types.Product | null>(null)
+    const [variantToDelete, setVariantToDelete] =
+        useState<Types.Variant | null>(null)
 
     const createProduct: Types.CreateProduct = async (productDoc) => {
         const key = 'add-product'
@@ -93,6 +96,70 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const createVariant: Types.CreateVariant = async (
+        productId,
+        variantDoc
+    ) => {
+        const key = 'add-variant'
+
+        AppContext.addLoading(key)
+        const response = await VariantsAPI.createVariant(productId, variantDoc)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            return [false, response[1].data]
+        }
+
+        // update products
+        setProducts((prev) =>
+            (prev || []).map((product) => {
+                if (product.id !== productId) return product
+                const variants = [...product.variants, response[1]]
+                return { ...product, variants }
+            })
+        )
+
+        // update current product detials
+        if (productId === product?.id) {
+            const variants = [...product.variants, response[1]]
+            setProduct({ ...product, variants })
+        }
+
+        return [true, response[1]]
+    }
+
+    const deleteVariant: Types.DeleteVariant = async (variantId) => {
+        const key = 'delete-variant'
+
+        AppContext.addLoading(key)
+        const response = await VariantsAPI.deleteVariant(variantId)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            return [false, response[1]]
+        }
+
+        // update products
+        setProducts((prev) =>
+            (prev || []).map((product) => {
+                const variants = product.variants.filter(
+                    (variant) => variant.id !== variantId
+                )
+                return { ...product, variants }
+            })
+        )
+
+        // update current product detials
+        if (product) {
+            const variants = product.variants.filter(
+                (variant) => variant.id !== variantId
+            )
+            setProduct({ ...product, variants })
+        }
+
+        return [true]
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             products,
@@ -102,8 +169,12 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             getProduct,
             product,
             setProduct,
+            createVariant,
+            deleteVariant,
+            variantToDelete,
+            setVariantToDelete,
         }),
-        [products, product]
+        [products, product, variantToDelete]
     )
 
     return (
