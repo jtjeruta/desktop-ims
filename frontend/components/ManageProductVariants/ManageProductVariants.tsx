@@ -22,6 +22,7 @@ const ManageProductVariants = () => {
                     <div className="flex flex-col h-full">
                         <div className="grow">
                             <Table
+                                loading={!ProductContext.product}
                                 rows={ProductContext.product?.variants || []}
                                 columns={[
                                     {
@@ -65,6 +66,7 @@ const ManageProductVariants = () => {
                         </div>
                         <div className="flex justify-end p-4">
                             <Button
+                                disabled={!ProductContext.product}
                                 onClick={() => {
                                     AppContext.openDialog('add-variant-dialog')
                                 }}

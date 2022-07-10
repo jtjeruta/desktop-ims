@@ -1,3 +1,5 @@
+import { AxiosResponse } from 'axios'
+
 export type Product = {
     id: string
     name: string
@@ -65,7 +67,7 @@ export type UpdateProduct = (
 export type ListProducts = () => Promise<void>
 export type GetProduct = (
     id: Product['id']
-) => Promise<[true, Product] | [false, string]>
+) => Promise<[true, Product] | [false, AxiosResponse]>
 
 export type CreateVariant = (
     productId: string,

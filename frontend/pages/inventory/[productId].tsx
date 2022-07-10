@@ -24,7 +24,12 @@ const ProductPageContent = () => {
                 const response = await ProductContext.getProduct(
                     router.query.productId as string
                 )
-                response[0] && setPublished(response[1].published)
+
+                if (response[0]) {
+                    setPublished(response[1].published)
+                } else if (response[1].status === 404) {
+                    router.replace('/404')
+                }
             }
         }
 
@@ -58,7 +63,7 @@ const ProductPageContent = () => {
             />
             <div className="flex gap-4 pb-4">
                 <Card cardClsx="grow basis-0">
-                    <AddEditProductForm />
+                    <AddEditProductForm type="update" />
                 </Card>
                 <ProductDetailsCard />
             </div>

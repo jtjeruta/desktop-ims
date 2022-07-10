@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 
@@ -8,13 +8,23 @@ import Button from '../Button/Button'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import AddEditProductFormSkeleton from './Skeleton'
 
-const AddEditProductForm = () => {
+type Props = {
+    type?: 'create' | 'update'
+}
+
+const AddEditProductForm: FC<Props> = (props) => {
     const methods = useForm()
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
     const router = useRouter()
 
+    const isDisabled =
+        AppContext.isLoading('get-product') ||
+        (props.type === 'update' && !ProductContext.product)
+
     const onSubmit = async (values: FieldValues) => {
+        if (isDisabled) return null
+
         const doc = {
             name: values.name as string,
             brand: values.brand as string,
@@ -63,7 +73,7 @@ const AddEditProductForm = () => {
         methods.setValue('price', +ProductContext.product.price)
     }, [ProductContext.product, methods])
 
-    return AppContext.isLoading('get-product') ? (
+    return isDisabled ? (
         <AddEditProductFormSkeleton />
     ) : (
         <FormProvider {...methods}>
@@ -113,7 +123,7 @@ const AddEditProductForm = () => {
                             AppContext.isLoading('add-product')
                         }
                     >
-                        Update
+                        Submit
                     </Button>
                 </div>
             </form>

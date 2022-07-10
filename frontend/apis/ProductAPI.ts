@@ -10,13 +10,13 @@ export const listProducts = () =>
     Axios()
         .get('/api/v1/products')
         .then((response): [true, Product[]] => [true, response.data.products])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response.data.message])
 
 export const getProduct = (id: string) =>
     Axios()
         .get(`/api/v1/products/${id}`)
         .then((response): [true, Product] => [true, response.data.product])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, AxiosResponse] => [false, err.response])
 
 export const createProduct = (data: CreateProductDoc) =>
     Axios()

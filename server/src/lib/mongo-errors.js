@@ -7,6 +7,10 @@ module.exports.getMongoError = (error) => {
         return [400, { message: error.message, errors: error.errors }]
     }
 
+    if (error.message.includes('Cast to ObjectId failed for value')) {
+        return [404, { message: 'Not found.' }]
+    }
+
     if (error.code === 11000) {
         return [409, { message: 'Duplicate found.' }]
     }
