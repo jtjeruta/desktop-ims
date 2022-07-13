@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import * as ProductsAPI from '../../apis/ProductAPI'
 import * as VariantsAPI from '../../apis/VariantAPI'
+import * as WarehouseAPI from '../../apis/WarehouseAPI'
 import { useAppContext } from '../AppContext/AppContext'
 import * as Types from './types'
 
@@ -14,6 +15,8 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [product, setProduct] = useState<Types.Product | null>(null)
     const [variantToDelete, setVariantToDelete] =
         useState<Types.Variant | null>(null)
+    const [warehouseToDelete, setWarehouseToDelete] =
+        useState<Types.Warehouse | null>(null)
 
     const createProduct: Types.CreateProduct = async (productDoc) => {
         const key = 'add-product'
@@ -165,6 +168,78 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true]
     }
 
+    const createWarehouse: Types.CreateWarehouse = async (
+        productId,
+        warehouseDoc
+    ) => {
+        const key = 'add-warehouse'
+
+        AppContext.addLoading(key)
+        const response = await WarehouseAPI.createWarehouse(
+            productId,
+            warehouseDoc
+        )
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            return [false, response[1].data]
+        }
+
+        // update products
+        setProducts((prev) =>
+            (prev || []).map((product) => {
+                if (product.id !== productId) return product
+                const warehouses = [...product.warehouses, response[1]]
+                return { ...product, warehouses }
+            })
+        )
+
+        // update current product detials
+        if (productId === product?.id) {
+            const warehouses = [...product.warehouses, response[1]]
+            setProduct({ ...product, warehouses })
+        }
+
+        return [true, response[1]]
+    }
+
+    const deleteWarehouse: Types.DeleteWarehouse = async (warehouseId) => {
+        const key = 'delete-warehouse'
+
+        AppContext.addLoading(key)
+        const response = await WarehouseAPI.deleteWarehouse(warehouseId)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return [false, response[1]]
+        }
+
+        // update products
+        setProducts((prev) =>
+            (prev || []).map((product) => {
+                const warehouses = product.warehouses.filter(
+                    (warehouse) => warehouse.id !== warehouseId
+                )
+                return { ...product, warehouses }
+            })
+        )
+
+        // update current product detials
+        if (product) {
+            const warehouses = product.warehouses.filter(
+                (warehouse) => warehouse.id !== warehouseId
+            )
+            setProduct({ ...product, warehouses })
+        }
+
+        return [true]
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             products,
@@ -178,8 +253,12 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             deleteVariant,
             variantToDelete,
             setVariantToDelete,
+            createWarehouse,
+            deleteWarehouse,
+            warehouseToDelete,
+            setWarehouseToDelete,
         }),
-        [products, product, variantToDelete]
+        [products, product, variantToDelete, warehouseToDelete]
     )
 
     return (

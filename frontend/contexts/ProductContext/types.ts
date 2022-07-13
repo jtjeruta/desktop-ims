@@ -12,9 +12,16 @@ export type Product = {
     sku: string
     published: boolean
     variants: Variant[]
+    warehouses: Warehouse[]
 }
 
 export type Variant = {
+    id: string
+    name: string
+    quantity: number
+}
+
+export type Warehouse = {
     id: string
     name: string
     quantity: number
@@ -42,12 +49,18 @@ export type CreateVariantDoc = {
     quantity: number
 }
 
+export type CreateWarehouseDoc = {
+    name: string
+    quantity: number
+}
+
 export type CreateUpdateProductErrors = Record<
     keyof Product,
     { message: string }
 >
 
 export type CreateVariantErrors = Record<keyof Variant, { message: string }>
+export type CreateWarehouseErrors = Record<keyof Warehouse, { message: string }>
 
 export type CreateProduct = (
     product: CreateProductDoc
@@ -80,6 +93,18 @@ export type DeleteVariant = (
     variantId: string
 ) => Promise<[true] | [false, string]>
 
+export type CreateWarehouse = (
+    productId: string,
+    data: CreateWarehouseDoc
+) => Promise<
+    | [true, Warehouse]
+    | [false, { message: string; errors?: CreateWarehouseErrors }]
+>
+
+export type DeleteWarehouse = (
+    warehouseId: string
+) => Promise<[true] | [false, string]>
+
 export type Context = {
     products: Product[] | null
     createProduct: CreateProduct
@@ -92,4 +117,8 @@ export type Context = {
     deleteVariant: DeleteVariant
     variantToDelete: Variant | null
     setVariantToDelete: (variant: Variant | null) => void
+    createWarehouse: CreateWarehouse
+    deleteWarehouse: DeleteWarehouse
+    warehouseToDelete: Warehouse | null
+    setWarehouseToDelete: (warehouse: Warehouse | null) => void
 }

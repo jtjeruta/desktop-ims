@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import Card from '../../components/Card/Card'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import ManageProductVariants from '../../components/ManageProductVariants/ManageProductVariants'
+import ManageProductWarehouses from '../../components/ManageProductWarehouses/ManageProductWarehouses'
 
 const ProductPageContent = () => {
     const AppContext = useAppContext()
@@ -34,7 +35,7 @@ const ProductPageContent = () => {
         }
 
         init()
-    }, [router.query, ProductContext])
+    }, [router, ProductContext])
 
     const handleToggleSwitch = useCallback(async () => {
         if (!ProductContext.product) return
@@ -67,7 +68,10 @@ const ProductPageContent = () => {
                 </Card>
                 <ProductDetailsCard />
             </div>
-            <ManageProductVariants />
+            <div className="flex gap-4 pb-4">
+                <ManageProductVariants />
+                <ManageProductWarehouses />
+            </div>
             {/* <div className="basis-0 grow" /> */}
             {/* <History /> */}
         </UserLayout>

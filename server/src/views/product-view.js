@@ -1,4 +1,5 @@
 const { VariantView } = require('./variant-view')
+const { WarehouseView } = require('./warehouse-view')
 
 module.exports.ProductsView = (productDocuments) => {
     return productDocuments.map((productDocument) =>
@@ -21,5 +22,6 @@ module.exports.ProductView = (productDocument) => {
         published: productDocument.published,
         sku: productDocument.sku,
         variants: productDocument.variants.map(VariantView),
+        warehouses: productDocument.warehouses.map(WarehouseView),
     }
 }

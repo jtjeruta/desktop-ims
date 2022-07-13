@@ -46,6 +46,12 @@ const ProductSchema = new mongoose.Schema({
             ref: 'Variant',
         },
     ],
+    warehouses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Warehouse',
+        },
+    ],
 })
 
 const ProductModel = mongoose.model('Product', ProductSchema)

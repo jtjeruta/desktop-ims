@@ -4,16 +4,16 @@ import Button from '../Button/Button'
 import Table from '../Table/Table'
 import Card from '../Card/Card'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import AddVariantDialog from '../AddVariantDialog/AddVariantDialog'
+import AddWarehouseDialog from '../AddWarehouseDialog/AddWarehouseDialog'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
-import { Variant } from '../../contexts/ProductContext/types'
+import { Warehouse } from '../../contexts/ProductContext/types'
 
-const ManageProductVariants = () => {
+const ManageProductWarehouses = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
 
-    const variantCanBeDeleted =
-        (ProductContext.product?.variants || []).length > 1
+    const warehouseCanBeDeleted =
+        (ProductContext.product?.warehouses || []).length > 1
 
     return (
         <>
@@ -23,10 +23,10 @@ const ManageProductVariants = () => {
                         <div className="grow">
                             <Table
                                 loading={!ProductContext.product}
-                                rows={ProductContext.product?.variants || []}
+                                rows={ProductContext.product?.warehouses || []}
                                 columns={[
                                     {
-                                        title: 'Unit',
+                                        title: 'Warehouse',
                                         key: 'name',
                                     },
                                     {
@@ -36,22 +36,22 @@ const ManageProductVariants = () => {
                                     {
                                         title: 'Actions',
                                         format: (row) => {
-                                            const variant = row as Variant
+                                            const warehouse = row as Warehouse
                                             return (
                                                 <Button
                                                     onClick={() => {
-                                                        ProductContext.setVariantToDelete(
-                                                            variant
+                                                        ProductContext.setWarehouseToDelete(
+                                                            warehouse
                                                         )
                                                         AppContext.openDialog(
-                                                            'delete-variant-dialog'
+                                                            'delete-warehouse-dialog'
                                                         )
                                                     }}
                                                     disabled={
-                                                        !variantCanBeDeleted
+                                                        !warehouseCanBeDeleted
                                                     }
                                                     disabledText={
-                                                        'Product must contain at least one variant.'
+                                                        'Product must contain at least one warehouse.'
                                                     }
                                                 >
                                                     <FaTrash />
@@ -68,7 +68,9 @@ const ManageProductVariants = () => {
                             <Button
                                 disabled={!ProductContext.product}
                                 onClick={() => {
-                                    AppContext.openDialog('add-variant-dialog')
+                                    AppContext.openDialog(
+                                        'add-warehouse-dialog'
+                                    )
                                 }}
                             >
                                 Add
@@ -77,22 +79,22 @@ const ManageProductVariants = () => {
                     </div>
                 </Card>
             </div>
-            <AddVariantDialog />
+            <AddWarehouseDialog />
             <ConfirmDialog
-                text={`Delete variant ${ProductContext.variantToDelete?.name}?`}
-                dialogKey="delete-variant-dialog"
+                text={`Delete warehouse ${ProductContext.warehouseToDelete?.name}?`}
+                dialogKey="delete-warehouse-dialog"
                 onConfirm={async () => {
-                    if (ProductContext.variantToDelete) {
-                        await ProductContext.deleteVariant(
-                            ProductContext.variantToDelete?.id
+                    if (ProductContext.warehouseToDelete) {
+                        await ProductContext.deleteWarehouse(
+                            ProductContext.warehouseToDelete?.id
                         )
                         AppContext.closeDialog()
                     }
                 }}
-                loading={AppContext.isLoading('delete-variant')}
+                loading={AppContext.isLoading('delete-warehouse')}
             />
         </>
     )
 }
 
-export default ManageProductVariants
+export default ManageProductWarehouses

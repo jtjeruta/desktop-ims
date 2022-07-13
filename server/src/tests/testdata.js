@@ -70,3 +70,13 @@ module.exports.variant2 = {
     name: 'Variant 2',
     quantity: 20,
 }
+
+module.exports.warehouse1 = {
+    name: 'Warehouse 1',
+    quantity: 10,
+}
+
+module.exports.warehouse2 = {
+    name: 'Warehouse 2',
+    quantity: 20,
+}
