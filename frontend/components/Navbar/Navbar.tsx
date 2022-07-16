@@ -80,7 +80,7 @@ const Navbar = () => {
                                     className={clsx([
                                         'inline-block py-3 px-4 font-semibold cursor-pointer',
                                         link.active
-                                            ? 'bg-white border-white text-black border-l border-t border-r rounded-t'
+                                            ? 'bg-slate-100 border-white text-black border-l border-t border-r rounded-t'
                                             : 'bg-neutral-700 text-white',
                                     ])}
                                 >
