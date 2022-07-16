@@ -1,4 +1,4 @@
-import { FaTrash } from 'react-icons/fa'
+import { useCallback } from 'react'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Button from '../Button/Button'
 import Table from '../Table/Table'
@@ -7,10 +7,19 @@ import { useAppContext } from '../../contexts/AppContext/AppContext'
 import AddWarehouseDialog from '../AddWarehouseDialog/AddWarehouseDialog'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { Warehouse } from '../../contexts/ProductContext/types'
+import OptionsButton from '../OptionsButton/OptionsButton'
 
 const ManageProductWarehouses = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+
+    const handleDelete = useCallback(
+        (warehouse: Warehouse) => () => {
+            ProductContext.setWarehouseToDelete(warehouse)
+            AppContext.openDialog('delete-warehouse-dialog')
+        },
+        [AppContext, ProductContext]
+    )
 
     return (
         <>
@@ -35,18 +44,17 @@ const ManageProductWarehouses = () => {
                                         format: (row) => {
                                             const warehouse = row as Warehouse
                                             return (
-                                                <Button
-                                                    onClick={() => {
-                                                        ProductContext.setWarehouseToDelete(
-                                                            warehouse
-                                                        )
-                                                        AppContext.openDialog(
-                                                            'delete-warehouse-dialog'
-                                                        )
-                                                    }}
-                                                >
-                                                    <FaTrash />
-                                                </Button>
+                                                <OptionsButton
+                                                    options={[
+                                                        {
+                                                            label: 'Delete Warehouse',
+                                                            onClick:
+                                                                handleDelete(
+                                                                    warehouse
+                                                                ),
+                                                        },
+                                                    ]}
+                                                />
                                             )
                                         },
                                         headerClsx: 'text-right',
