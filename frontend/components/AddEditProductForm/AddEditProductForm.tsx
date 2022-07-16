@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
+import clsx from 'clsx'
 
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
@@ -31,6 +32,7 @@ const AddEditProductForm: FC<Props> = (props) => {
             category: values.category as string,
             subCategory: values.subCategory as string,
             price: +values.price,
+            storeQty: +values.storeQty,
         }
 
         const response = await (ProductContext.product
@@ -65,12 +67,12 @@ const AddEditProductForm: FC<Props> = (props) => {
     }
 
     useEffect(() => {
-        if (!ProductContext.product) return
-        methods.setValue('name', ProductContext.product.name)
-        methods.setValue('brand', ProductContext.product.brand)
-        methods.setValue('category', ProductContext.product.category)
-        methods.setValue('subCategory', ProductContext.product.subCategory)
-        methods.setValue('price', +ProductContext.product.price)
+        methods.setValue('name', ProductContext.product?.name)
+        methods.setValue('brand', ProductContext.product?.brand)
+        methods.setValue('category', ProductContext.product?.category)
+        methods.setValue('subCategory', ProductContext.product?.subCategory)
+        methods.setValue('price', +(ProductContext.product?.price || 0))
+        methods.setValue('storeQty', +(ProductContext.product?.storeQty || 0))
     }, [ProductContext.product, methods])
 
     return isDisabled ? (
@@ -78,23 +80,49 @@ const AddEditProductForm: FC<Props> = (props) => {
     ) : (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-                <div className="mb-6">
+                <div
+                    className={clsx(
+                        'grid gap-6 mb-6',
+                        !ProductContext.product && ' lg:grid-cols-2'
+                    )}
+                >
                     <TextField
                         name="name"
                         label="Name"
                         placeholder="Product 1"
                         required
                     />
+                    {!ProductContext.product && (
+                        <TextField
+                            name="price"
+                            type="number"
+                            label="Price"
+                            placeholder="100.00"
+                            required
+                            min={0}
+                        />
+                    )}
                 </div>
                 <div className="grid gap-6 mb-6 lg:grid-cols-2">
-                    <TextField
-                        name="price"
-                        type="number"
-                        label="Price"
-                        placeholder="100.00"
-                        required
-                        min={0}
-                    />
+                    {ProductContext.product ? (
+                        <TextField
+                            name="price"
+                            type="number"
+                            label="Price"
+                            placeholder="100.00"
+                            required
+                            min={0}
+                        />
+                    ) : (
+                        <TextField
+                            name="storeQty"
+                            type="number"
+                            label="Store Quantity"
+                            placeholder="100"
+                            required
+                            min={0}
+                        />
+                    )}
                     <TextField
                         name="brand"
                         label="Brand"

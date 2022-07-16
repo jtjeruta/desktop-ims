@@ -81,7 +81,14 @@ const InventoryPageContent = () => {
                         },
                         {
                             title: 'Warehouse qty',
-                            key: 'warehouseQty',
+                            format: (row) => {
+                                const product = row as Product
+                                return product.warehouses.reduce(
+                                    (acc, warehouse) =>
+                                        acc + warehouse.quantity,
+                                    0
+                                )
+                            },
                         },
                         {
                             title: 'Store qty',

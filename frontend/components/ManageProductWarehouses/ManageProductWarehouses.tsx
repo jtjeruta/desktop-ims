@@ -12,9 +12,6 @@ const ManageProductWarehouses = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
 
-    const warehouseCanBeDeleted =
-        (ProductContext.product?.warehouses || []).length > 1
-
     return (
         <>
             <div className="flex grow basis-0">
@@ -47,12 +44,6 @@ const ManageProductWarehouses = () => {
                                                             'delete-warehouse-dialog'
                                                         )
                                                     }}
-                                                    disabled={
-                                                        !warehouseCanBeDeleted
-                                                    }
-                                                    disabledText={
-                                                        'Product must contain at least one warehouse.'
-                                                    }
                                                 >
                                                     <FaTrash />
                                                 </Button>

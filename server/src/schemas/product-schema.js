@@ -40,6 +40,11 @@ const ProductSchema = new mongoose.Schema({
         index: true,
         unique: true,
     },
+    storeQty: {
+        type: Number,
+        required: true,
+        min: [0, 'path price can not be less than 0.'],
+    },
     variants: [
         {
             type: mongoose.Schema.Types.ObjectId,

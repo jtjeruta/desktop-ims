@@ -12,6 +12,7 @@ module.exports.createProduct = async (req, res) => {
         subCategory: req.body.subCategory,
         aveUnitCost: null,
         published: false,
+        storeQty: req.body.storeQty,
         modifiedBy: req.con._id,
     }
     const createProductRes = await ProductsModule.createProduct(productDoc)
@@ -73,7 +74,12 @@ module.exports.listProducts = async (req, res) => {
 module.exports.updateProduct = async (req, res) => {
     const { productId } = req.params
     const updateDoc = {
-        ...req.body,
+        name: req.body.name,
+        price: req.body.price,
+        brand: req.body.brand,
+        category: req.body.category,
+        subCategory: req.body.subCategory,
+        published: req.body.published,
         modifiedBy: req.con._id,
     }
 

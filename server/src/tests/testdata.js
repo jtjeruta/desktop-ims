@@ -35,6 +35,7 @@ module.exports.product1 = {
     published: true,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
+    storeQty: 0,
 }
 
 module.exports.product2 = {
@@ -47,6 +48,7 @@ module.exports.product2 = {
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
+    storeQty: 10,
 }
 
 module.exports.product3 = {
@@ -59,6 +61,7 @@ module.exports.product3 = {
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
+    storeQty: 100,
 }
 
 module.exports.variant1 = {

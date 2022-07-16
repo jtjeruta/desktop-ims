@@ -152,12 +152,26 @@ describe('Create product', () => {
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(201)
-                    expect(res.body.product.name).to.equal(
-                        testdata.product1.name
-                    )
+                    expect(
+                        Object.keys(res.body.product)
+                    ).to.deep.equalInAnyOrder([
+                        'name',
+                        'price',
+                        'published',
+                        'sku',
+                        'storeQty',
+                        'subCategory',
+                        'variants',
+                        'warehouses',
+                        'aveUnitCost',
+                        'brand',
+                        'category',
+                        'createdAt',
+                        'id',
+                        'modifiedAt',
+                    ])
                     expect(res.body.product.aveUnitCost).to.be.null
                     expect(res.body.product.published).to.be.false
-                    expect(Object.keys(res.body.product)).to.include('id')
                     done()
                 })
                 .catch((err) => done(err))
@@ -198,6 +212,7 @@ describe('Create product', () => {
                         'category',
                         'subCategory',
                         'price',
+                        'storeQty',
                     ])
                     done()
                 })
@@ -295,7 +310,7 @@ describe('Update product', () => {
                         testdata.product3.price
                     )
                     expect(res.body.product.aveUnitCost).to.equal(
-                        testdata.product3.aveUnitCost
+                        createdProducts.product1.aveUnitCost
                     )
                     expect(res.body.product.published).to.equal(
                         testdata.product3.published
@@ -327,7 +342,6 @@ describe('Update product', () => {
                     subCategory: '',
                     published: null,
                     price: -1,
-                    aveUnitCost: -1,
                 })
                 .set('Authorization', token)
                 .then((res) => {
@@ -341,7 +355,6 @@ describe('Update product', () => {
                         'subCategory',
                         'published',
                         'price',
-                        'aveUnitCost',
                     ])
                     done()
                 })
