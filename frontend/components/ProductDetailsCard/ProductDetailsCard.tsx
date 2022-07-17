@@ -11,7 +11,7 @@ const ProductDetailsCard: FC = () => {
         SKU: <code>{ProductContext.product?.sku}</code>,
         'Ave. Unit Cost': ProductContext.product?.aveUnitCost ?? 'N/A',
         Markup: getProductMarkup(ProductContext.product) ?? 'N/A',
-        'Total items in Store': ProductContext.product?.storeQty,
+        'Total items in Store': ProductContext.product?.storeQty || 0,
         'Total items in Warehouse': ProductContext.product?.warehouses.reduce(
             (acc, warehouse) => acc + warehouse.quantity,
             0

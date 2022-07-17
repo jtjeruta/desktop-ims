@@ -92,7 +92,10 @@ const InventoryPageContent = () => {
                         },
                         {
                             title: 'Store qty',
-                            key: 'storeQty',
+                            format: (row) => {
+                                const product = row as Product
+                                return product.storeQty || 0
+                            },
                         },
                         {
                             title: ' ',
