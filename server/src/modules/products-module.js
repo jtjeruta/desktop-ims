@@ -45,7 +45,6 @@ module.exports.getProductById = async (id) => {
 
         return [200, product]
     } catch (error) {
-        console.error(error)
         console.error('Failed to find product by id')
         return getMongoError(error)
     }

@@ -7,6 +7,7 @@ const app = require('../../app')
 const UsersModule = require('../../modules/users-module')
 const ProductsModule = require('../../modules/products-module')
 const VariantsModule = require('../../modules/variants-module')
+const WarehousesModule = require('../../modules/warehouses-module')
 const { login } = require('../helpers')
 const testdata = require('../testdata')
 
@@ -393,5 +394,221 @@ describe('Update product', () => {
                 done()
             })
             .catch((err) => done(err))
+    })
+})
+
+describe('Transfer stock', () => {
+    const created = {}
+
+    setup()
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        await UsersModule.createUser(testdata.employee1)
+        const product1 = await ProductsModule.createProduct(testdata.product1)
+        const product2 = await ProductsModule.createProduct(testdata.product2)
+        const warehouse1 = await WarehousesModule.createWarehouse({
+            ...testdata.warehouse1,
+            product: product1[1]._id,
+        })
+        const warehouse2 = await WarehousesModule.createWarehouse({
+            ...testdata.warehouse2,
+            product: product1[1]._id,
+        })
+        const updatedProduct1 = await ProductsModule.updateProduct(
+            product1[1]._id,
+            { warehouses: [warehouse1[1]._id, warehouse2._id] }
+        )
+        created.product1 = updatedProduct1[1]
+        created.product2 = product2[1]
+        created.warehouse1 = warehouse1[1]
+        created.warehouse2 = warehouse2[1]
+    })
+
+    it('Success: transfer warehouse stock to store', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${created.product1.id}/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: 'store',
+                amount: 10,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.storeQty).to.equal(10)
+        expect(Object.keys(res.body.product)).to.include('id')
+
+        const warehouseRes = await WarehousesModule.getWarehouseById(
+            created.warehouse1._id
+        )
+
+        expect(warehouseRes[1].quantity).to.equal(0)
+    })
+
+    it('Success: transfer warehouse stock to another warehouse', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${created.product1.id}/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: created.warehouse2._id,
+                amount: 5,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.storeQty).to.equal(0)
+
+        const warehouse1Res = await WarehousesModule.getWarehouseById(
+            created.warehouse1._id
+        )
+
+        expect(warehouse1Res[1].quantity).to.equal(5)
+
+        const warehouse2Res = await WarehousesModule.getWarehouseById(
+            created.warehouse2._id
+        )
+
+        expect(warehouse2Res[1].quantity).to.equal(25)
+    })
+
+    it('Fail: transfer warehouse stock to non existing warehouse', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${created.product1.id}/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: null,
+                amount: 5,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(404)
+        expect(res.body.message).to.equal('Warehouse not found.')
+    })
+
+    it('Fail: transfer warehouse stock to wrong product', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: 'store',
+                amount: 5,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(404)
+        expect(res.body.message).to.equal('Not found.')
+    })
+
+    it('Fail: transfer warehouse stock to same warehouse', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: created.warehouse1._id,
+                amount: 5,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(400)
+        expect(res.body.message).to.equal('Source is same as destination.')
+    })
+
+    it('Fail: transfer 0 amount of stock', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: created.warehouse2._id,
+                amount: 0,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(400)
+        expect(res.body.message).to.equal(
+            'Transfer amount must be greater than 0.'
+        )
+    })
+
+    it('Fail: transfer amount that is greater than warehouse quantity', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: created.warehouse2._id,
+                amount: 100,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(400)
+        expect(res.body.message).to.equal(
+            'Transfer amount is greater than stored quantity.'
+        )
+    })
+
+    it('Fail: run as employee', async () => {
+        const { token } = await login({
+            email: testdata.employee1.email,
+            password: testdata.employee1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: created.warehouse2._id,
+                amount: 100,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body.message).to.equal('Unauthorized.')
+    })
+
+    it('Fail: run as unauthorized', async () => {
+        const res = await request(app)
+            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .send({
+                transferFrom: created.warehouse1._id,
+                transferTo: created.warehouse2._id,
+                amount: 100,
+            })
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body.message).to.equal('Unauthorized.')
     })
 })

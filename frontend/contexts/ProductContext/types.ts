@@ -56,6 +56,17 @@ export type CreateWarehouseDoc = {
     quantity: number
 }
 
+export type TransferStockDoc = {
+    transferFrom: string
+    transferTo: string
+    amount: number
+}
+
+export type TransferStockErrors = Record<
+    keyof TransferStockDoc,
+    { message: string }
+>
+
 export type CreateUpdateProductErrors = Record<
     keyof Product,
     { message: string }
@@ -107,6 +118,14 @@ export type DeleteWarehouse = (
     warehouseId: string
 ) => Promise<[true] | [false, string]>
 
+export type TransferStock = (
+    productId: string,
+    doc: TransferStockDoc
+) => Promise<
+    | [true, Product]
+    | [false, { message: string; errors?: CreateWarehouseErrors }]
+>
+
 export type Context = {
     products: Product[] | null
     createProduct: CreateProduct
@@ -121,6 +140,7 @@ export type Context = {
     setVariantToDelete: (variant: Variant | null) => void
     createWarehouse: CreateWarehouse
     deleteWarehouse: DeleteWarehouse
-    warehouseToDelete: Warehouse | null
-    setWarehouseToDelete: (warehouse: Warehouse | null) => void
+    selectedWarehouse: Warehouse | null
+    setSelectedWarehouse: (warehouse: Warehouse | null) => void
+    transferStock: TransferStock
 }

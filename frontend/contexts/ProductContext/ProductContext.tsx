@@ -15,7 +15,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [product, setProduct] = useState<Types.Product | null>(null)
     const [variantToDelete, setVariantToDelete] =
         useState<Types.Variant | null>(null)
-    const [warehouseToDelete, setWarehouseToDelete] =
+    const [selectedWarehouse, setSelectedWarehouse] =
         useState<Types.Warehouse | null>(null)
 
     const createProduct: Types.CreateProduct = async (productDoc) => {
@@ -240,6 +240,33 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true]
     }
 
+    const transferStock: Types.TransferStock = async (productId, doc) => {
+        const key = 'transfer-stock'
+
+        AppContext.addLoading(key)
+        const response = await ProductsAPI.transferStock(productId, doc)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            return [false, response[1].data]
+        }
+
+        // update products
+        setProducts((prev) =>
+            (prev || []).map((p) => {
+                if (p.id === productId) return response[1]
+                return p
+            })
+        )
+
+        // update current product detials
+        if (product?.id === productId) {
+            setProduct(response[1])
+        }
+
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             products,
@@ -255,10 +282,11 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             setVariantToDelete,
             createWarehouse,
             deleteWarehouse,
-            warehouseToDelete,
-            setWarehouseToDelete,
+            selectedWarehouse,
+            setSelectedWarehouse,
+            transferStock,
         }),
-        [products, product, variantToDelete, warehouseToDelete]
+        [products, product, variantToDelete, selectedWarehouse]
     )
 
     return (

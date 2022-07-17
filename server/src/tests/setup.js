@@ -1,8 +1,9 @@
 const { UserModel } = require('../schemas/user-schema')
 const { ProductModel } = require('../schemas/product-schema')
 const { VariantModel } = require('../schemas/variant-schema')
+const { WarehouseModel } = require('../schemas/warehouse-schema')
 
-const models = [UserModel, ProductModel, VariantModel]
+const models = [UserModel, ProductModel, VariantModel, WarehouseModel]
 
 const setup = () => {
     // eslint-disable-next-line

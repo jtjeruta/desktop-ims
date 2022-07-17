@@ -6,8 +6,6 @@ const ProductSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        index: true,
-        unique: true,
     },
     brand: {
         type: String,
@@ -37,8 +35,6 @@ const ProductSchema = new mongoose.Schema({
     sku: {
         type: String,
         required: true,
-        index: true,
-        unique: true,
     },
     storeQty: {
         type: Number,
@@ -59,8 +55,9 @@ const ProductSchema = new mongoose.Schema({
     ],
 })
 
-const ProductModel = mongoose.model('Product', ProductSchema)
+ProductSchema.index({ name: 1 }, { unique: true })
+ProductSchema.index({ sku: 1 }, { unique: true })
 
-ProductModel.createIndexes()
+const ProductModel = mongoose.model('Product', ProductSchema)
 
 module.exports = { ProductModel, ProductSchema }

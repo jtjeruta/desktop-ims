@@ -28,6 +28,11 @@ router.put(
     isAdmin,
     ProductController.updateProduct
 )
+router.put(
+    '/api/v1/products/:productId/transfer-stock',
+    isAdmin,
+    ProductController.transferStock
+)
 
 // variants
 router.post(

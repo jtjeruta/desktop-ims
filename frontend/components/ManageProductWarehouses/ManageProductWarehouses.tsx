@@ -8,6 +8,9 @@ import AddWarehouseDialog from '../AddWarehouseDialog/AddWarehouseDialog'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { Warehouse } from '../../contexts/ProductContext/types'
 import OptionsButton from '../OptionsButton/OptionsButton'
+import { FaRegTrashAlt } from 'react-icons/fa'
+import { BiTransfer } from 'react-icons/bi'
+import TransferStockDialog from '../TransferStockDialog/TransferStockDialog'
 
 const ManageProductWarehouses = () => {
     const AppContext = useAppContext()
@@ -15,8 +18,16 @@ const ManageProductWarehouses = () => {
 
     const handleDelete = useCallback(
         (warehouse: Warehouse) => () => {
-            ProductContext.setWarehouseToDelete(warehouse)
+            ProductContext.setSelectedWarehouse(warehouse)
             AppContext.openDialog('delete-warehouse-dialog')
+        },
+        [AppContext, ProductContext]
+    )
+
+    const handleTransferStock = useCallback(
+        (warehouse: Warehouse) => () => {
+            ProductContext.setSelectedWarehouse(warehouse)
+            AppContext.openDialog('transfer-stock-dialog')
         },
         [AppContext, ProductContext]
     )
@@ -36,7 +47,7 @@ const ManageProductWarehouses = () => {
                                         key: 'name',
                                     },
                                     {
-                                        title: 'Qty',
+                                        title: 'Stock Qty',
                                         key: 'quantity',
                                     },
                                     {
@@ -47,6 +58,15 @@ const ManageProductWarehouses = () => {
                                                 <OptionsButton
                                                     options={[
                                                         {
+                                                            icon: BiTransfer,
+                                                            label: 'Transfer Stock',
+                                                            onClick:
+                                                                handleTransferStock(
+                                                                    warehouse
+                                                                ),
+                                                        },
+                                                        {
+                                                            icon: FaRegTrashAlt,
                                                             label: 'Delete Warehouse',
                                                             onClick:
                                                                 handleDelete(
@@ -79,13 +99,14 @@ const ManageProductWarehouses = () => {
                 </Card>
             </div>
             <AddWarehouseDialog />
+            <TransferStockDialog />
             <ConfirmDialog
-                text={`Delete warehouse ${ProductContext.warehouseToDelete?.name}?`}
+                text={`Delete warehouse ${ProductContext.selectedWarehouse?.name}?`}
                 dialogKey="delete-warehouse-dialog"
                 onConfirm={async () => {
-                    if (ProductContext.warehouseToDelete) {
+                    if (ProductContext.selectedWarehouse) {
                         await ProductContext.deleteWarehouse(
-                            ProductContext.warehouseToDelete?.id
+                            ProductContext.selectedWarehouse?.id
                         )
                         AppContext.closeDialog()
                     }

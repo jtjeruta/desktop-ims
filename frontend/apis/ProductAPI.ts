@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import {
     CreateProductDoc,
     Product,
+    TransferStockDoc,
     UpdateProductDoc,
 } from '../contexts/ProductContext/types'
 import Axios from './AxiosAPI'
@@ -27,5 +28,11 @@ export const createProduct = (data: CreateProductDoc) =>
 export const updateProduct = (id: string, data: UpdateProductDoc) =>
     Axios()
         .put(`/api/v1/products/${id}`, data)
+        .then((response): [true, Product] => [true, response.data.product])
+        .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const transferStock = (productId: string, data: TransferStockDoc) =>
+    Axios()
+        .put(`/api/v1/products/${productId}/transfer-stock`, data)
         .then((response): [true, Product] => [true, response.data.product])
         .catch((err): [false, AxiosResponse] => [false, err.response])

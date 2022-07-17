@@ -2,9 +2,11 @@ import { FC, useRef, useState } from 'react'
 import clsx from 'clsx'
 import { FaEllipsisV } from 'react-icons/fa'
 import Button from '../Button/Button'
+import { IconType } from 'react-icons/lib'
 
 type Props = {
     options: {
+        icon?: IconType
         label: string
         // eslint-disable-next-line
         onClick: (props: any) => void
@@ -55,7 +57,16 @@ const OptionsButton: FC<Props> = (props) => {
                                 className={className}
                                 onClick={() => option.onClick(option)}
                             >
-                                {option.label}
+                                <div className="flex gap-1">
+                                    {option.icon && (
+                                        <option.icon
+                                            style={{
+                                                transform: 'translateY(2px)',
+                                            }}
+                                        />
+                                    )}
+                                    {option.label}
+                                </div>
                             </li>
                         )
                     })}
