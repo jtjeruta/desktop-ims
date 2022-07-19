@@ -53,7 +53,7 @@ const InventoryPageContent = () => {
                         {
                             title: 'Name',
                             key: 'name',
-                            bodyClsx: 'w-full',
+                            bodyClsx: 'w-full font-bold',
                         },
                         {
                             title: 'Price',
