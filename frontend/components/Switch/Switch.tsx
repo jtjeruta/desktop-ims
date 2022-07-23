@@ -1,14 +1,14 @@
-import { FC } from 'react'
+import { FC, MouseEventHandler } from 'react'
 import clsx from 'clsx'
 import { FaSpinner } from 'react-icons/fa'
 
 type Props = {
     toggled: boolean
-    toggledText: string
-    unToggledText: string
+    toggledText?: string
+    unToggledText?: string
     loading?: boolean
     textPosition?: 'left' | 'right'
-    onClick?: () => void
+    onClick?: MouseEventHandler<HTMLInputElement>
 }
 
 const Switch: FC<Props> = (props) => {
@@ -19,17 +19,19 @@ const Switch: FC<Props> = (props) => {
                 props.textPosition === 'right' && 'flex-row-reverse'
             )}
         >
-            <div className="text-gray-700 font-medium">
-                {!props.loading ? (
-                    props.toggled ? (
-                        props.toggledText
+            {(props.toggledText || props.unToggledText) && (
+                <div className="text-gray-700 font-medium">
+                    {!props.loading ? (
+                        props.toggled ? (
+                            props.toggledText
+                        ) : (
+                            props.unToggledText
+                        )
                     ) : (
-                        props.unToggledText
-                    )
-                ) : (
-                    <FaSpinner className="animate-spin" />
-                )}
-            </div>
+                        <FaSpinner className="animate-spin" />
+                    )}
+                </div>
+            )}
             <div className="relative">
                 <input
                     type="checkbox"

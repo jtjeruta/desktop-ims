@@ -73,10 +73,11 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
                 type: 'danger',
                 body: 'Please try again later',
             })
-            return
+            return response
         }
 
         setProducts(response[1])
+        return response
     }
 
     const getProduct: Types.GetProduct = async (id) => {

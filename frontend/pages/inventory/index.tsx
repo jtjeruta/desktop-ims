@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import moment from 'moment'
 import Button from '../../components/Button/Button'
@@ -13,15 +13,58 @@ import {
 } from '../../contexts/ProductContext/ProductContext'
 import { Product } from '../../contexts/ProductContext/types'
 import AddEditProductDialog from '../../components/AddProductDialog/AddProductDialog'
+import Switch from '../../components/Switch/Switch'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
     const router = useRouter()
+    const [statuses, setStatuses] = useState<
+        { id: string; published: boolean }[]
+    >([])
 
     useEffect(() => {
-        ProductContext.products === null && ProductContext.listProducts()
+        async function init() {
+            if (ProductContext.products === null) {
+                const response = await ProductContext.listProducts()
+                if (response[0]) {
+                    setStatuses(
+                        response[1].map((product) => ({
+                            id: product.id,
+                            published: product.published,
+                        }))
+                    )
+                }
+            }
+        }
+
+        init()
     }, [ProductContext])
+
+    const handleToggleStatus = useCallback(
+        (productId: string, status: boolean) => async () => {
+            setStatuses((prev) =>
+                prev.map((s) => {
+                    if (s.id !== productId) return s
+                    return { ...s, published: status }
+                })
+            )
+
+            const response = await ProductContext.updateProduct(productId, {
+                published: status,
+            })
+
+            if (!response) {
+                setStatuses((prev) =>
+                    prev.map((s) => {
+                        if (s.id !== productId) return s
+                        return { ...s, published: !status }
+                    })
+                )
+            }
+        },
+        [ProductContext]
+    )
 
     return (
         <UserLayout>
@@ -95,6 +138,24 @@ const InventoryPageContent = () => {
                             format: (row) => {
                                 const product = row as Product
                                 return product.storeQty || 0
+                            },
+                        },
+                        {
+                            title: 'Status',
+                            format: (row) => {
+                                const product = row as Product
+                                const status = statuses.find(
+                                    (status) => status.id === product.id
+                                )
+                                return (
+                                    <Switch
+                                        toggled={!!status?.published}
+                                        onClick={handleToggleStatus(
+                                            product.id,
+                                            !status?.published
+                                        )}
+                                    />
+                                )
                             },
                         },
                         {

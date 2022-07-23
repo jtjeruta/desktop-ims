@@ -90,7 +90,7 @@ export type UpdateProduct = (
     | [false, { message: string; errors?: CreateUpdateProductErrors }]
 >
 
-export type ListProducts = () => Promise<void>
+export type ListProducts = () => Promise<[true, Product[]] | [false, string]>
 export type GetProduct = (
     id: Product['id']
 ) => Promise<[true, Product] | [false, AxiosResponse]>

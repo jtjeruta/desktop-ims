@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { FC } from 'react'
-import { FaInfo, FaInfoCircle } from 'react-icons/fa'
 import { BsInfoCircle } from 'react-icons/bs'
 
 type Props = {
