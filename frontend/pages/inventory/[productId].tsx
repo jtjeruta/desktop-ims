@@ -12,6 +12,7 @@ import Card from '../../components/Card/Card'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import ManageProductVariants from '../../components/ManageProductVariants/ManageProductVariants'
 import ManageProductWarehouses from '../../components/ManageProductWarehouses/ManageProductWarehouses'
+import Alert from '../../components/Alert/Alert'
 
 const ProductPageContent = () => {
     const AppContext = useAppContext()
@@ -55,13 +56,26 @@ const ProductPageContent = () => {
                 switches={[
                     {
                         toggled: published,
-                        toggledText: 'Published',
-                        unToggledText: 'Draft',
+                        toggledText: 'Available',
+                        unToggledText: 'Not available',
                         onClick: handleToggleSwitch,
                         loading: AppContext.isLoading('update-product'),
                     },
                 ]}
             />
+            {!ProductContext.product?.published && (
+                <Alert
+                    type="info"
+                    title="NOT AVAILABLE"
+                    content={
+                        <span>
+                            Product is currently set to <b>NOT AVAILABLE</b> and
+                            will not be available for purchase.
+                        </span>
+                    }
+                    className="mb-4"
+                />
+            )}
             <div className="flex gap-4 pb-4">
                 <Card cardClsx="grow basis-0">
                     <AddEditProductForm type="update" />

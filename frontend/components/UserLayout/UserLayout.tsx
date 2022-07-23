@@ -2,7 +2,7 @@ import { FC } from 'react'
 import Navbar from '../Navbar/Navbar'
 
 type Props = {
-    children: JSX.Element[]
+    children: (JSX.Element | false)[]
 }
 
 const UserLayout: FC<Props> = (props) => {
