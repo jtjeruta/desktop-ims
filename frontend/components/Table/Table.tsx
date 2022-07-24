@@ -12,7 +12,6 @@ type Column = {
           key: string
       }
     | {
-          // eslint-disable-next-line
           format: (item: Row) => number | string | JSX.Element
       }
 )
