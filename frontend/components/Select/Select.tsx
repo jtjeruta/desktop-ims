@@ -9,7 +9,8 @@ type Props = {
     placeholder?: string
     required?: boolean
     name: string
-    options: { text?: string; value: string }[]
+    options: { text?: string; value: string | number }[]
+    className?: string
 }
 
 const Select: FC<Props> = (props) => {
@@ -21,7 +22,7 @@ const Select: FC<Props> = (props) => {
         methods?.formState.errors[props.name]?.message
 
     return (
-        <div className="relative">
+        <div className={clsx('relative', props.className)}>
             {props.label && (
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                     {props.required ? (

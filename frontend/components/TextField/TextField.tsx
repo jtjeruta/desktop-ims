@@ -13,6 +13,7 @@ type Props = {
     autoFocus?: boolean
     min?: number
     max?: number
+    className?: string
 }
 
 const TextField: FC<Props> = (props) => {
@@ -24,7 +25,7 @@ const TextField: FC<Props> = (props) => {
         methods?.formState.errors[props.name]?.message
 
     return (
-        <div className="relative">
+        <div className={clsx('relative', props.className)}>
             {props.label && (
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                     {props.required ? (

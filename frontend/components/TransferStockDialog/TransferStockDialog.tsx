@@ -16,8 +16,9 @@ const transferStockSchema = yup
         amount: yup
             .number()
             .required()
-            .min(0, 'Must be 0 or greater')
-            .integer(),
+            .integer()
+            .min(0, 'Must be 0 or greater'),
+        units: yup.number().integer().min(0, 'Must be 0 or greater'),
     })
     .required()
 
@@ -26,14 +27,24 @@ const TransferStockDialog: FC = () => {
     const ProductContext = useProductContext()
     const methods = useForm({ resolver: yupResolver(transferStockSchema) })
 
-    let options = (ProductContext.product?.warehouses || []).map(
+    let warehouses = (ProductContext.product?.warehouses || []).map(
         (warehouse) => ({
             text: warehouse.name,
             value: warehouse.id,
         })
     )
 
-    options = [...options, { text: 'Store', value: 'store' }]
+    warehouses = [...warehouses, { text: 'Store', value: 'store' }]
+
+    let transferOptions =
+        ProductContext.product?.variants.map((variant) => ({
+            value: variant.quantity,
+            text: variant.name,
+        })) || []
+
+    if (!transferOptions.some((option) => option.value === 1)) {
+        transferOptions = [{ text: ' ', value: 1 }, ...transferOptions]
+    }
 
     useEffect(() => {
         methods.setValue('transferFrom', ProductContext.selectedWarehouse?.id)
@@ -47,7 +58,7 @@ const TransferStockDialog: FC = () => {
         const doc = {
             transferTo: data.transferTo,
             transferFrom: data.transferFrom,
-            amount: +data.amount,
+            amount: +data.amount * +data.units,
         }
 
         const response = await ProductContext.transferStock(
@@ -90,21 +101,30 @@ const TransferStockDialog: FC = () => {
                                 label="Transfer from"
                                 name="transferFrom"
                                 required
-                                options={options}
+                                options={warehouses}
                             />
                             <Select
                                 label="Transfer to"
                                 name="transferTo"
                                 required
-                                options={options}
+                                options={warehouses}
                             />
-                            <TextField
-                                label="Amount"
-                                name="amount"
-                                type="number"
-                                min={0}
-                                required
-                            />
+                            <div className="flex gap-2">
+                                <TextField
+                                    label="Quantity"
+                                    name="amount"
+                                    type="number"
+                                    min={0}
+                                    className="basis-0 grow"
+                                    required
+                                />
+                                <Select
+                                    label="Unit"
+                                    name="units"
+                                    options={transferOptions}
+                                    className="basis-0 grow"
+                                />
+                            </div>
                         </div>
                     </form>
                 </FormProvider>
