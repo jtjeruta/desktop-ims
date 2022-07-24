@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import moment from 'moment'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -14,6 +13,8 @@ import {
 import { Product } from '../../contexts/ProductContext/types'
 import AddEditProductDialog from '../../components/AddProductDialog/AddProductDialog'
 import Switch from '../../components/Switch/Switch'
+import { formatDate } from '../../uitls/date-utils'
+import { getProductWarehouseTotal } from '../../uitls/product-utils'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -22,6 +23,27 @@ const InventoryPageContent = () => {
     const [statuses, setStatuses] = useState<
         { id: string; published: boolean }[]
     >([])
+    const [search, setSearch] = useState<string>('')
+
+    const filteredProducts = (ProductContext.products || []).filter(
+        (product) => {
+            const regex = new RegExp(search, 'igm')
+            return [
+                product.name,
+                product.brand,
+                product.aveUnitCost,
+                product.category,
+                product.price,
+                `#${product.sku}`,
+                product.sku,
+                product.subCategory,
+                product.published ? 'available' : 'not available',
+                formatDate(product.createdAt),
+                getProductWarehouseTotal(product),
+                product.storeQty,
+            ].some((item) => regex.test(`${item}`))
+        }
+    )
 
     useEffect(() => {
         async function init() {
@@ -70,6 +92,7 @@ const InventoryPageContent = () => {
         <UserLayout>
             <PageHeader
                 title="Inventory"
+                searchbar={{ onSearch: (search) => setSearch(search) }}
                 buttons={[
                     {
                         text: 'Add Product',
@@ -81,16 +104,14 @@ const InventoryPageContent = () => {
 
             <Card bodyClsx="!px-0 !py-0">
                 <Table
-                    rows={ProductContext.products || []}
+                    rows={filteredProducts}
                     loading={AppContext.isLoading('list-products')}
                     columns={[
                         {
                             title: 'Created',
                             format: (row) => {
                                 const product = row as Product
-                                return moment(product.createdAt * 1000).format(
-                                    'MMM DD, YYYY'
-                                )
+                                return formatDate(product.createdAt)
                             },
                         },
                         {
@@ -123,18 +144,14 @@ const InventoryPageContent = () => {
                             key: 'category',
                         },
                         {
-                            title: 'Warehouse qty',
+                            title: 'WHS qty',
                             format: (row) => {
                                 const product = row as Product
-                                return product.warehouses.reduce(
-                                    (acc, warehouse) =>
-                                        acc + warehouse.quantity,
-                                    0
-                                )
+                                return getProductWarehouseTotal(product)
                             },
                         },
                         {
-                            title: 'Store qty',
+                            title: 'STR qty',
                             format: (row) => {
                                 const product = row as Product
                                 return product.storeQty || 0

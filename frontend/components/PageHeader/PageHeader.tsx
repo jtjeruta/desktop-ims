@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import Button from '../Button/Button'
+import SearchBar from '../SearchBar/SearchBar'
 import Switch from '../Switch/Switch'
 
 type Props = {
@@ -16,6 +17,9 @@ type Props = {
         loading?: boolean
         onClick?: () => void
     }[]
+    searchbar?: {
+        onSearch: (value: string) => void
+    }
 }
 
 const PageHeader: FC<Props> = (props) => {
@@ -24,10 +28,17 @@ const PageHeader: FC<Props> = (props) => {
             <h3 className="text-3xl font-medium text-gray-700">
                 {props.title}
             </h3>
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
+                {props.searchbar && (
+                    <SearchBar onSearch={props.searchbar.onSearch} />
+                )}
                 {props.buttons &&
                     props.buttons.map((button) => (
-                        <Button key={button.text} onClick={button.onClick}>
+                        <Button
+                            key={button.text}
+                            onClick={button.onClick}
+                            className="min-w-max"
+                        >
                             {button.text}
                         </Button>
                     ))}

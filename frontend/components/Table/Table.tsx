@@ -32,7 +32,7 @@ const Table: FC<Props> = (props) => {
                         <th
                             key={col.title}
                             className={clsx(
-                                'px-6 py-3 text-xs font-medium leading-4 tracking-wider',
+                                'px-6 py-3 text-xs font-medium leading-4 tracking-wider whitespace-nowrap',
                                 'text-left text-gray-500 uppercase border-b border-gray-200',
                                 col.headerClsx
                             )}
@@ -64,7 +64,7 @@ const Table: FC<Props> = (props) => {
                             className="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
                             colSpan={props.columns.length}
                         >
-                            No data yet.
+                            No results found.
                         </td>
                     </tr>
                 )}
