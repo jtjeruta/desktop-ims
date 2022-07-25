@@ -113,23 +113,28 @@ const InventoryPageContent = () => {
                                 const product = row as Product
                                 return formatDate(product.createdAt)
                             },
+                            sort: (product) => product.createdAt,
                         },
                         {
                             title: 'Name',
                             key: 'name',
                             bodyClsx: 'w-full font-bold',
+                            sort: (product) => product.name,
                         },
                         {
                             title: 'Price',
                             key: 'price',
+                            sort: (product) => product.price,
                         },
                         {
                             title: 'Markup',
                             key: 'markup',
+                            sort: (product) => product.markup,
                         },
                         {
                             title: 'Brand',
                             key: 'brand',
+                            sort: (product) => product.brand,
                         },
                         {
                             title: 'SKU',
@@ -142,6 +147,7 @@ const InventoryPageContent = () => {
                         {
                             title: 'Category',
                             key: 'category',
+                            sort: (product) => product.category,
                         },
                         {
                             title: 'WHS qty',
@@ -149,6 +155,8 @@ const InventoryPageContent = () => {
                                 const product = row as Product
                                 return getProductWarehouseTotal(product)
                             },
+                            sort: (product) =>
+                                getProductWarehouseTotal(product as Product),
                         },
                         {
                             title: 'STR qty',
@@ -156,6 +164,7 @@ const InventoryPageContent = () => {
                                 const product = row as Product
                                 return product.storeQty || 0
                             },
+                            sort: (product) => product.storeQty || 0,
                         },
                         {
                             title: 'Status',

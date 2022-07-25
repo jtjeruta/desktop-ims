@@ -1,5 +1,9 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import clsx from 'clsx'
+import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
+import { compare } from '../../uitls'
+
+type SortFunction = (a: Row, b: Row) => number
 
 // eslint-disable-next-line
 type Row = Record<string, any>
@@ -7,6 +11,7 @@ type Column = {
     title: string
     headerClsx?: string
     bodyClsx?: string
+    sort?: (row: Row) => string | number
 } & (
     | {
           key: string
@@ -23,6 +28,29 @@ type Props = {
 }
 
 const Table: FC<Props> = (props) => {
+    const sortNull = () => 0
+    const sortASC = (col: Column) => (a: Row, b: Row) =>
+        compare(col.sort?.(b), col.sort?.(a))
+    const sortDESC = (col: Column) => (a: Row, b: Row) =>
+        compare(col.sort?.(a), col.sort?.(b))
+
+    const [sort, setSort] = useState<{
+        sort: SortFunction
+        ascending: boolean
+        col: string
+    }>({ sort: sortNull, ascending: true, col: '' })
+
+    const handleSort = (col: Column) => () => {
+        if (!col.sort) return
+        const ascending = sort.col !== col.title ? true : !sort.ascending
+
+        setSort({
+            col: col.title,
+            ascending,
+            sort: !ascending ? sortASC(col) : sortDESC(col),
+        })
+    }
+
     return (
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700">
@@ -31,12 +59,26 @@ const Table: FC<Props> = (props) => {
                         <th
                             key={col.title}
                             className={clsx(
-                                'px-6 py-3 text-xs font-medium leading-4 tracking-wider whitespace-nowrap',
+                                'pl-6 py-3 text-xs font-medium leading-4 tracking-wider whitespace-nowrap',
                                 'text-left text-gray-500 uppercase border-b border-gray-200',
-                                col.headerClsx
+                                col.headerClsx,
+                                col.sort && 'cursor-pointer'
                             )}
+                            onClick={handleSort(col)}
                         >
-                            {col.title}
+                            <div className="flex justify-between gap-2">
+                                <span>{col.title}</span>
+                                <span style={{ transform: 'translateY(2px)' }}>
+                                    {!col.sort ? null : sort.col !==
+                                      col.title ? (
+                                        <FaSort className="text-gray-300" />
+                                    ) : sort.ascending ? (
+                                        <FaSortDown />
+                                    ) : (
+                                        <FaSortUp />
+                                    )}
+                                </span>
+                            </div>
                         </th>
                     ))}
                 </tr>
@@ -50,13 +92,15 @@ const Table: FC<Props> = (props) => {
                         <TableRow columns={props.columns} loading />
                     </>
                 ) : props.rows.length ? (
-                    props.rows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            row={row}
-                            columns={props.columns}
-                        />
-                    ))
+                    props.rows
+                        .sort(sort.sort)
+                        .map((row) => (
+                            <TableRow
+                                key={row.id}
+                                row={row}
+                                columns={props.columns}
+                            />
+                        ))
                 ) : (
                     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td
