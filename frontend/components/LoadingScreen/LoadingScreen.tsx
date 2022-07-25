@@ -70,18 +70,19 @@ const LoadingScreen = () => {
         AppContext.isLoading('auth-login')
 
     useEffect(() => {
-        if (loading) return
-        timeout && clearTimeout(timeout)
-        setStatus('visible')
-        timeout = setTimeout(() => setStatus('fading'), 1000)
-    }, [loading])
-
-    useEffect(() => {
-        if (status === 'fading') {
+        if (loading && status === 'visible') return
+        if (loading && status !== 'visible') return setStatus('visible')
+        if (!loading && status === 'visible') {
+            timeout && clearTimeout(timeout)
+            timeout = setTimeout(() => setStatus('fading'), 1000)
+            return
+        }
+        if (!loading && status === 'fading') {
             timeout && clearTimeout(timeout)
             timeout = setTimeout(() => setStatus('removed'), 500)
+            return
         }
-    }, [status])
+    }, [loading, status])
 
     if (status === 'removed') {
         return null
