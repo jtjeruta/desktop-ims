@@ -9,7 +9,7 @@ const UserLayout: FC<Props> = (props) => {
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
-            <div className="flex grow">
+            <div className="flex grow bg-slate-100 dark:bg-slate-800">
                 <div className="flex flex-col md:container md:mx-auto p-5">
                     {props.children}
                 </div>
