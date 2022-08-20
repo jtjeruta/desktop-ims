@@ -28,7 +28,9 @@ const Alert: FC<Props> = (props) => {
                     <BsInfoCircle fontSize={20} />
                 </div>
                 <div>
-                    {props.title && <p className="font-bold">{props.title}</p>}
+                    {props.title && (
+                        <p className="font-bold text-sm">{props.title}</p>
+                    )}
                     {props.content && (
                         <p className="text-sm">{props.content}</p>
                     )}

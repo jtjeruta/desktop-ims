@@ -82,7 +82,7 @@ const AddEditProductForm: FC<Props> = (props) => {
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div
                     className={clsx(
-                        'grid gap-6 mb-6',
+                        'grid gap-3 mb-2',
                         !ProductContext.product && ' lg:grid-cols-2'
                     )}
                 >
@@ -103,7 +103,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                         />
                     )}
                 </div>
-                <div className="grid gap-6 mb-6 lg:grid-cols-2">
+                <div className="grid gap-3 mb-2 lg:grid-cols-2">
                     {ProductContext.product ? (
                         <TextField
                             name="price"
@@ -130,7 +130,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                         required
                     />
                 </div>
-                <div className="grid gap-6 mb-6 lg:grid-cols-2">
+                <div className="grid gap-3 mb-2 lg:grid-cols-2">
                     <TextField
                         name="category"
                         label="Category"
