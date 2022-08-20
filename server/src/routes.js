@@ -5,6 +5,7 @@ const ProductController = require('./controllers/product-controller')
 const VariantController = require('./controllers/variant-controller')
 const WarehouseController = require('./controllers/warehouse-controller')
 const VendorController = require('./controllers/vendor-controller')
+const PurchaseOrderController = require('./controllers/purchase-order-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -61,5 +62,22 @@ router.delete(
 
 // vendors
 router.get('/api/v1/vendors', isAdmin, VendorController.listVendors)
+
+// purchase orders
+router.get(
+    '/api/v1/purchase-orders',
+    isAdmin,
+    PurchaseOrderController.listPurchaseOrders
+)
+router.put(
+    '/api/v1/purchase-orders/:purchaseOrderId',
+    isAdmin,
+    PurchaseOrderController.updatePurchaseOrder
+)
+router.post(
+    '/api/v1/purchase-orders',
+    isAdmin,
+    PurchaseOrderController.createPurchaseOrder
+)
 
 module.exports = router
