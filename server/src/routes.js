@@ -4,6 +4,7 @@ const UserController = require('./controllers/user-controller')
 const ProductController = require('./controllers/product-controller')
 const VariantController = require('./controllers/variant-controller')
 const WarehouseController = require('./controllers/warehouse-controller')
+const VendorController = require('./controllers/vendor-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -57,5 +58,8 @@ router.delete(
     isAdmin,
     WarehouseController.deleteWarehouse
 )
+
+// vendors
+router.get('/api/v1/vendors', isAdmin, VendorController.listVendors)
 
 module.exports = router
