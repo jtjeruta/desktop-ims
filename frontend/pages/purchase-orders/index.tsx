@@ -1,76 +1,25 @@
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
+import {
+    PurchaseOrderContextProvider,
+    usePurchaseOrderContext,
+} from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
+import { PurchaseOrder } from '../../contexts/PurchaseOrderContext/types'
 import { formatDate } from '../../uitls/date-utils'
-import { Product } from '../../contexts/ProductContext/types'
 
-type PurchaseOrder = {
-    id: string
-    products: {
-        product: Product
-        quantity: number
-        itemPrice: number
-        totalPrice: number
-    }[]
-    createdAt: number
-    vendor: Vendor
-    total: number
-}
-
-type Vendor = {
-    id: string
-    name: string
-    phone: string
-    address: string
-}
-
-const PurchaseOrdersPage = () => {
+const PurchaseOrdersPageContent = () => {
     const AppContext = useAppContext()
+    const PurOrdContext = usePurchaseOrderContext()
+    const router = useRouter()
     const [search, setSearch] = useState<string>('')
 
-    const orders: PurchaseOrder[] = [
-        {
-            id: '0',
-            products: [
-                {
-                    product: {
-                        id: '0',
-                        name: 'Product 1',
-                        price: 100,
-                        brand: 'asd',
-                        category: 'asdasd',
-                        subCategory: 'asdasd',
-                        aveUnitCost: 123,
-                        createdAt: 123123,
-                        sku: '123123',
-                        published: true,
-                        storeQty: 123123,
-                        warehouses: [
-                            { id: '123', name: '123213', quantity: 123 },
-                        ],
-                        variants: [],
-                    },
-                    quantity: 100,
-                    itemPrice: 100,
-                    totalPrice: 10000,
-                },
-            ],
-            vendor: {
-                id: '0',
-                name: 'Some vendor',
-                phone: '09052454667',
-                address: 'iloilo city',
-            },
-            createdAt: 123123123123,
-            total: 10000,
-        },
-    ]
-
-    const filteredOrders = (orders || []).filter((order) => {
+    const filteredOrders = (PurOrdContext.orders || []).filter((order) => {
         const regex = new RegExp(search, 'igm')
         return [
             order.products.map((p) => p.product.name).join('-'),
@@ -79,16 +28,25 @@ const PurchaseOrdersPage = () => {
         ].some((item) => regex.test(`${item}`))
     })
 
+    useEffect(() => {
+        async function init() {
+            if (PurOrdContext.orders === null) {
+                await PurOrdContext.listOrders()
+            }
+        }
+
+        init()
+    }, [PurOrdContext])
+
     return (
         <UserLayout>
             <PageHeader
-                title="PurchaseOrders"
+                title="Purchase Orders"
                 searchbar={{ onSearch: (search) => setSearch(search) }}
                 buttons={[
                     {
                         text: 'Add Order',
-                        onClick: () =>
-                            AppContext.openDialog('add-order-dialog'),
+                        onClick: () => router.push('/purchase-orders/new'),
                     },
                 ]}
             />
@@ -144,6 +102,14 @@ const PurchaseOrdersPage = () => {
                 />
             </Card>
         </UserLayout>
+    )
+}
+
+const PurchaseOrdersPage = () => {
+    return (
+        <PurchaseOrderContextProvider>
+            <PurchaseOrdersPageContent />
+        </PurchaseOrderContextProvider>
     )
 }
 

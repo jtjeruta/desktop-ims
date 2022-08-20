@@ -11,7 +11,7 @@ import {
     useProductContext,
 } from '../../contexts/ProductContext/ProductContext'
 import { Product } from '../../contexts/ProductContext/types'
-import AddEditProductDialog from '../../components/AddProductDialog/AddProductDialog'
+import AddProductDialog from '../../components/AddProductDialog/AddProductDialog'
 import Switch from '../../components/Switch/Switch'
 import { formatDate } from '../../uitls/date-utils'
 import { getProductWarehouseTotal } from '../../uitls/product-utils'
@@ -205,7 +205,7 @@ const InventoryPageContent = () => {
                     ]}
                 />
             </Card>
-            <AddEditProductDialog />
+            <AddProductDialog />
         </UserLayout>
     )
 }

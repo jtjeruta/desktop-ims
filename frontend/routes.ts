@@ -34,4 +34,8 @@ export const routes: Route[] = [
         pathname: '/purchase-orders',
         access: 'admin',
     },
+    {
+        pathname: '/purchase-orders/[orderId]',
+        access: 'admin',
+    },
 ]
