@@ -1,11 +1,8 @@
 import { FC, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
-import { useRouter } from 'next/router'
-import clsx from 'clsx'
 
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
-import Button from '../Button/Button'
 import { useVendorContext } from '../../contexts/VendorContext/VendorContext'
 import AddEditVendorFormSkeleton from './Skeleton'
 
@@ -17,14 +14,13 @@ const AddEditVendorForm: FC<Props> = (props) => {
     const methods = useForm()
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
-    const router = useRouter()
 
     const isDisabled =
         AppContext.isLoading('get-vendor') ||
         (props.type === 'update' && !VendorContext.selectedVendor)
 
     const onSubmit = async (values: FieldValues) => {
-        console.log('submit')
+        return values
         // if (isDisabled) return null
 
         // const doc = {

@@ -79,7 +79,9 @@ const PurchaseOrdersPageContent = () => {
                                 return (
                                     <div>
                                         {order.products.map((p) => (
-                                            <div>{p.product.name}</div>
+                                            <div key={p.id}>
+                                                {p.product.name}
+                                            </div>
                                         ))}
                                     </div>
                                 )

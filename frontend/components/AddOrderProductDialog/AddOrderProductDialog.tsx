@@ -53,7 +53,7 @@ const AddOrderProductDialog: FC = () => {
     useEffect(() => {
         methods.setValue('quantity', 1)
         methods.setValue('itemPrice', 1)
-    }, [])
+    }, [methods])
 
     return (
         <Dialog
