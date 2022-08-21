@@ -31,6 +31,7 @@ describe('Controller: List purchase orders', () => {
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
                     {
+                        id: 'test_product_1',
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
@@ -44,6 +45,7 @@ describe('Controller: List purchase orders', () => {
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
                     {
+                        id: 'test_product_2',
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
@@ -116,7 +118,12 @@ describe('Controller: Create purchase order', () => {
             .send({
                 vendor: vendor._id,
                 products: [
-                    { product: product._id, quantity: 5, itemPrice: 10 },
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 5,
+                        itemPrice: 10,
+                    },
                 ],
             })
             .set('Authorization', token)
@@ -189,6 +196,7 @@ describe('Controller: Update purchase order', () => {
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
                     {
+                        id: 'test_product_1',
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
@@ -209,7 +217,12 @@ describe('Controller: Update purchase order', () => {
             .put(`/api/v1/purchase-orders/${purchaseOrder._id}`)
             .send({
                 products: [
-                    { product: product._id, quantity: 100, itemPrice: 10 },
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                    },
                 ],
             })
             .set('Authorization', token)

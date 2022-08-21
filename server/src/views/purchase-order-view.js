@@ -7,6 +7,7 @@ module.exports.PurchaseOrdersView = (documents) => {
 
 module.exports.PurchaseOrderView = (document) => {
     const products = document.products.map((product) => ({
+        id: product.id,
         product: ProductView(product.product),
         itemPrice: product.itemPrice,
         quantity: product.quantity,

@@ -21,6 +21,7 @@ describe('Module: Create Purchase Order', () => {
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
                     {
+                        id: 'test_product_1',
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
@@ -58,6 +59,7 @@ describe('Module: List PurchaseOrders', () => {
         await PurchaseOrdersModule.createPurchaseOrder({
             products: [
                 {
+                    id: 'test_product_1',
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
@@ -89,6 +91,7 @@ describe('Module: Get PurchaseOrder by id', () => {
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
                     {
+                        id: 'test_product_1',
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
@@ -139,6 +142,7 @@ describe('Module: Update PurchaseOrder', () => {
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
                     {
+                        id: 'test_product_1',
                         product: product1._id,
                         quantity: 100,
                         itemPrice: 10,
@@ -155,6 +159,7 @@ describe('Module: Update PurchaseOrder', () => {
                 products: [
                     ...purchaseOrder.products,
                     {
+                        id: 'test_product_2',
                         product: product2._id,
                         quantity: 200,
                         itemPrice: 20,
