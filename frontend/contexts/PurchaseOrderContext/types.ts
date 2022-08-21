@@ -1,16 +1,11 @@
 import { AxiosResponse } from 'axios'
 import { Product } from '../ProductContext/types'
-
-export type Vendor = {
-    id: string
-    name: string
-    phone: string
-    address: string
-}
+import { Vendor } from '../VendorContext/types'
 
 export type PurchaseOrder = {
     id: string
     products: {
+        id: string
         product: Product
         quantity: number
         itemPrice: number
@@ -18,6 +13,18 @@ export type PurchaseOrder = {
     }[]
     createdAt: number
     vendor: Vendor
+    total: number
+}
+
+export type DraftPurchaseOrder = {
+    products: {
+        id: string
+        product: Product
+        quantity: number
+        itemPrice: number
+        totalPrice: number
+    }[]
+    vendor: Vendor | null
     total: number
 }
 
@@ -57,6 +64,8 @@ export type GetPurchaseOrder = (
 export type Context = {
     orders: PurchaseOrder[] | null
     selectedOrder: PurchaseOrder | null
+    draftOrder: DraftPurchaseOrder
+    setDraftOrder: React.Dispatch<React.SetStateAction<DraftPurchaseOrder>>
     createOrder: CreatePurchaseOrder
     updateOrder: UpdatePurchaseOrder
     listOrders: ListPurchaseOrders

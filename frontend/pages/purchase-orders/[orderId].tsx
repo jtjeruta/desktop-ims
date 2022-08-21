@@ -1,23 +1,32 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import {
     PurchaseOrderContextProvider,
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
-import { useRouter } from 'next/router'
 import Card from '../../components/Card/Card'
-import Table from '../../components/Table/Table'
-import Button from '../../components/Button/Button'
-import { FaTrash } from 'react-icons/fa'
 import AddEditVendorForm from '../../components/AddEditVendorForm/AddEditVendorForm'
+import {
+    ProductContextProvider,
+    useProductContext,
+} from '../../contexts/ProductContext/ProductContext'
+import AddOrderProductDialog from '../../components/AddOrderProductDialog/AddOrderProductDialog'
+import { useAppContext } from '../../contexts/AppContext/AppContext'
+import OrderProductsTable from '../../components/OrderProductsTable/OrderProductsTable'
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 
 const PurchaseOrderPageContent = () => {
+    const AppContext = useAppContext()
     const PurOrdContext = usePurchaseOrderContext()
+    const ProductContext = useProductContext()
     const router = useRouter()
+    const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
 
     useEffect(() => {
         async function init() {
+            // fetch selected order
             if (
                 router.query.orderId &&
                 router.query.orderId !== 'new' &&
@@ -31,85 +40,81 @@ const PurchaseOrderPageContent = () => {
                     router.replace('/404')
                 }
             }
+
+            // fetch products
+            if (ProductContext.products === null) {
+                await ProductContext.listProducts()
+            }
         }
 
         init()
-    }, [router, PurOrdContext])
+    }, [router, PurOrdContext, ProductContext])
 
     return (
-        <UserLayout>
-            <PageHeader
-                title={
-                    PurOrdContext.selectedOrder ? (
-                        <code>#{PurOrdContext.selectedOrder.id}</code>
-                    ) : (
-                        'New Order'
-                    )
-                }
+        <>
+            <UserLayout>
+                <PageHeader
+                    title={
+                        PurOrdContext.selectedOrder ? (
+                            <code>#{PurOrdContext.selectedOrder.id}</code>
+                        ) : (
+                            'New Order'
+                        )
+                    }
+                />
+
+                <div className="flex flex-row gap-3">
+                    <Card title="Vendor Details">
+                        <AddEditVendorForm />
+                    </Card>
+                    <OrderProductsTable
+                        products={
+                            PurOrdContext.selectedOrder?.products ??
+                            PurOrdContext.draftOrder.products
+                        }
+                        onAdd={() => {
+                            AppContext.openDialog('add-order-product-dialog')
+                        }}
+                        onDelete={(id) => () => {
+                            setSelectedProduct(id)
+                            AppContext.openDialog('remove-order-product-dialog')
+                        }}
+                    />
+                </div>
+            </UserLayout>
+
+            <AddOrderProductDialog />
+            <ConfirmDialog
+                text={`Remove product?`}
+                dialogKey="remove-order-product-dialog"
+                onConfirm={() => {
+                    PurOrdContext.setDraftOrder((prev) => {
+                        const products = prev.products.filter(
+                            (p) => p.id !== selectedProduct
+                        )
+
+                        return {
+                            ...prev,
+                            products,
+                            total: products.reduce(
+                                (acc, p) => acc + p.totalPrice,
+                                0
+                            ),
+                        }
+                    })
+                    AppContext.closeDialog()
+                }}
             />
-
-            <div className="flex flex-row gap-3">
-                <Card title="Vendor Details">
-                    <AddEditVendorForm />
-                </Card>
-                <Card cardClsx="grow" bodyClsx="!px-0 !py-0 h-full">
-                    <div className="flex flex-col h-full">
-                        <div className="grow">
-                            <Table
-                                rows={
-                                    PurOrdContext.selectedOrder?.products || []
-                                }
-                                columns={[
-                                    {
-                                        title: 'Product',
-                                        format: (row) => row.product.name,
-                                    },
-                                    {
-                                        title: 'SKU',
-                                        format: (row) => row.product.sku,
-                                    },
-                                    {
-                                        title: 'QTY',
-                                        format: (row) => row.quantity,
-                                    },
-                                    {
-                                        title: 'Unit Price',
-                                        format: (row) => row.itemPrice,
-                                    },
-                                    {
-                                        title: 'Sub-Total',
-                                        format: (row) => row.itemTotal,
-                                    },
-                                    {
-                                        title: 'Actions',
-                                        format: (row) => {
-                                            return (
-                                                <Button>
-                                                    <FaTrash />
-                                                </Button>
-                                            )
-                                        },
-                                        headerClsx: 'text-right',
-                                        bodyClsx: 'flex justify-end',
-                                    },
-                                ]}
-                            />
-                        </div>
-
-                        <div className="flex justify-end py-3 px-4">
-                            <Button>Add</Button>
-                        </div>
-                    </div>
-                </Card>
-            </div>
-        </UserLayout>
+        </>
     )
 }
 
 const PurchaseOrderPage = () => (
-    <PurchaseOrderContextProvider>
-        <PurchaseOrderPageContent />
-    </PurchaseOrderContextProvider>
+    <ProductContextProvider>
+        <PurchaseOrderContextProvider>
+            <PurchaseOrderPageContent />
+        </PurchaseOrderContextProvider>
+    </ProductContextProvider>
 )
 
 export default PurchaseOrderPage

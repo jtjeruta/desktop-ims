@@ -12,6 +12,11 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [orders, setOrders] = useState<Types.PurchaseOrder[] | null>(null)
     const [selectedOrder, setSelectedOrder] =
         useState<Types.PurchaseOrder | null>(null)
+    const [draftOrder, setDraftOrder] = useState<Types.DraftPurchaseOrder>({
+        products: [],
+        vendor: null,
+        total: 0,
+    })
 
     const createOrder: Types.CreatePurchaseOrder = async (purchaseOrderDoc) => {
         const key = 'add-purchase-order'
@@ -109,8 +114,10 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
             updateOrder,
             listOrders,
             getOrder,
+            draftOrder,
+            setDraftOrder,
         }),
-        [orders, selectedOrder]
+        [orders, selectedOrder, draftOrder]
     )
 
     return (
