@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { Product } from '../ProductContext/types'
+import { Product, Warehouse } from '../ProductContext/types'
 import { Vendor } from '../VendorContext/types'
 
 export type PurchaseOrder = {
@@ -13,6 +13,7 @@ export type PurchaseOrder = {
     }[]
     createdAt: number
     vendor: Vendor
+    warehouse: Warehouse | null
     total: number
 }
 
@@ -25,6 +26,7 @@ export type DraftPurchaseOrder = {
         totalPrice: number
     }[]
     vendor: Vendor | null
+    warehouse: Warehouse | null
     total: number
 }
 
@@ -35,6 +37,7 @@ export type CreateUpdatePurchaseOrderDoc = {
         itemPrice: number
     }[]
     vendor: string
+    warehouse: string | null
 }
 
 export type CreateUpdatePurchaseOrderErrors = {

@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -33,12 +33,17 @@ const AddOrderProductDialog: FC = () => {
             return methods.setError('product', { message: 'Product not found' })
         }
 
+        const warehouse = product.warehouses.find(
+            (warehouse) => warehouse.id === data.warehouse
+        )
+
         const productDoc = {
             id: uuid(),
             product,
             quantity: data.quantity,
             itemPrice: data.itemPrice,
             totalPrice: data.quantity * data.itemPrice,
+            warehouse,
         }
 
         PurOrdContext.setDraftOrder((prev) => ({
@@ -50,10 +55,39 @@ const AddOrderProductDialog: FC = () => {
         AppContext.closeDialog()
     }
 
+    const setSelectedProduct = useCallback(
+        (id: string) => {
+            const foundProduct = ProductContext.products?.find(
+                (product) => product.id === id
+            )
+            ProductContext.setProduct(foundProduct || null)
+        },
+        [ProductContext]
+    )
+
+    // set defaults
     useEffect(() => {
+        if (
+            !ProductContext.product &&
+            (ProductContext.products || []).length > 0
+        ) {
+            const defaultProduct = ProductContext.products?.[0]?.id
+            setSelectedProduct(defaultProduct || '')
+        }
+
         methods.setValue('quantity', 1)
         methods.setValue('itemPrice', 1)
-    }, [methods])
+    }, [methods, ProductContext, setSelectedProduct])
+
+    // set on change
+    useEffect(() => {
+        const subscription = methods.watch((data, { name }) => {
+            if (name === 'product') {
+                setSelectedProduct(data.product)
+            }
+        })
+        return () => subscription.unsubscribe()
+    }, [methods, setSelectedProduct])
 
     return (
         <Dialog
@@ -74,19 +108,38 @@ const AddOrderProductDialog: FC = () => {
                                     })
                                 )}
                             />
-                            <TextField
-                                label="Quantity"
-                                name="quantity"
-                                min={1}
+                            <Select
+                                label="Transfer To"
+                                name="warehouse"
                                 required
+                                options={[
+                                    {
+                                        value: 'store',
+                                        text: 'Store',
+                                    },
+                                    ...(
+                                        ProductContext.product?.warehouses || []
+                                    ).map((warehouse) => ({
+                                        value: warehouse.id,
+                                        text: warehouse.name,
+                                    })),
+                                ]}
                             />
-                            <TextField
-                                label="Unit Price"
-                                name="itemPrice"
-                                type="number"
-                                min={0}
-                                required
-                            />
+                            <div className="flex gap-3">
+                                <TextField
+                                    label="Quantity"
+                                    name="quantity"
+                                    min={1}
+                                    required
+                                />
+                                <TextField
+                                    label="Unit Price"
+                                    name="itemPrice"
+                                    type="number"
+                                    min={0}
+                                    required
+                                />
+                            </div>
                         </div>
                     </form>
                 </FormProvider>

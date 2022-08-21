@@ -16,6 +16,9 @@ import AddOrderProductDialog from '../../components/AddOrderProductDialog/AddOrd
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import OrderProductsTable from '../../components/OrderProductsTable/OrderProductsTable'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
+import TextArea from '../../components/TextArea/TextArea'
+import { formatCurrency } from '../../uitls'
+import Button from '../../components/Button/Button'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -63,7 +66,7 @@ const PurchaseOrderPageContent = () => {
                     }
                 />
 
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-row gap-3 mb-3">
                     <Card title="Vendor Details">
                         <AddEditVendorForm />
                     </Card>
@@ -80,6 +83,24 @@ const PurchaseOrderPageContent = () => {
                             AppContext.openDialog('remove-order-product-dialog')
                         }}
                     />
+                </div>
+                <div className="flex gap-3">
+                    <Card cardClsx="grow">
+                        <TextArea label="Remarks" name="remarks" />
+                    </Card>
+                    <Card cardClsx="w-full md:w-1/3 h-full">
+                        <div className="flex flex-col justify-center h-full">
+                            <div className="flex justify-between text-2xl mb-5">
+                                <b>TOTAL:</b>
+                                <b>
+                                    {formatCurrency(
+                                        PurOrdContext.draftOrder.total
+                                    )}
+                                </b>
+                            </div>
+                            <Button className="text-2xl w-full">Save</Button>
+                        </div>
+                    </Card>
                 </div>
             </UserLayout>
 

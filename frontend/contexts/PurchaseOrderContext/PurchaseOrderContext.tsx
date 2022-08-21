@@ -15,6 +15,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [draftOrder, setDraftOrder] = useState<Types.DraftPurchaseOrder>({
         products: [],
         vendor: null,
+        warehouse: null,
         total: 0,
     })
 

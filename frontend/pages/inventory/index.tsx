@@ -15,6 +15,7 @@ import AddProductDialog from '../../components/AddProductDialog/AddProductDialog
 import Switch from '../../components/Switch/Switch'
 import { formatDate } from '../../uitls/date-utils'
 import { getProductWarehouseTotal } from '../../uitls/product-utils'
+import { formatCurrency } from '../../uitls'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -123,7 +124,10 @@ const InventoryPageContent = () => {
                         },
                         {
                             title: 'Price',
-                            key: 'price',
+                            format: (row) => {
+                                const product = row as Product
+                                return formatCurrency(product.price)
+                            },
                             sort: (product) => product.price,
                         },
                         {

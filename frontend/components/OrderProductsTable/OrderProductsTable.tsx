@@ -31,6 +31,11 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 headerClsx: 'w-full',
                             },
                             {
+                                title: 'Transfer to',
+                                format: (row) => row.warehouse?.name ?? 'Store',
+                                headerClsx: 'w-full',
+                            },
+                            {
                                 title: 'QTY',
                                 format: (row) => row.quantity,
                                 bodyClsx: 'text-right',
