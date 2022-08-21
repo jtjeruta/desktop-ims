@@ -1,26 +1,19 @@
 import React, { useMemo, useState } from 'react'
 import * as PurchaseOrdersAPI from '../../apis/PurchaseOrderAPI'
 import { useAppContext } from '../AppContext/AppContext'
-import {
-    CreatePurchaseOrder,
-    Context,
-    PurchaseOrder,
-    ListPurchaseOrders,
-    UpdatePurchaseOrder,
-} from './types'
+import * as Types from './types'
 
-const PurchaseOrderContext = React.createContext<Context | any>({})
+const PurchaseOrderContext = React.createContext<Types.Context | any>({})
 
 const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const AppContext = useAppContext()
-    const [orders, setOrders] = useState<PurchaseOrder[] | null>(null)
-    const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(
-        null
-    )
+    const [orders, setOrders] = useState<Types.PurchaseOrder[] | null>(null)
+    const [selectedOrder, setSelectedOrder] =
+        useState<Types.PurchaseOrder | null>(null)
 
-    const createOrder: CreatePurchaseOrder = async (purchaseOrderDoc) => {
+    const createOrder: Types.CreatePurchaseOrder = async (purchaseOrderDoc) => {
         const key = 'add-purchase-order'
 
         AppContext.addLoading(key)
@@ -37,7 +30,10 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true, response[1]]
     }
 
-    const updateOrder: UpdatePurchaseOrder = async (id, purchaseOrderDoc) => {
+    const updateOrder: Types.UpdatePurchaseOrder = async (
+        id,
+        purchaseOrderDoc
+    ) => {
         const key = 'update-purchase-order'
 
         AppContext.addLoading(key)
@@ -66,7 +62,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true, response[1]]
     }
 
-    const listOrders: ListPurchaseOrders = async () => {
+    const listOrders: Types.ListPurchaseOrders = async () => {
         const key = 'list-purchase-orders'
 
         AppContext.addLoading(key)
@@ -85,13 +81,34 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setOrders(response[1])
     }
 
-    const value: Context = useMemo(
+    const getOrder: Types.GetPurchaseOrder = async (id) => {
+        const key = 'list-purchase-orders'
+
+        AppContext.addLoading(key)
+        const response = await PurchaseOrdersAPI.getPurchaseOrders(id)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return response
+        }
+
+        setSelectedOrder(response[1])
+        return response
+    }
+
+    const value: Types.Context = useMemo(
         () => ({
             orders,
             selectedOrder,
             createOrder,
             updateOrder,
             listOrders,
+            getOrder,
         }),
         [orders, selectedOrder]
     )
@@ -104,7 +121,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }
 
 const usePurchaseOrderContext = () =>
-    React.useContext<Context>(PurchaseOrderContext)
+    React.useContext<Types.Context>(PurchaseOrderContext)
 
 export {
     PurchaseOrderContext,

@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import { Product } from '../ProductContext/types'
 
 export type Vendor = {
@@ -49,6 +50,9 @@ export type UpdatePurchaseOrder = (
     | [false, { message: string; errors?: CreateUpdatePurchaseOrderErrors }]
 >
 export type ListPurchaseOrders = () => Promise<void>
+export type GetPurchaseOrder = (
+    id: string
+) => Promise<[true, PurchaseOrder] | [false, AxiosResponse]>
 
 export type Context = {
     orders: PurchaseOrder[] | null
@@ -56,4 +60,5 @@ export type Context = {
     createOrder: CreatePurchaseOrder
     updateOrder: UpdatePurchaseOrder
     listOrders: ListPurchaseOrders
+    getOrder: GetPurchaseOrder
 }

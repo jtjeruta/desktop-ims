@@ -14,6 +14,12 @@ export const listPurchaseOrders = () =>
         ])
         .catch((err): [false, string] => [false, err.response.message])
 
+export const getPurchaseOrders = (id: string) =>
+    Axios()
+        .get(`/api/v1/purchase-orders/${id}`)
+        .then((response): [true, PurchaseOrder] => [true, response.data.order])
+        .catch((err): [false, AxiosResponse] => [false, err.response])
+
 export const createPurchaseOrder = (data: CreateUpdatePurchaseOrderDoc) =>
     Axios()
         .post('/api/v1/purchase-orders', data)
