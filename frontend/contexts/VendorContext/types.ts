@@ -46,8 +46,10 @@ export type GetVendor = (
 export type Context = {
     vendors: Vendor[] | null
     selectedVendor: Vendor | null
+    draftVendor: CreateVendorDoc | null
     createVendor: CreateVendor
     updateVendor: UpdateVendor
     listVendors: ListVendors
     setSelectedVendor: (vendor: Vendor | null) => void
+    setDraftVendor: React.Dispatch<React.SetStateAction<CreateVendorDoc | null>>
 }

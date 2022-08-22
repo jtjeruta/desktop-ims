@@ -29,8 +29,18 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         AppContext.removeLoading(key)
 
         if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
             return [false, response[1].data]
         }
+
+        AppContext.addNotification({
+            title: 'Order created!.',
+            type: 'success',
+        })
 
         setOrders((prev) => [...(prev || []), response[1]])
         return [true, response[1]]

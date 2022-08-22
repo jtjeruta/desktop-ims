@@ -13,6 +13,8 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [selectedVendor, setSelectedVendor] = useState<Types.Vendor | null>(
         null
     )
+    const [draftVendor, setDraftVendor] =
+        useState<Types.CreateVendorDoc | null>(null)
 
     const createVendor: Types.CreateVendor = async (vendorDoc) => {
         const key = 'add-vendor'
@@ -22,6 +24,11 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
         AppContext.removeLoading(key)
 
         if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
             return [false, response[1].data]
         }
 
@@ -80,12 +87,14 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
         () => ({
             vendors,
             selectedVendor,
+            draftVendor,
+            setDraftVendor,
             createVendor,
             updateVendor,
             listVendors,
             setSelectedVendor,
         }),
-        [vendors, selectedVendor]
+        [vendors, selectedVendor, draftVendor]
     )
 
     return (

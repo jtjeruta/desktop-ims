@@ -1,67 +1,34 @@
 import { FC, useEffect } from 'react'
-import { FieldValues, FormProvider, useForm } from 'react-hook-form'
-
+import { FormProvider, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
 import { useVendorContext } from '../../contexts/VendorContext/VendorContext'
 import AddEditVendorFormSkeleton from './Skeleton'
+import { CreateVendorDoc } from '../../contexts/VendorContext/types'
+
+const vendorSchema = yup
+    .object({
+        name: yup.string().required(),
+        phone: yup.string().required(),
+        email: yup.string().email().required(),
+        address: yup.string().required(),
+    })
+    .required()
 
 type Props = {
     type?: 'create' | 'update'
 }
 
 const AddEditVendorForm: FC<Props> = (props) => {
-    const methods = useForm()
+    const methods = useForm({ resolver: yupResolver(vendorSchema) })
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
 
     const isDisabled =
         AppContext.isLoading('get-vendor') ||
         (props.type === 'update' && !VendorContext.selectedVendor)
-
-    const onSubmit = async (values: FieldValues) => {
-        return values
-        // if (isDisabled) return null
-
-        // const doc = {
-        //     name: values.name as string,
-        //     brand: values.brand as string,
-        //     category: values.category as string,
-        //     subCategory: values.subCategory as string,
-        //     price: +values.price,
-        //     storeQty: +values.storeQty,
-        // }
-
-        // const response = await (VendorContext.selectedVendor
-        //     ? VendorContext.updateVendor(VendorContext.selectedVendor.id, doc)
-        //     : VendorContext.createVendor(doc))
-
-        // if (response[0]) {
-        //     AppContext.closeDialog()
-        //     methods.reset()
-        //     AppContext.addNotification({
-        //         title: !VendorContext.selectedVendor
-        //             ? 'Vendor added!'
-        //             : 'Vendor updated!',
-        //     })
-        //     !VendorContext.selectedVendor &&
-        //         router.push(`/inventory/${response[1].id}`)
-        // } else if (response[1].errors) {
-        //     const { errors } = response[1]
-
-        //     ;(Object.keys(errors) as Array<keyof typeof errors>).map((key) => {
-        //         methods.setError(key, {
-        //             type: 'custom',
-        //             message: errors[key]?.message,
-        //         })
-        //     })
-        // } else if (response[1].message) {
-        //     methods.setError('name', {
-        //         type: 'custom',
-        //         message: 'Name already taken',
-        //     })
-        // }
-    }
 
     useEffect(() => {
         methods.setValue('name', VendorContext.selectedVendor?.name)
@@ -70,11 +37,22 @@ const AddEditVendorForm: FC<Props> = (props) => {
         methods.setValue('address', VendorContext.selectedVendor?.address)
     }, [VendorContext.selectedVendor, methods])
 
+    // set on change
+    useEffect(() => {
+        const subscription = methods.watch(async (data) => {
+            const isValid = await methods.trigger()
+            VendorContext.setDraftVendor(
+                isValid ? (data as CreateVendorDoc) : null
+            )
+        })
+        return () => subscription.unsubscribe()
+    }, [methods, props, VendorContext])
+
     return isDisabled ? (
         <AddEditVendorFormSkeleton />
     ) : (
         <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <form>
                 <div className="flex flex-col gap-2">
                     <TextField
                         label="Name"
@@ -96,16 +74,6 @@ const AddEditVendorForm: FC<Props> = (props) => {
                         name="address"
                         helperText="Eg. lot 2 blok 10, San Francisco Village, lapaz, Iloilo City"
                     />
-                    {/* <div className="flex justify-end mt-3">
-                        <Button
-                            loading={
-                                AppContext.isLoading('update-vendor') ||
-                                AppContext.isLoading('add-vendor')
-                            }
-                        >
-                            Submit
-                        </Button>
-                    </div> */}
                 </div>
             </form>
         </FormProvider>

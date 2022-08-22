@@ -19,11 +19,17 @@ import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 import TextArea from '../../components/TextArea/TextArea'
 import { formatCurrency } from '../../uitls'
 import Button from '../../components/Button/Button'
+import { CreateUpdatePurchaseOrderDoc } from '../../contexts/PurchaseOrderContext/types'
+import {
+    useVendorContext,
+    VendorContextProvider,
+} from '../../contexts/VendorContext/VendorContext'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
     const PurOrdContext = usePurchaseOrderContext()
     const ProductContext = useProductContext()
+    const VendorContext = useVendorContext()
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
 
@@ -52,6 +58,31 @@ const PurchaseOrderPageContent = () => {
 
         init()
     }, [router, PurOrdContext, ProductContext])
+
+    const onSubmit = async () => {
+        if (!VendorContext.draftVendor) return
+
+        const vendorRes = await VendorContext.createVendor(
+            VendorContext.draftVendor
+        )
+
+        if (!vendorRes[0]) return
+
+        const data: CreateUpdatePurchaseOrderDoc = {
+            products: PurOrdContext.draftOrder.products.map((product) => ({
+                product: product.product.id,
+                quantity: product.quantity,
+                itemPrice: product.itemPrice,
+            })),
+            vendor: vendorRes[1].id,
+            warehouse: PurOrdContext.draftOrder.warehouse?.id ?? null,
+        }
+
+        const purOrdRes = await PurOrdContext.createOrder(data)
+
+        if (!purOrdRes[0]) return
+        router.push(`/purchase-order/${purOrdRes[1].id}`)
+    }
 
     return (
         <>
@@ -88,7 +119,7 @@ const PurchaseOrderPageContent = () => {
                     <Card cardClsx="grow">
                         <TextArea label="Remarks" name="remarks" />
                     </Card>
-                    <Card cardClsx="w-full md:w-1/3 h-full">
+                    <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">
                         <div className="flex flex-col justify-center h-full">
                             <div className="flex justify-between text-2xl mb-5">
                                 <b>TOTAL:</b>
@@ -98,7 +129,17 @@ const PurchaseOrderPageContent = () => {
                                     )}
                                 </b>
                             </div>
-                            <Button className="text-2xl w-full">Save</Button>
+                            <Button
+                                className="text-2xl w-full"
+                                disabled={
+                                    !VendorContext.draftVendor ||
+                                    PurOrdContext.draftOrder.products.length <=
+                                        0
+                                }
+                                onClick={onSubmit}
+                            >
+                                Save
+                            </Button>
                         </div>
                     </Card>
                 </div>
@@ -132,9 +173,11 @@ const PurchaseOrderPageContent = () => {
 
 const PurchaseOrderPage = () => (
     <ProductContextProvider>
-        <PurchaseOrderContextProvider>
-            <PurchaseOrderPageContent />
-        </PurchaseOrderContextProvider>
+        <VendorContextProvider>
+            <PurchaseOrderContextProvider>
+                <PurchaseOrderPageContent />
+            </PurchaseOrderContextProvider>
+        </VendorContextProvider>
     </ProductContextProvider>
 )
 

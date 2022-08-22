@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { FaTrash } from 'react-icons/fa'
 import { Product } from '../../contexts/ProductContext/types'
+import { formatCurrency } from '../../uitls'
 import Button from '../Button/Button'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
@@ -42,12 +43,12 @@ const OrderProductsTable: FC<Props> = (props) => {
                             },
                             {
                                 title: 'Unit Price',
-                                format: (row) => row.itemPrice,
+                                format: (row) => formatCurrency(row.itemPrice),
                                 bodyClsx: 'text-right',
                             },
                             {
                                 title: 'Sub-Total',
-                                format: (row) => row.totalPrice,
+                                format: (row) => formatCurrency(row.totalPrice),
                                 bodyClsx: 'text-right',
                             },
                             {
