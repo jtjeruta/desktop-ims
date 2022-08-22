@@ -48,6 +48,9 @@ const PurchaseOrderSchema = new mongoose.Schema({
         required: true,
         min: [0, 'Path `quantity` can not be less than 0.'],
     },
+    remarks: {
+        type: String,
+    },
 })
 
 const PurchaseOrderModel = mongoose.model('PurchaseOrder', PurchaseOrderSchema)

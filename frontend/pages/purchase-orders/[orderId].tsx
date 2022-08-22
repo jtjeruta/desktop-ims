@@ -16,7 +16,6 @@ import AddOrderProductDialog from '../../components/AddOrderProductDialog/AddOrd
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import OrderProductsTable from '../../components/OrderProductsTable/OrderProductsTable'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
-import TextArea from '../../components/TextArea/TextArea'
 import { formatCurrency } from '../../uitls'
 import Button from '../../components/Button/Button'
 import { CreateUpdatePurchaseOrderDoc } from '../../contexts/PurchaseOrderContext/types'
@@ -24,6 +23,7 @@ import {
     useVendorContext,
     VendorContextProvider,
 } from '../../contexts/VendorContext/VendorContext'
+import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -77,6 +77,7 @@ const PurchaseOrderPageContent = () => {
             })),
             vendor: vendorRes[1].id,
             warehouse: PurOrdContext.draftOrder.warehouse?.id ?? null,
+            remarks: PurOrdContext.draftOrder.remarks,
         }
 
         const purOrdRes = await PurOrdContext.createOrder(data)
@@ -117,16 +118,15 @@ const PurchaseOrderPageContent = () => {
                     />
                 </div>
                 <div className="flex gap-3">
-                    <Card cardClsx="grow">
-                        <TextArea label="Remarks" name="remarks" />
-                    </Card>
+                    <OrderRemarksForm />
                     <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">
                         <div className="flex flex-col justify-center h-full">
                             <div className="flex justify-between text-2xl mb-5">
                                 <b>TOTAL:</b>
                                 <b>
                                     {formatCurrency(
-                                        PurOrdContext.draftOrder.total
+                                        PurOrdContext.selectedOrder?.total ??
+                                            PurOrdContext.draftOrder.total
                                     )}
                                 </b>
                             </div>

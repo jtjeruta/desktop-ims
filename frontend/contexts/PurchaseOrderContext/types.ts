@@ -15,6 +15,7 @@ export type PurchaseOrder = {
     vendor: Vendor
     warehouse: Warehouse | null
     total: number
+    remarks: string | null
 }
 
 export type DraftPurchaseOrder = {
@@ -28,6 +29,7 @@ export type DraftPurchaseOrder = {
     vendor: Vendor | null
     warehouse: Warehouse | null
     total: number
+    remarks: string | null
 }
 
 export type CreateUpdatePurchaseOrderDoc = {
@@ -38,6 +40,7 @@ export type CreateUpdatePurchaseOrderDoc = {
     }[]
     vendor: string
     warehouse: string | null
+    remarks: string | null
 }
 
 export type CreateUpdatePurchaseOrderErrors = {
