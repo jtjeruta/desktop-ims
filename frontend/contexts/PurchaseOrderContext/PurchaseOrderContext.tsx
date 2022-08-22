@@ -101,15 +101,10 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const key = 'list-purchase-orders'
 
         AppContext.addLoading(key)
-        const response = await PurchaseOrdersAPI.getPurchaseOrders(id)
+        const response = await PurchaseOrdersAPI.getPurchaseOrder(id)
         AppContext.removeLoading(key)
 
         if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
             return response
         }
 

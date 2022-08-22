@@ -70,6 +70,7 @@ const PurchaseOrderPageContent = () => {
 
         const data: CreateUpdatePurchaseOrderDoc = {
             products: PurOrdContext.draftOrder.products.map((product) => ({
+                id: product.id,
                 product: product.product.id,
                 quantity: product.quantity,
                 itemPrice: product.itemPrice,
@@ -81,7 +82,7 @@ const PurchaseOrderPageContent = () => {
         const purOrdRes = await PurOrdContext.createOrder(data)
 
         if (!purOrdRes[0]) return
-        router.push(`/purchase-order/${purOrdRes[1].id}`)
+        router.push(`/purchase-orders/${purOrdRes[1].id}`)
     }
 
     return (

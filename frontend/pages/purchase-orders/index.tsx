@@ -11,6 +11,7 @@ import {
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { PurchaseOrder } from '../../contexts/PurchaseOrderContext/types'
+import { formatCurrency } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
 const PurchaseOrdersPageContent = () => {
@@ -91,13 +92,26 @@ const PurchaseOrdersPageContent = () => {
                             title: 'Total',
                             format: (row) => {
                                 const order = row as PurchaseOrder
-                                return order.total
+                                return formatCurrency(order.total)
                             },
                         },
                         {
                             title: ' ',
-                            format: () => {
-                                return <Button style="link">View</Button>
+                            bodyClsx: 'w-0',
+                            format: (row) => {
+                                const order = row as PurchaseOrder
+                                return (
+                                    <Button
+                                        style="link"
+                                        onClick={() =>
+                                            router.push(
+                                                `/purchase-orders/${order.id}`
+                                            )
+                                        }
+                                    >
+                                        View
+                                    </Button>
+                                )
                             },
                         },
                     ]}

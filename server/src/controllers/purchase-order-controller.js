@@ -56,11 +56,16 @@ module.exports.createPurchaseOrder = async (req, res) => {
 
 module.exports.listPurchaseOrders = async (req, res) => {
     const [status, data] = await PurchaseOrdersModule.listPurchaseOrders()
-
     if (status !== 200) return res.status(status).json(data)
+    return res.status(200).json({ orders: PurchaseOrdersView(data) })
+}
 
-    const purchaseOrders = PurchaseOrdersView(data)
-    return res.status(200).json({ purchaseOrders })
+module.exports.getPurchaseOrder = async (req, res) => {
+    const [status, data] = await PurchaseOrdersModule.getPurchaseOrderById(
+        req.params.purchaseOrderId
+    )
+    if (status !== 200) return res.status(status).json(data)
+    return res.status(200).json({ order: PurchaseOrderView(data) })
 }
 
 module.exports.updatePurchaseOrder = async (req, res) => {

@@ -19,5 +19,6 @@ module.exports.PurchaseOrderView = (document) => {
         vendor: VendorView(document.vendor),
         products,
         total: document.total,
+        createdAt: document.createdAt,
     }
 }
