@@ -15,7 +15,6 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [draftOrder, setDraftOrder] = useState<Types.DraftPurchaseOrder>({
         products: [],
         vendor: null,
-        warehouse: null,
         total: 0,
         remarks: null,
     })
@@ -39,7 +38,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         AppContext.addNotification({
-            title: 'Order created!.',
+            title: 'Order created!',
             type: 'success',
         })
 
@@ -61,6 +60,11 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         AppContext.removeLoading(key)
 
         if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
             return [false, response[1].data]
         }
 
@@ -75,6 +79,11 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         if (id === selectedOrder?.id) {
             setSelectedOrder(response[1])
         }
+
+        AppContext.addNotification({
+            title: 'Order updated!',
+            type: 'success',
+        })
 
         return [true, response[1]]
     }
@@ -117,11 +126,12 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         () => ({
             orders,
             selectedOrder,
+            draftOrder,
             createOrder,
             updateOrder,
             listOrders,
             getOrder,
-            draftOrder,
+            setSelectedOrder,
             setDraftOrder,
         }),
         [orders, selectedOrder, draftOrder]

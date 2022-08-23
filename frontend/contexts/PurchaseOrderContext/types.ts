@@ -10,10 +10,10 @@ export type PurchaseOrder = {
         quantity: number
         itemPrice: number
         totalPrice: number
+        warehouse: Warehouse | null
     }[]
     createdAt: number
     vendor: Vendor
-    warehouse: Warehouse | null
     total: number
     remarks: string | null
 }
@@ -25,9 +25,9 @@ export type DraftPurchaseOrder = {
         quantity: number
         itemPrice: number
         totalPrice: number
+        warehouse: Warehouse | null
     }[]
     vendor: Vendor | null
-    warehouse: Warehouse | null
     total: number
     remarks: string | null
 }
@@ -37,9 +37,9 @@ export type CreateUpdatePurchaseOrderDoc = {
         product: string
         quantity: number
         itemPrice: number
+        warehouse: string | null
     }[]
     vendor: string
-    warehouse: string | null
     remarks: string | null
 }
 
@@ -72,6 +72,7 @@ export type Context = {
     selectedOrder: PurchaseOrder | null
     draftOrder: DraftPurchaseOrder
     setDraftOrder: React.Dispatch<React.SetStateAction<DraftPurchaseOrder>>
+    setSelectedOrder: React.Dispatch<React.SetStateAction<PurchaseOrder | null>>
     createOrder: CreatePurchaseOrder
     updateOrder: UpdatePurchaseOrder
     listOrders: ListPurchaseOrders

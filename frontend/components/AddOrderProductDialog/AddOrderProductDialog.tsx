@@ -18,7 +18,11 @@ const addOrderProductSchema = yup
     })
     .required()
 
-const AddOrderProductDialog: FC = () => {
+type Props = {
+    draft: boolean
+}
+
+const AddOrderProductDialog: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
     const PurOrdContext = usePurchaseOrderContext()
@@ -46,11 +50,23 @@ const AddOrderProductDialog: FC = () => {
             warehouse,
         }
 
-        PurOrdContext.setDraftOrder((prev) => ({
-            ...prev,
-            products: [...prev.products, productDoc],
-            total: prev.total + productDoc.totalPrice,
-        }))
+        if (props.draft) {
+            PurOrdContext.setDraftOrder((prev) => ({
+                ...prev,
+                products: [...prev.products, productDoc],
+                total: prev.total + productDoc.totalPrice,
+            }))
+        } else {
+            PurOrdContext.setSelectedOrder((prev) => {
+                if (!prev) return null
+
+                return {
+                    ...prev,
+                    products: [...prev.products, productDoc],
+                    total: prev.total + productDoc.totalPrice,
+                }
+            })
+        }
 
         AppContext.closeDialog()
     }

@@ -11,6 +11,12 @@ export const listVendors = () =>
         ])
         .catch((err): [false, string] => [false, err.response.data.message])
 
+export const getVendor = (vendorId: string) =>
+    Axios()
+        .get(`/api/v1/vendors/${vendorId}`)
+        .then((response): [true, Types.Vendor] => [true, response.data.vendor])
+        .catch((err): [false, string] => [false, err.response.data.message])
+
 export const createVendor = (data: Types.CreateVendorDoc) =>
     Axios()
         .post('/api/v1/vendors', data)

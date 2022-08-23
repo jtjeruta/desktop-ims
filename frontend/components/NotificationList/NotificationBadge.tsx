@@ -23,7 +23,7 @@ const NotificationBadge: FC<Props> = ({ notif }) => {
 
     return (
         <div
-            className="rounded-b px-4 py-3 shadow-md animate-notif bg-white"
+            className="rounded-b px-4 py-3 shadow-md animate-wiggle bg-white"
             role="alert"
             style={{ width: 300 }}
         >

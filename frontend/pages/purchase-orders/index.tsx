@@ -25,6 +25,7 @@ const PurchaseOrdersPageContent = () => {
         return [
             order.products.map((p) => p.product.name).join('-'),
             order.vendor.name,
+            order.total,
             formatDate(order.createdAt),
         ].some((item) => regex.test(`${item}`))
     })

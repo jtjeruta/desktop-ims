@@ -54,6 +54,7 @@ module.exports.getPurchaseOrderById = async (id) => {
             .populate('vendor')
             .populate('products.product')
             .populate('products.product.warehouses')
+            .populate('products.warehouse')
 
         if (!purchaseOrder)
             return [404, { message: 'Purchase order not found.' }]

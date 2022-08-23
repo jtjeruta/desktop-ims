@@ -24,6 +24,8 @@ import {
     VendorContextProvider,
 } from '../../contexts/VendorContext/VendorContext'
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
+import VendorSelect from '../../components/VendorSelect/VendorSelect'
+import { Vendor } from '../../contexts/VendorContext/types'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -32,13 +34,20 @@ const PurchaseOrderPageContent = () => {
     const VendorContext = useVendorContext()
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
+    const isEditPage = ![undefined, 'new', ['']].includes(router.query.orderId)
+
+    const disableSubmitButton =
+        !VendorContext.selectedVendor &&
+        !VendorContext.draftVendor &&
+        (isEditPage
+            ? (PurOrdContext.selectedOrder?.products.length ?? 0) <= 0
+            : PurOrdContext.draftOrder.products.length <= 0)
 
     useEffect(() => {
         async function init() {
-            // fetch selected order
             if (
-                router.query.orderId &&
-                router.query.orderId !== 'new' &&
+                isEditPage &&
+                router.query &&
                 PurOrdContext.selectedOrder === null
             ) {
                 const response = await PurOrdContext.getOrder(
@@ -46,7 +55,11 @@ const PurchaseOrderPageContent = () => {
                 )
 
                 if (!response[0] && response[1].status === 404) {
-                    router.replace('/404')
+                    return router.replace('/404')
+                }
+
+                if (response[0]) {
+                    VendorContext.setSelectedVendor(response[1].vendor)
                 }
             }
 
@@ -54,30 +67,71 @@ const PurchaseOrderPageContent = () => {
             if (ProductContext.products === null) {
                 await ProductContext.listProducts()
             }
+
+            // fetch vendors
+            if (VendorContext.vendors === null) {
+                await VendorContext.listVendors()
+            }
         }
 
         init()
-    }, [router, PurOrdContext, ProductContext])
+    }, [router, PurOrdContext, ProductContext, VendorContext, isEditPage])
 
     const onSubmit = async () => {
-        if (!VendorContext.draftVendor) return
+        let vendor: Vendor | null = null
 
-        const vendorRes = await VendorContext.createVendor(
-            VendorContext.draftVendor
-        )
+        if (isEditPage) {
+            vendor = VendorContext.selectedVendor
+        } else {
+            if (!VendorContext.draftVendor) return
 
-        if (!vendorRes[0]) return
+            const vendorRes = await VendorContext.createVendor(
+                VendorContext.draftVendor
+            )
+
+            vendor = vendorRes[0] ? vendorRes[1] : null
+        }
+        if (!vendor) return
+
+        if (isEditPage) {
+            handleUpdatePurOrd(vendor)
+        } else {
+            handleCreatePurOrd(vendor)
+        }
+    }
+
+    const handleUpdatePurOrd = async (vendor: Vendor) => {
+        const order = PurOrdContext.selectedOrder
+        if (!order) return
 
         const data: CreateUpdatePurchaseOrderDoc = {
-            products: PurOrdContext.draftOrder.products.map((product) => ({
+            products: order.products.map((product) => ({
                 id: product.id,
                 product: product.product.id,
                 quantity: product.quantity,
                 itemPrice: product.itemPrice,
+                warehouse: product.warehouse?.id ?? null,
             })),
-            vendor: vendorRes[1].id,
-            warehouse: PurOrdContext.draftOrder.warehouse?.id ?? null,
-            remarks: PurOrdContext.draftOrder.remarks,
+            vendor: vendor.id,
+            remarks: order.remarks ?? '',
+        }
+
+        await PurOrdContext.updateOrder(order.id, data)
+    }
+
+    const handleCreatePurOrd = async (vendor: Vendor) => {
+        const order = PurOrdContext.draftOrder
+
+        const data: CreateUpdatePurchaseOrderDoc = {
+            products: order.products.map((product) => ({
+                id: product.id,
+                product: product.product.id,
+                quantity: product.quantity,
+                itemPrice: product.itemPrice,
+                warehouse: product.warehouse?.id ?? null,
+            })),
+            vendor: vendor.id,
+            remarks: order.remarks ?? '',
         }
 
         const purOrdRes = await PurOrdContext.createOrder(data)
@@ -101,12 +155,19 @@ const PurchaseOrderPageContent = () => {
 
                 <div className="flex flex-row gap-3 mb-3">
                     <Card title="Vendor Details">
-                        <AddEditVendorForm />
+                        <>
+                            {PurOrdContext.selectedOrder ? (
+                                <VendorSelect />
+                            ) : (
+                                <AddEditVendorForm />
+                            )}
+                        </>
                     </Card>
                     <OrderProductsTable
                         products={
-                            PurOrdContext.selectedOrder?.products ??
-                            PurOrdContext.draftOrder.products
+                            isEditPage
+                                ? PurOrdContext.selectedOrder?.products || []
+                                : PurOrdContext.draftOrder.products
                         }
                         onAdd={() => {
                             AppContext.openDialog('add-order-product-dialog')
@@ -118,7 +179,7 @@ const PurchaseOrderPageContent = () => {
                     />
                 </div>
                 <div className="flex gap-3">
-                    <OrderRemarksForm />
+                    <OrderRemarksForm draft={!isEditPage} />
                     <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">
                         <div className="flex flex-col justify-center h-full">
                             <div className="flex justify-between text-2xl mb-5">
@@ -132,39 +193,53 @@ const PurchaseOrderPageContent = () => {
                             </div>
                             <Button
                                 className="text-2xl w-full"
-                                disabled={
-                                    !VendorContext.draftVendor ||
-                                    PurOrdContext.draftOrder.products.length <=
-                                        0
-                                }
+                                disabled={disableSubmitButton}
                                 onClick={onSubmit}
                             >
-                                Save
+                                {isEditPage ? 'Update Order' : 'Create Order'}
                             </Button>
                         </div>
                     </Card>
                 </div>
             </UserLayout>
 
-            <AddOrderProductDialog />
+            <AddOrderProductDialog draft={!isEditPage} />
             <ConfirmDialog
                 text={`Remove product?`}
                 dialogKey="remove-order-product-dialog"
                 onConfirm={() => {
-                    PurOrdContext.setDraftOrder((prev) => {
-                        const products = prev.products.filter(
-                            (p) => p.id !== selectedProduct
-                        )
+                    if (isEditPage) {
+                        PurOrdContext.setSelectedOrder((prev) => {
+                            if (!prev) return null
+                            const products = prev.products.filter(
+                                (p) => p.id !== selectedProduct
+                            )
 
-                        return {
-                            ...prev,
-                            products,
-                            total: products.reduce(
-                                (acc, p) => acc + p.totalPrice,
-                                0
-                            ),
-                        }
-                    })
+                            return {
+                                ...prev,
+                                products,
+                                total: products.reduce(
+                                    (acc, p) => acc + p.totalPrice,
+                                    0
+                                ),
+                            }
+                        })
+                    } else {
+                        PurOrdContext.setDraftOrder((prev) => {
+                            const products = prev.products.filter(
+                                (p) => p.id !== selectedProduct
+                            )
+
+                            return {
+                                ...prev,
+                                products,
+                                total: products.reduce(
+                                    (acc, p) => acc + p.totalPrice,
+                                    0
+                                ),
+                            }
+                        })
+                    }
                     AppContext.closeDialog()
                 }}
             />

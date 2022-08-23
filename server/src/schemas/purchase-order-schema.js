@@ -35,6 +35,10 @@ const PurchaseOrderSchema = new mongoose.Schema({
                     required: true,
                     min: [0, 'Path `quantity` can not be less than 0.'],
                 },
+                warehouse: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Warehouse',
+                },
             },
         ],
     },

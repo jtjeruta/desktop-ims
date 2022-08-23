@@ -12,7 +12,7 @@ const vendorSchema = yup
     .object({
         name: yup.string().required(),
         phone: yup.string().required(),
-        email: yup.string().email().required(),
+        email: yup.string().email(),
         address: yup.string().required(),
     })
     .required()

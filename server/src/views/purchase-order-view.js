@@ -1,5 +1,6 @@
 const { ProductView } = require('./product-view')
 const { VendorView } = require('./vendor-view')
+const { WarehouseView } = require('./warehouse-view')
 
 module.exports.PurchaseOrdersView = (documents) => {
     return documents.map((document) => this.PurchaseOrderView(document))
@@ -12,6 +13,7 @@ module.exports.PurchaseOrderView = (document) => {
         itemPrice: product.itemPrice,
         quantity: product.quantity,
         totalPrice: product.totalPrice,
+        warehouse: product.warehouse ? WarehouseView(product.warehouse) : null,
     }))
 
     return {
