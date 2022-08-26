@@ -17,14 +17,14 @@ export const getVendor = (vendorId: string) =>
         .then((response): [true, Types.Vendor] => [true, response.data.vendor])
         .catch((err): [false, string] => [false, err.response.data.message])
 
-export const createVendor = (data: Types.CreateVendorDoc) =>
+export const createVendor = (data: Types.AddEditVendorDoc) =>
     Axios()
         .post('/api/v1/vendors', data)
         .then((response): [true, Types.Vendor] => [true, response.data.vendor])
         .catch((err): [false, AxiosResponse] => [false, err.response])
 
-export const updateVendor = (id: string, data: Types.UpdateVendorDoc) =>
+export const updateVendor = (id: string, data: Types.AddEditVendorDoc) =>
     Axios()
-        .post(`/api/v1/vendors/${id}`, data)
+        .put(`/api/v1/vendors/${id}`, data)
         .then((response): [true, Types.Vendor] => [true, response.data.vendor])
         .catch((err): [false, AxiosResponse] => [false, err.response])

@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import {
-    CreateUpdatePurchaseOrderDoc,
+    AddEditPurchaseOrderDoc,
     PurchaseOrder,
 } from '../contexts/PurchaseOrderContext/types'
 import Axios from './AxiosAPI'
@@ -20,7 +20,7 @@ export const getPurchaseOrder = (id: string) =>
         .then((response): [true, PurchaseOrder] => [true, response.data.order])
         .catch((err): [false, AxiosResponse] => [false, err.response])
 
-export const createPurchaseOrder = (data: CreateUpdatePurchaseOrderDoc) =>
+export const createPurchaseOrder = (data: AddEditPurchaseOrderDoc) =>
     Axios()
         .post('/api/v1/purchase-orders', data)
         .then((response): [true, PurchaseOrder] => [true, response.data.order])
@@ -28,7 +28,7 @@ export const createPurchaseOrder = (data: CreateUpdatePurchaseOrderDoc) =>
 
 export const updatePurchaseOrder = (
     id: string,
-    data: CreateUpdatePurchaseOrderDoc
+    data: AddEditPurchaseOrderDoc
 ) =>
     Axios()
         .put(`/api/v1/purchase-orders/${id}`, data)

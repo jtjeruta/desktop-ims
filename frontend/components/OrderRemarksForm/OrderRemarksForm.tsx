@@ -1,47 +1,30 @@
-import { FC, useEffect } from 'react'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import Card from '../Card/Card'
 import TextArea from '../TextArea/TextArea'
 
-type Props = {
-    draft: boolean
-}
-
-const OrderRemarksForm: FC<Props> = (props) => {
+const OrderRemarksForm = () => {
     const methods = useForm()
     const PurOrdContext = usePurchaseOrderContext()
 
     // set defaults
     useEffect(() => {
-        const remarks = props.draft
-            ? PurOrdContext.draftOrder?.remarks
-            : PurOrdContext.selectedOrder?.remarks
-
+        const remarks = PurOrdContext.draftOrder.remarks
         if (remarks !== methods.getValues('remarks'))
             methods.setValue('remarks', remarks)
-    }, [methods, PurOrdContext, props.draft])
+    }, [methods, PurOrdContext])
 
     // set on change
     useEffect(() => {
         const subscription = methods.watch((data) => {
-            if (props.draft) {
-                PurOrdContext.setDraftOrder((prev) => ({
-                    ...prev,
-                    remarks: data.remarks,
-                }))
-            } else {
-                PurOrdContext.setSelectedOrder((prev) => {
-                    if (!prev) return null
-                    return {
-                        ...prev,
-                        remarks: data.remarks,
-                    }
-                })
-            }
+            PurOrdContext.setDraftOrder((prev) => ({
+                ...prev,
+                remarks: data.remarks,
+            }))
         })
         return () => subscription.unsubscribe()
-    }, [methods, PurOrdContext, props.draft])
+    }, [methods, PurOrdContext])
 
     return (
         <Card cardClsx="grow">

@@ -4,7 +4,7 @@ const VendorsModule = require('../../modules/vendors-module')
 const setup = require('../setup')
 const testdata = require('../testdata')
 
-describe('Create Vendor', () => {
+describe('Module: Create Vendor', () => {
     setup()
 
     it('Success: create vendor using correct data', async () => {
@@ -23,13 +23,6 @@ describe('Create Vendor', () => {
         expect(createdVendor[1].errors.name.message).to.equal(
             'Path `name` is required.'
         )
-        expect(createdVendor[1].errors.phone.message).to.equal(
-            'Path `phone` is required.'
-        )
-        expect(createdVendor[1].errors.address.message).to.equal(
-            'Path `address` is required.'
-        )
-        expect('email' in createdVendor[1].errors).to.be.false
     })
 
     it('Fail: create vendor using duplicate name', async () => {
@@ -40,7 +33,7 @@ describe('Create Vendor', () => {
     })
 })
 
-describe('List Vendors', () => {
+describe('Module: List Vendors', () => {
     setup()
 
     it('Success: list all vendors', async () => {
@@ -52,7 +45,7 @@ describe('List Vendors', () => {
     })
 })
 
-describe('Get Vendor by id', () => {
+describe('Module: Get Vendor by id', () => {
     setup()
 
     it('Success: given correct id', async () => {
@@ -75,7 +68,7 @@ describe('Get Vendor by id', () => {
     })
 })
 
-describe('Update Vendor', () => {
+describe('Module: Update Vendor', () => {
     setup()
 
     it('Success: update vendor using correct data', async () => {
@@ -98,20 +91,12 @@ describe('Update Vendor', () => {
             createdVendor[1]._id,
             {
                 name: '',
-                address: '',
-                phone: null,
             }
         )
 
         expect(updatedVendor[0]).to.equal(400)
         expect(updatedVendor[1].errors.name.message).to.equal(
             'Path `name` is required.'
-        )
-        expect(updatedVendor[1].errors.address.message).to.equal(
-            'Path `address` is required.'
-        )
-        expect(updatedVendor[1].errors.phone.message).to.equal(
-            'Path `phone` is required.'
         )
     })
 

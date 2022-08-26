@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { FaTrash } from 'react-icons/fa'
-import { Product } from '../../contexts/ProductContext/types'
+import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { formatCurrency } from '../../uitls'
 import Button from '../Button/Button'
 import Card from '../Card/Card'
@@ -9,22 +9,17 @@ import Table from '../Table/Table'
 type Props = {
     onAdd: () => void
     onDelete: (name: string) => () => void
-    products: {
-        id: string
-        product: Product
-        quantity: number
-        itemPrice: number
-        totalPrice: number
-    }[]
 }
 
 const OrderProductsTable: FC<Props> = (props) => {
+    const PurOrdContext = usePurchaseOrderContext()
+
     return (
         <Card cardClsx="grow" bodyClsx="!px-0 !py-0 h-full">
             <div className="flex flex-col h-full">
                 <div className="grow">
                     <Table
-                        rows={props.products || []}
+                        rows={PurOrdContext.draftOrder.products || []}
                         columns={[
                             {
                                 title: 'Product',

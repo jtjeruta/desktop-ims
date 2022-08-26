@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -18,11 +18,7 @@ const addOrderProductSchema = yup
     })
     .required()
 
-type Props = {
-    draft: boolean
-}
-
-const AddOrderProductDialog: FC<Props> = (props) => {
+const AddOrderProductDialog = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
     const PurOrdContext = usePurchaseOrderContext()
@@ -47,26 +43,14 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             quantity: data.quantity,
             itemPrice: data.itemPrice,
             totalPrice: data.quantity * data.itemPrice,
-            warehouse,
+            warehouse: warehouse || null,
         }
 
-        if (props.draft) {
-            PurOrdContext.setDraftOrder((prev) => ({
-                ...prev,
-                products: [...prev.products, productDoc],
-                total: prev.total + productDoc.totalPrice,
-            }))
-        } else {
-            PurOrdContext.setSelectedOrder((prev) => {
-                if (!prev) return null
-
-                return {
-                    ...prev,
-                    products: [...prev.products, productDoc],
-                    total: prev.total + productDoc.totalPrice,
-                }
-            })
-        }
+        PurOrdContext.setDraftOrder((prev) => ({
+            ...prev,
+            products: [...prev.products, productDoc],
+            total: prev.total + productDoc.totalPrice,
+        }))
 
         AppContext.closeDialog()
     }

@@ -19,6 +19,7 @@ export type PurchaseOrder = {
 }
 
 export type DraftPurchaseOrder = {
+    id?: string
     products: {
         id: string
         product: Product
@@ -32,7 +33,7 @@ export type DraftPurchaseOrder = {
     remarks: string | null
 }
 
-export type CreateUpdatePurchaseOrderDoc = {
+export type AddEditPurchaseOrderDoc = {
     products: {
         product: string
         quantity: number
@@ -49,7 +50,7 @@ export type CreateUpdatePurchaseOrderErrors = {
 }
 
 export type CreatePurchaseOrder = (
-    order: CreateUpdatePurchaseOrderDoc
+    order: AddEditPurchaseOrderDoc
 ) => Promise<
     | [true, PurchaseOrder]
     | [false, { message: string; errors?: CreateUpdatePurchaseOrderErrors }]
@@ -57,7 +58,7 @@ export type CreatePurchaseOrder = (
 
 export type UpdatePurchaseOrder = (
     id: string,
-    order: CreateUpdatePurchaseOrderDoc
+    order: AddEditPurchaseOrderDoc
 ) => Promise<
     | [true, PurchaseOrder]
     | [false, { message: string; errors?: CreateUpdatePurchaseOrderErrors }]

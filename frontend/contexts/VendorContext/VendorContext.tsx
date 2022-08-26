@@ -13,8 +13,12 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [selectedVendor, setSelectedVendor] = useState<Types.Vendor | null>(
         null
     )
-    const [draftVendor, setDraftVendor] =
-        useState<Types.CreateVendorDoc | null>(null)
+    const [draftVendor, setDraftVendor] = useState<Types.AddEditVendorDoc>({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+    })
 
     const createVendor: Types.CreateVendor = async (vendorDoc) => {
         const key = 'add-vendor'

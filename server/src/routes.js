@@ -63,6 +63,7 @@ router.delete(
 // vendors
 router.get('/api/v1/vendors', isAdmin, VendorController.listVendors)
 router.post('/api/v1/vendors', isAdmin, VendorController.createVendor)
+router.put('/api/v1/vendors/:vendorId', isAdmin, VendorController.updateVendor)
 
 // purchase orders
 router.get(

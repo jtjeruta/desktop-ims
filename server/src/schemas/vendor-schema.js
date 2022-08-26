@@ -9,19 +9,16 @@ const VendorSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: true,
     },
     email: {
         type: String,
     },
     address: {
         type: String,
-        required: true,
     },
 })
 
 VendorSchema.index({ name: 1 }, { unique: true })
-VendorSchema.index({ phone: 1 }, { unique: true })
 
 const VendorModel = mongoose.model('Vendor', VendorSchema)
 

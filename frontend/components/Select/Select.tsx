@@ -16,7 +16,10 @@ type Props = {
 const Select: FC<Props> = (props) => {
     const methods = useFormContext()
     const register = methods
-        ? methods.register(props.name, { required: props.required })
+        ? methods.register(
+              props.name,
+              props.required ? { required: props.required } : {}
+          )
         : {}
     const errorMessage: string | undefined =
         methods?.formState.errors[props.name]?.message
@@ -39,10 +42,12 @@ const Select: FC<Props> = (props) => {
                     'focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
                     errorMessage && 'border-red-300'
                 )}
-                placeholder={props.placeholder}
                 required={props.required}
                 {...register}
             >
+                {!props.required && (
+                    <option value="">{props.placeholder}</option>
+                )}
                 {props.options.map((option) => (
                     <option key={option.value} value={option.value}>
                         {option.text || option.value}

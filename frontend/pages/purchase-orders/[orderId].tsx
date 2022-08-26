@@ -7,7 +7,6 @@ import {
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import Card from '../../components/Card/Card'
-import AddEditVendorForm from '../../components/AddEditVendorForm/AddEditVendorForm'
 import {
     ProductContextProvider,
     useProductContext,
@@ -18,14 +17,13 @@ import OrderProductsTable from '../../components/OrderProductsTable/OrderProduct
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 import { formatCurrency } from '../../uitls'
 import Button from '../../components/Button/Button'
-import { CreateUpdatePurchaseOrderDoc } from '../../contexts/PurchaseOrderContext/types'
+import { AddEditPurchaseOrderDoc } from '../../contexts/PurchaseOrderContext/types'
 import {
     useVendorContext,
     VendorContextProvider,
 } from '../../contexts/VendorContext/VendorContext'
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
-import VendorSelect from '../../components/VendorSelect/VendorSelect'
-import { Vendor } from '../../contexts/VendorContext/types'
+import AddEditVendorFormForPurchaseOrder from '../../components/AddEditVendorFormForPurchaseOrder/AddEditVendorFormForPurchaseOrder'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -34,14 +32,44 @@ const PurchaseOrderPageContent = () => {
     const VendorContext = useVendorContext()
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
+    const [vendorsError, setVendorsError] = useState<string>('')
     const isEditPage = ![undefined, 'new', ['']].includes(router.query.orderId)
 
-    const disableSubmitButton =
-        !VendorContext.selectedVendor &&
-        !VendorContext.draftVendor &&
-        (isEditPage
-            ? (PurOrdContext.selectedOrder?.products.length ?? 0) <= 0
-            : PurOrdContext.draftOrder.products.length <= 0)
+    const disableSubmitButton = PurOrdContext.draftOrder.products.length <= 0
+
+    const onSubmit = async () => {
+        if (!VendorContext.draftVendor) return
+        const { id: vendorId, ...vendorData } = VendorContext.draftVendor
+        const { id: orderId, ...orderData } = PurOrdContext.draftOrder
+
+        const vendorRes = await (vendorId
+            ? VendorContext.updateVendor(vendorId, vendorData)
+            : VendorContext.createVendor(VendorContext.draftVendor))
+
+        if (!vendorRes[0]) {
+            setVendorsError(vendorRes[1].message)
+            return
+        }
+
+        const data: AddEditPurchaseOrderDoc = {
+            products: orderData.products.map((product) => ({
+                id: product.id,
+                product: product.product.id,
+                quantity: product.quantity,
+                itemPrice: product.itemPrice,
+                warehouse: product.warehouse?.id ?? null,
+            })),
+            vendor: vendorRes[1].id,
+            remarks: orderData.remarks ?? '',
+        }
+
+        const purOrdRes = await (orderId
+            ? PurOrdContext.updateOrder(orderId, data)
+            : PurOrdContext.createOrder(data))
+
+        if (!purOrdRes[0]) return
+        if (!orderId) router.push(`/purchase-orders/${purOrdRes[1].id}`)
+    }
 
     useEffect(() => {
         async function init() {
@@ -59,7 +87,8 @@ const PurchaseOrderPageContent = () => {
                 }
 
                 if (response[0]) {
-                    VendorContext.setSelectedVendor(response[1].vendor)
+                    PurOrdContext.setDraftOrder(response[1])
+                    VendorContext.setDraftVendor(response[1].vendor)
                 }
             }
 
@@ -77,69 +106,6 @@ const PurchaseOrderPageContent = () => {
         init()
     }, [router, PurOrdContext, ProductContext, VendorContext, isEditPage])
 
-    const onSubmit = async () => {
-        let vendor: Vendor | null = null
-
-        if (isEditPage) {
-            vendor = VendorContext.selectedVendor
-        } else {
-            if (!VendorContext.draftVendor) return
-
-            const vendorRes = await VendorContext.createVendor(
-                VendorContext.draftVendor
-            )
-
-            vendor = vendorRes[0] ? vendorRes[1] : null
-        }
-        if (!vendor) return
-
-        if (isEditPage) {
-            handleUpdatePurOrd(vendor)
-        } else {
-            handleCreatePurOrd(vendor)
-        }
-    }
-
-    const handleUpdatePurOrd = async (vendor: Vendor) => {
-        const order = PurOrdContext.selectedOrder
-        if (!order) return
-
-        const data: CreateUpdatePurchaseOrderDoc = {
-            products: order.products.map((product) => ({
-                id: product.id,
-                product: product.product.id,
-                quantity: product.quantity,
-                itemPrice: product.itemPrice,
-                warehouse: product.warehouse?.id ?? null,
-            })),
-            vendor: vendor.id,
-            remarks: order.remarks ?? '',
-        }
-
-        await PurOrdContext.updateOrder(order.id, data)
-    }
-
-    const handleCreatePurOrd = async (vendor: Vendor) => {
-        const order = PurOrdContext.draftOrder
-
-        const data: CreateUpdatePurchaseOrderDoc = {
-            products: order.products.map((product) => ({
-                id: product.id,
-                product: product.product.id,
-                quantity: product.quantity,
-                itemPrice: product.itemPrice,
-                warehouse: product.warehouse?.id ?? null,
-            })),
-            vendor: vendor.id,
-            remarks: order.remarks ?? '',
-        }
-
-        const purOrdRes = await PurOrdContext.createOrder(data)
-
-        if (!purOrdRes[0]) return
-        router.push(`/purchase-orders/${purOrdRes[1].id}`)
-    }
-
     return (
         <>
             <UserLayout>
@@ -155,20 +121,12 @@ const PurchaseOrderPageContent = () => {
 
                 <div className="flex flex-row gap-3 mb-3">
                     <Card title="Vendor Details">
-                        <>
-                            {PurOrdContext.selectedOrder ? (
-                                <VendorSelect />
-                            ) : (
-                                <AddEditVendorForm />
-                            )}
-                        </>
+                        <AddEditVendorFormForPurchaseOrder
+                            error={vendorsError}
+                            clearError={() => setVendorsError('')}
+                        />
                     </Card>
                     <OrderProductsTable
-                        products={
-                            isEditPage
-                                ? PurOrdContext.selectedOrder?.products || []
-                                : PurOrdContext.draftOrder.products
-                        }
                         onAdd={() => {
                             AppContext.openDialog('add-order-product-dialog')
                         }}
@@ -179,15 +137,14 @@ const PurchaseOrderPageContent = () => {
                     />
                 </div>
                 <div className="flex gap-3">
-                    <OrderRemarksForm draft={!isEditPage} />
+                    <OrderRemarksForm />
                     <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">
                         <div className="flex flex-col justify-center h-full">
                             <div className="flex justify-between text-2xl mb-5">
                                 <b>TOTAL:</b>
                                 <b>
                                     {formatCurrency(
-                                        PurOrdContext.selectedOrder?.total ??
-                                            PurOrdContext.draftOrder.total
+                                        PurOrdContext.draftOrder?.total
                                     )}
                                 </b>
                             </div>
@@ -203,43 +160,25 @@ const PurchaseOrderPageContent = () => {
                 </div>
             </UserLayout>
 
-            <AddOrderProductDialog draft={!isEditPage} />
+            <AddOrderProductDialog />
             <ConfirmDialog
                 text={`Remove product?`}
                 dialogKey="remove-order-product-dialog"
                 onConfirm={() => {
-                    if (isEditPage) {
-                        PurOrdContext.setSelectedOrder((prev) => {
-                            if (!prev) return null
-                            const products = prev.products.filter(
-                                (p) => p.id !== selectedProduct
-                            )
+                    PurOrdContext.setDraftOrder((prev) => {
+                        const products = prev.products.filter(
+                            (p) => p.id !== selectedProduct
+                        )
 
-                            return {
-                                ...prev,
-                                products,
-                                total: products.reduce(
-                                    (acc, p) => acc + p.totalPrice,
-                                    0
-                                ),
-                            }
-                        })
-                    } else {
-                        PurOrdContext.setDraftOrder((prev) => {
-                            const products = prev.products.filter(
-                                (p) => p.id !== selectedProduct
-                            )
-
-                            return {
-                                ...prev,
-                                products,
-                                total: products.reduce(
-                                    (acc, p) => acc + p.totalPrice,
-                                    0
-                                ),
-                            }
-                        })
-                    }
+                        return {
+                            ...prev,
+                            products,
+                            total: products.reduce(
+                                (acc, p) => acc + p.totalPrice,
+                                0
+                            ),
+                        }
+                    })
                     AppContext.closeDialog()
                 }}
             />

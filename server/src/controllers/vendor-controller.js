@@ -20,3 +20,14 @@ module.exports.createVendor = async (req, res) => {
 
     return res.status(201).json({ vendor: VendorView(response[1]) })
 }
+
+module.exports.updateVendor = async (req, res) => {
+    const { vendorId } = req.params
+    const response = await VendorsModule.updateVendor(vendorId, req.body)
+
+    if (response[0] !== 200) {
+        return res.status(response[0]).json(response[1])
+    }
+
+    return res.status(200).json({ vendor: VendorView(response[1]) })
+}

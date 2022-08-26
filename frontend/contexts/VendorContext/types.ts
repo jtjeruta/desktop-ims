@@ -8,31 +8,25 @@ export type Vendor = {
     address: string
 }
 
-export type CreateVendorDoc = {
+export type AddEditVendorDoc = {
+    id?: string
     name: string
     email: string
     phone: string
     address: string
 }
 
-export type UpdateVendorDoc = {
-    name?: string
-    email?: string
-    phone?: string
-    address?: string
-}
-
 export type CreateUpdateVendorErrors = Record<keyof Vendor, { message: string }>
 
 export type CreateVendor = (
-    vendor: CreateVendorDoc
+    vendor: AddEditVendorDoc
 ) => Promise<
     | [true, Vendor]
     | [false, { message: string; errors?: CreateUpdateVendorErrors }]
 >
 export type UpdateVendor = (
     id: string,
-    vendor: UpdateVendorDoc
+    vendor: AddEditVendorDoc
 ) => Promise<
     | [true, Vendor]
     | [false, { message: string; errors?: CreateUpdateVendorErrors }]
@@ -46,10 +40,10 @@ export type GetVendor = (
 export type Context = {
     vendors: Vendor[] | null
     selectedVendor: Vendor | null
-    draftVendor: CreateVendorDoc | null
+    draftVendor: AddEditVendorDoc
     createVendor: CreateVendor
     updateVendor: UpdateVendor
     listVendors: ListVendors
     setSelectedVendor: (vendor: Vendor | null) => void
-    setDraftVendor: React.Dispatch<React.SetStateAction<CreateVendorDoc | null>>
+    setDraftVendor: React.Dispatch<React.SetStateAction<AddEditVendorDoc>>
 }
