@@ -1,22 +1,20 @@
 <div align="center">
-  <h3 align="center">Inventory Management System</h3>
+  <h1 align="center">Inventory Management System</h1>
 </div>
 
-<hr>
-
-### Built With
+## Built With
 
 -   [Next.js](https://nextjs.org/) - Frontend reactjs framework
 -   [Nest.js](https://nestjs.com/) - Backend nodejs framework
 -   [MongoDB](https://www.mongodb.com/) - NoSQL Database
 
-### Prerequisites
+## Prerequisites
 
 -   [docker & docker compose](https://docs.docker.com/compose/) (optional) - makes setup a lot easier
 -   [npm](https://nodejs.org/en/) - node package manager
 -   [MongoDB v5](https://www.mongodb.com/try/download/community) - NoSQL Database, make sure to choose version 5 (ignore if docker and docker-compose is installed)
 
-### Installation with docker
+## Installation with docker
 
 1. install development dependencies
 
@@ -36,7 +34,7 @@
   npm start
 ```
 
-### Installation w/o docker
+## Installation w/o docker
 
 1. Check if mongodb is installed
 
