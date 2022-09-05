@@ -120,7 +120,9 @@ describe('Delete User', () => {
 
     it('Success: delete user', async () => {
         const createdUser = await UsersModule.createUser(testdata.admin1)
-        const deleteUser = await UsersModule.deleteUserById(createdUser[1]._id)
+        const deleteUser = await UsersModule.deleteUser({
+            _id: createdUser[1]._id,
+        })
         expect(deleteUser[0]).to.equal(200)
         const foundUser = await UsersModule.getUserById(createdUser[1]._id)
         expect(foundUser[0]).to.equal(404)
@@ -128,9 +130,9 @@ describe('Delete User', () => {
 
     it('Success: delete user using string id', async () => {
         const createdUser = await UsersModule.createUser(testdata.admin1)
-        const deleteUser = await UsersModule.deleteUserById(
-            createdUser[1]._id.toString()
-        )
+        const deleteUser = await UsersModule.deleteUser({
+            _id: createdUser[1]._id.toString(),
+        })
         expect(deleteUser[0]).to.equal(200)
         const foundUser = await UsersModule.getUserById(createdUser[1]._id)
         expect(foundUser[0]).to.equal(404)

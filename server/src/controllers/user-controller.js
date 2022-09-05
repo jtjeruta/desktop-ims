@@ -35,7 +35,7 @@ module.exports.deleteUser = async (req, res) => {
         return res.status(405).json({ message: 'Not allowed.' })
     }
 
-    const [status, data] = await UsersModule.deleteUserById(userId)
+    const [status, data] = await UsersModule.deleteUser({ _id: userId })
 
     if (status !== 200) return res.status(status).json(data)
     return res.status(200).json({ message: 'User deleted.' })

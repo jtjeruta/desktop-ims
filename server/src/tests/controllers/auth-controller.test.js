@@ -102,7 +102,7 @@ describe('Verify Token', () => {
     it('Success: correct token but user not found', (done) => {
         login({ email: 'admin@gmail.com', password: 'password' }).then(
             ({ token, user }) => {
-                UsersModule.deleteUserById(user.id).then(() => {
+                UsersModule.deleteUser({ _id: user.id }).then(() => {
                     request(app)
                         .post('/api/v1/auth/verify-token')
                         .send({ token })

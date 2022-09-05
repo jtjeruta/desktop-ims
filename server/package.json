@@ -6,7 +6,8 @@
         "start": "nodemon ./src/index.js",
         "lint": "eslint ./src/**/*.js",
         "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
-        "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000"
+        "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000",
+        "migrate": "migrate"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -18,6 +19,7 @@
         "express": "~4.16.1",
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^8.5.1",
+        "migrate": "^1.8.0",
         "moment": "^2.29.3",
         "mongoose": "^6.3.8",
         "morgan": "~1.9.1",

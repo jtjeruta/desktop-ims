@@ -55,13 +55,12 @@ module.exports.getUserByEmail = async (email) => {
     }
 }
 
-// For testing only
-module.exports.deleteUserById = async (id) => {
+module.exports.deleteUser = async (query) => {
     try {
-        await UserModel.deleteOne({ _id: id })
+        await UserModel.deleteOne(query)
         return [200]
     } catch (error) {
-        console.error('Failed to delete user by id')
+        console.error('Failed to delete user')
         return getMongoError(error)
     }
 }
