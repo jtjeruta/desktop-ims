@@ -6,10 +6,14 @@ const VariantController = require('./controllers/variant-controller')
 const WarehouseController = require('./controllers/warehouse-controller')
 const VendorController = require('./controllers/vendor-controller')
 const PurchaseOrderController = require('./controllers/purchase-order-controller')
+const HealthCheckController = require('./controllers/health-check-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
 const router = express.Router()
+
+// health check
+router.get('/api/v1/health-check', HealthCheckController.healthCheck)
 
 // auth
 router.post('/api/v1/auth/login', AuthController.login)
