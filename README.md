@@ -84,4 +84,4 @@ Pushing to the production branch triggers deployment:
 
 -   Server is deployed [here](https://dashboard.render.com/web/srv-ccb9atkgqg461mcodu70) through [render.com](https://dashboard.render.com/web/srv-ccb9atkgqg461mcodu70)
 
--   Frontend is deployed [here](desktop-ims.vercel.app) through [vercel.com](https://vercel.com/tristanjeruta/desktop-ims)
+-   Frontend is deployed [here](https://desktop-42getly82-tristanjeruta.vercel.app) through [vercel.com](https://vercel.com/tristanjeruta/desktop-ims)
