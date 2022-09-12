@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { FaTrash } from 'react-icons/fa'
+import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { formatCurrency } from '../../uitls'
 import Button from '../Button/Button'
@@ -12,6 +13,7 @@ type Props = {
 }
 
 const OrderProductsTable: FC<Props> = (props) => {
+    const AppContext = useAppContext()
     const PurOrdContext = usePurchaseOrderContext()
 
     return (
@@ -61,6 +63,7 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 bodyClsx: 'flex justify-end',
                             },
                         ]}
+                        loading={AppContext.isLoading('get-purchase-order')}
                     />
                 </div>
 

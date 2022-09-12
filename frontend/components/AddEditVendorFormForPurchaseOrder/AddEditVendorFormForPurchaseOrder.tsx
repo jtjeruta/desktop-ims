@@ -99,7 +99,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
                     <TextField
                         label="Address"
                         name="address"
-                        helperText="Eg. lot 2 blok 10, San Francisco Village, lapaz, Iloilo City"
+                        helperText="Eg. shop 52, San Francisco Village, lapaz, Iloilo City"
                     />
                 </div>
             </form>

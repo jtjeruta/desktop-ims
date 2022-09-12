@@ -56,7 +56,7 @@ const PurchaseOrdersPageContent = () => {
             <Card bodyClsx="!px-0 !py-0">
                 <Table
                     rows={filteredOrders}
-                    loading={AppContext.isLoading('list-orders')}
+                    loading={AppContext.isLoading('list-purchase-orders')}
                     columns={[
                         {
                             title: 'Created',

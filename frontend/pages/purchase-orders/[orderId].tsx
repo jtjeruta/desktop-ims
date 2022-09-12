@@ -35,7 +35,9 @@ const PurchaseOrderPageContent = () => {
     const [vendorsError, setVendorsError] = useState<string>('')
     const isEditPage = ![undefined, 'new', ['']].includes(router.query.orderId)
 
-    const disableSubmitButton = PurOrdContext.draftOrder.products.length <= 0
+    const disableSubmitButton =
+        AppContext.isLoading('get-purchase-order') &&
+        PurOrdContext.draftOrder.products.length <= 0
 
     const onSubmit = async () => {
         if (!VendorContext.draftVendor) return
@@ -120,12 +122,14 @@ const PurchaseOrderPageContent = () => {
                 />
 
                 <div className="flex flex-row gap-3 mb-3">
-                    <Card title="Vendor Details">
-                        <AddEditVendorFormForPurchaseOrder
-                            error={vendorsError}
-                            clearError={() => setVendorsError('')}
-                        />
-                    </Card>
+                    <div className="w-full" style={{ maxWidth: 320 }}>
+                        <Card title="Vendor Details">
+                            <AddEditVendorFormForPurchaseOrder
+                                error={vendorsError}
+                                clearError={() => setVendorsError('')}
+                            />
+                        </Card>
+                    </div>
                     <OrderProductsTable
                         onAdd={() => {
                             AppContext.openDialog('add-order-product-dialog')

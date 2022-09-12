@@ -108,7 +108,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const getOrder: Types.GetPurchaseOrder = async (id) => {
-        const key = 'list-purchase-orders'
+        const key = 'get-purchase-order'
 
         AppContext.addLoading(key)
         const response = await PurchaseOrdersAPI.getPurchaseOrder(id)
