@@ -18,6 +18,8 @@ services:
         build:
             context: ./
             dockerfile: dockerfile.server.dev
+        environment:
+            NODE_ENV: development
         volumes:
             - ./server:/opt/desktop-ims-server/
         ports:
