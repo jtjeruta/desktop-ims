@@ -24,19 +24,14 @@ const OrderProductsTable: FC<Props> = (props) => {
                         rows={PurOrdContext.draftOrder.products || []}
                         columns={[
                             {
-                                title: 'Product',
-                                format: (row) => row.product.name,
-                                headerClsx: 'w-full',
-                            },
-                            {
-                                title: 'Transfer to',
-                                format: (row) => row.warehouse?.name ?? 'Store',
-                                headerClsx: 'w-full',
-                            },
-                            {
                                 title: 'QTY',
                                 format: (row) => row.quantity,
                                 bodyClsx: 'text-right',
+                            },
+                            {
+                                title: 'Product',
+                                format: (row) => row.product.name,
+                                headerClsx: 'w-full',
                             },
                             {
                                 title: 'Unit Price',
@@ -47,6 +42,11 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 title: 'Sub-Total',
                                 format: (row) => formatCurrency(row.totalPrice),
                                 bodyClsx: 'text-right',
+                            },
+                            {
+                                title: 'Transfer to',
+                                format: (row) => row.warehouse?.name ?? 'Store',
+                                headerClsx: 'w-full',
                             },
                             {
                                 title: 'Actions',
