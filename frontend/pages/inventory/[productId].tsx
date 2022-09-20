@@ -52,6 +52,7 @@ const ProductPageContent = () => {
     return (
         <UserLayout>
             <PageHeader
+                headerClsx="!flex-row"
                 title={<code>#{ProductContext.product?.sku}</code>}
                 switches={[
                     {
@@ -76,13 +77,13 @@ const ProductPageContent = () => {
                     className="mb-4"
                 />
             )}
-            <div className="flex gap-4 pb-4">
+            <div className="flex gap-4 pb-4 flex-col md:flex-row">
                 <Card cardClsx="grow basis-0">
                     <AddEditProductForm type="update" />
                 </Card>
                 <ProductDetailsCard />
             </div>
-            <div className="flex gap-4 pb-4">
+            <div className="flex gap-4 pb-4 flex-col md:flex-row">
                 <ManageProductVariants />
                 <ManageProductWarehouses />
             </div>

@@ -103,7 +103,7 @@ const InventoryPageContent = () => {
                 ]}
             />
 
-            <Card bodyClsx="!px-0 !py-0">
+            <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
                     rows={filteredProducts}
                     loading={AppContext.isLoading('list-products')}

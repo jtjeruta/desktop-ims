@@ -19,7 +19,7 @@ const OrderProductsTable: FC<Props> = (props) => {
     return (
         <Card cardClsx="grow" bodyClsx="!px-0 !py-0 h-full">
             <div className="flex flex-col h-full">
-                <div className="grow">
+                <div className="grow overflow-x-auto">
                     <Table
                         rows={PurOrdContext.draftOrder.products || []}
                         columns={[

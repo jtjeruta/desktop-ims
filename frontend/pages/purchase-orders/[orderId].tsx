@@ -121,8 +121,8 @@ const PurchaseOrderPageContent = () => {
                     }
                 />
 
-                <div className="flex flex-row gap-3 mb-3">
-                    <div className="w-full" style={{ maxWidth: 320 }}>
+                <div className="flex flex-col md:flex-row gap-3 mb-3">
+                    <div className="w-full md:max-w-sm">
                         <Card title="Vendor Details">
                             <AddEditVendorFormForPurchaseOrder
                                 error={vendorsError}
@@ -140,7 +140,7 @@ const PurchaseOrderPageContent = () => {
                         }}
                     />
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col md:flex-row gap-3">
                     <OrderRemarksForm />
                     <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">
                         <div className="flex flex-col justify-center h-full">

@@ -1,7 +1,10 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { FaHamburger } from 'react-icons/fa'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
+import Button from '../Button/Button'
 
 type LinkType = {
     text: string
@@ -13,6 +16,7 @@ type LinkType = {
 const Navbar = () => {
     const AuthContext = useAuthContext()
     const router = useRouter()
+    const [openMenu, setOpenMenu] = useState<boolean>(false)
     const links: LinkType[] = [
         {
             text: 'Vendors',
@@ -60,37 +64,59 @@ const Navbar = () => {
             roles: ['admin'],
             onClick: () => router.push('/users'),
         },
-        {
-            text: 'Logout',
-            active: false,
-            roles: ['admin', 'employee'],
-            onClick: () => AuthContext.logout(),
-        },
     ]
 
     return (
-        <nav className="bg-neutral-700 flex">
-            <div className="container flex flex-wrap justify-between items-center mx-auto">
-                <div className="inline-block py-3 px-4 font-semibold text-white">
-                    <Link href="/">Inventory Management System</Link>
+        <nav className="bg-blue-500 shadow">
+            <div className="justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
+                <div>
+                    <div className="flex items-center justify-between py-3 md:py-5 md:block">
+                        <Link href="/">
+                            <h2 className="text-2xl font-bold text-white cursor-pointer">
+                                INVENTORY SYSTEM
+                            </h2>
+                        </Link>
+                        <div className="md:hidden">
+                            <Button
+                                onClick={() => setOpenMenu((prev) => !prev)}
+                            >
+                                <FaHamburger />
+                            </Button>
+                        </div>
+                    </div>
                 </div>
-                <div className="hidden w-full md:block md:w-auto">
-                    <ul className="flex place-content-center">
-                        {links.map((link) => (
-                            <li key={link.text} onClick={link.onClick}>
-                                <div
-                                    className={clsx([
-                                        'inline-block py-3 px-4 font-semibold cursor-pointer',
-                                        link.active
-                                            ? 'bg-slate-100 border-white text-black border-l border-t border-r rounded-t'
-                                            : 'bg-neutral-700 text-white',
-                                    ])}
+                <div className={clsx(!openMenu && 'hidden md:block')}>
+                    <div className="flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 block">
+                        <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
+                            {links.map((link) => (
+                                <li
+                                    key={link.text}
+                                    className={clsx(
+                                        'text-white hover:text-indigo-200 cursor-pointer',
+                                        link.active && 'font-bold'
+                                    )}
+                                    onClick={link.onClick}
                                 >
                                     {link.text}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <div className="mt-3 md:hidden">
+                            <Button
+                                className="w-full"
+                                color="light"
+                                onClick={AuthContext.logout}
+                            >
+                                Logout
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+                <div className="hidden md:inline-block">
+                    <Button color="light" onClick={AuthContext.logout}>
+                        Logout
+                    </Button>
                 </div>
             </div>
         </nav>

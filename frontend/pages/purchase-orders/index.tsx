@@ -53,7 +53,7 @@ const PurchaseOrdersPageContent = () => {
                 ]}
             />
 
-            <Card bodyClsx="!px-0 !py-0">
+            <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
                     rows={filteredOrders}
                     loading={AppContext.isLoading('list-purchase-orders')}

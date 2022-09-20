@@ -38,7 +38,7 @@ const PageContent: FC = () => {
                 ]}
             />
 
-            <Card bodyClsx="!px-0 !py-0">
+            <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
                     rows={UserContext.users || []}
                     loading={AppContext.isLoading('list-users')}

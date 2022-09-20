@@ -16,7 +16,7 @@ const SearchBar: FC<Props> = (props) => {
     }
 
     return (
-        <div className="relative w-full">
+        <div className="relative w-full md:w-fit">
             <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                 <FaSearch className="text-gray-400 text-md" />
             </div>

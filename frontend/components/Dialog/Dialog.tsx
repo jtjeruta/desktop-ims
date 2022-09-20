@@ -71,7 +71,7 @@ const Dialog: FC<Props> = (props) => {
         >
             <div
                 className={clsx(
-                    'bg-white relative overflow-x-auto shadow-md sm:rounded-lg w-1/3',
+                    'bg-white relative overflow-x-auto shadow-md sm:rounded-lg w-full md:w-1/3',
                     props.className
                 )}
                 onClick={(e) => e.stopPropagation()}

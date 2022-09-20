@@ -12,7 +12,7 @@ type Props = {
 const Card: FC<Props> = (props) => (
     <div
         className={clsx(
-            'bg-white overflow-x-auto shadow-md sm:rounded-lg',
+            'bg-white shadow-md sm:rounded-lg',
             'text-sm text-left text-gray-500 dark:text-gray-400',
             props.cardClsx
         )}
