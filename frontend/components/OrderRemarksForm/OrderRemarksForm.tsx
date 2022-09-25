@@ -1,30 +1,29 @@
-import { useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import Card from '../Card/Card'
 import TextArea from '../TextArea/TextArea'
 
-const OrderRemarksForm = () => {
+type Props = {
+    remarks: string | null
+    onChange: (remarks: string) => void
+}
+
+const OrderRemarksForm: FC<Props> = (props) => {
     const methods = useForm()
-    const PurOrdContext = usePurchaseOrderContext()
 
     // set defaults
     useEffect(() => {
-        const remarks = PurOrdContext.draftOrder.remarks
-        if (remarks !== methods.getValues('remarks'))
-            methods.setValue('remarks', remarks)
-    }, [methods, PurOrdContext])
+        if (props.remarks !== methods.getValues('remarks'))
+            methods.setValue('remarks', props.remarks)
+    }, [methods, props.remarks])
 
     // set on change
     useEffect(() => {
-        const subscription = methods.watch((data) => {
-            PurOrdContext.setDraftOrder((prev) => ({
-                ...prev,
-                remarks: data.remarks,
-            }))
-        })
+        const subscription = methods.watch((data) =>
+            props.onChange(data.remarks)
+        )
         return () => subscription.unsubscribe()
-    }, [methods, PurOrdContext])
+    }, [methods, props])
 
     return (
         <Card cardClsx="grow">

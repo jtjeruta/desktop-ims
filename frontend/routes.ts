@@ -46,4 +46,16 @@ export const routes: Route[] = [
         pathname: '/vendors/[vendorId]',
         access: 'admin',
     },
+    {
+        pathname: '/sales-orders',
+        access: 'admin',
+    },
+    {
+        pathname: '/sales-orders/[orderId]',
+        access: 'everyone',
+    },
+    {
+        pathname: '/customers/[customerId]',
+        access: 'admin',
+    },
 ]

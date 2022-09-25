@@ -17,23 +17,22 @@ type Props = {
 const Button: FC<Props> = (props) => {
     const styles = {
         default: 'font-bold rounded',
-        link: 'font-medium hover:underline',
+        link: 'font-medium enabled:hover:underline',
     }
 
     const colors = {
         default: {
             primary:
-                'bg-blue-500 hover:bg-blue-700 disabled:bg-slate-400 text-white',
+                'bg-blue-500 enabled:hover:bg-blue-700 disabled:bg-slate-400 text-white',
             secondary:
-                'bg-slate-500 hover:bg-slate-700 disabled:bg-slate-400 text-white',
-            light: 'bg-white hover:bg-slate-700 disabled:bg-slate-400 text-gray-500',
+                'bg-slate-500 enabled:hover:bg-slate-700 disabled:bg-slate-400 text-white',
+            light: 'bg-white enabled:hover:bg-slate-700 disabled:bg-slate-400 text-gray-500',
         },
         link: {
-            primary:
-                'text-blue-600 dark:text-blue-500 disabled:text-slate-400 disabled:hover:no-underline',
+            primary: 'text-blue-600 dark:text-blue-500 disabled:text-slate-400',
             secondary:
-                'text-slate-600 dark:text-slate-500 disabled:test-slate-400 disabled:hover:no-underline',
-            light: 'text-white disabled:test-slate-400 disabled:hover:no-underline',
+                'text-slate-600 dark:text-slate-500 disabled:test-slate-400',
+            light: 'text-white disabled:test-slate-400',
         },
     }
 

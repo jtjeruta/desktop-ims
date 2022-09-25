@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import {
-    PurchaseOrderContextProvider,
-    usePurchaseOrderContext,
-} from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
+    SalesOrderContextProvider,
+    useSalesOrderContext,
+} from '../../contexts/SalesOrderContext/SalesOrderContext'
 import Card from '../../components/Card/Card'
 import {
     ProductContextProvider,
@@ -15,50 +15,51 @@ import AddOrderProductDialog from '../../components/AddOrderProductDialog/AddOrd
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import OrderProductsTable from '../../components/OrderProductsTable/OrderProductsTable'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
-import { AddEditPurchaseOrderDoc } from '../../contexts/PurchaseOrderContext/types'
+import { AddEditSalesOrderDoc } from '../../contexts/SalesOrderContext/types'
 import {
-    useVendorContext,
-    VendorContextProvider,
-} from '../../contexts/VendorContext/VendorContext'
+    useCustomerContext,
+    CustomerContextProvider,
+} from '../../contexts/CustomerContext/CustomerContext'
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
-import AddEditVendorFormForPurchaseOrder from '../../components/AddEditVendorFormForPurchaseOrder/AddEditVendorFormForPurchaseOrder'
+import SalesOrderCustomerForm from '../../components/SalesOrderCustomerForm/SalesOrderCustomerForm'
 import OrderTotalsCard from '../../components/OrderTotalsCard/OrderTotalsCard'
 
-const PurchaseOrderPageContent = () => {
+const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
-    const PurOrdContext = usePurchaseOrderContext()
+    const SalesOrderContext = useSalesOrderContext()
     const ProductContext = useProductContext()
-    const VendorContext = useVendorContext()
+    const CustomerContext = useCustomerContext()
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
-    const [vendorsError, setVendorsError] = useState<string>('')
+    const [customersError, setCustomersError] = useState<string>('')
     const isEditPage = ![undefined, 'new', ['']].includes(router.query.orderId)
 
     const submitButtonDisabled =
-        AppContext.isLoading('get-purchase-order') ||
-        PurOrdContext.draftOrder.products.length <= 0
+        AppContext.isLoading('get-sales-order') ||
+        SalesOrderContext.draftOrder.products.length <= 0
 
     const submitButtonLoading =
-        AppContext.isLoading('add-purchase-order') ||
-        AppContext.isLoading('update-purchase-order') ||
-        AppContext.isLoading('add-vendor') ||
-        AppContext.isLoading('update-vendor')
+        AppContext.isLoading('add-sales-order') ||
+        AppContext.isLoading('update-sales-order') ||
+        AppContext.isLoading('add-customer') ||
+        AppContext.isLoading('update-customer')
 
     const onSubmit = async () => {
-        if (!VendorContext.draftVendor) return
-        const { id: vendorId, ...vendorData } = VendorContext.draftVendor
-        const { id: orderId, ...orderData } = PurOrdContext.draftOrder
+        if (!CustomerContext.draftCustomer) return
+        const { id: customerId, ...customerData } =
+            CustomerContext.draftCustomer
+        const { id: orderId, ...orderData } = SalesOrderContext.draftOrder
 
-        const vendorRes = await (vendorId
-            ? VendorContext.updateVendor(vendorId, vendorData)
-            : VendorContext.createVendor(VendorContext.draftVendor))
+        const customerRes = await (customerId
+            ? CustomerContext.updateCustomer(customerId, customerData)
+            : CustomerContext.createCustomer(CustomerContext.draftCustomer))
 
-        if (!vendorRes[0]) {
-            setVendorsError(vendorRes[1].message)
+        if (!customerRes[0]) {
+            setCustomersError(customerRes[1].message)
             return
         }
 
-        const data: AddEditPurchaseOrderDoc = {
+        const data: AddEditSalesOrderDoc = {
             products: orderData.products.map((product) => ({
                 id: product.id,
                 product: product.product.id,
@@ -66,16 +67,16 @@ const PurchaseOrderPageContent = () => {
                 itemPrice: product.itemPrice,
                 warehouse: product.warehouse?.id ?? null,
             })),
-            vendor: vendorRes[1].id,
+            customer: customerRes[1].id,
             remarks: orderData.remarks ?? '',
         }
 
         const purOrdRes = await (orderId
-            ? PurOrdContext.updateOrder(orderId, data)
-            : PurOrdContext.createOrder(data))
+            ? SalesOrderContext.updateOrder(orderId, data)
+            : SalesOrderContext.createOrder(data))
 
         if (!purOrdRes[0]) return
-        if (!orderId) router.push(`/purchase-orders/${purOrdRes[1].id}`)
+        if (!orderId) router.push(`/sales-orders/${purOrdRes[1].id}`)
     }
 
     useEffect(() => {
@@ -83,9 +84,9 @@ const PurchaseOrderPageContent = () => {
             if (
                 isEditPage &&
                 router.query &&
-                PurOrdContext.selectedOrder === null
+                SalesOrderContext.selectedOrder === null
             ) {
-                const response = await PurOrdContext.getOrder(
+                const response = await SalesOrderContext.getOrder(
                     router.query.orderId as string
                 )
 
@@ -94,8 +95,8 @@ const PurchaseOrderPageContent = () => {
                 }
 
                 if (response[0]) {
-                    PurOrdContext.setDraftOrder(response[1])
-                    VendorContext.setDraftVendor(response[1].vendor)
+                    SalesOrderContext.setDraftOrder(response[1])
+                    CustomerContext.setDraftCustomer(response[1].customer)
                 }
             }
 
@@ -104,22 +105,22 @@ const PurchaseOrderPageContent = () => {
                 await ProductContext.listProducts()
             }
 
-            // fetch vendors
-            if (VendorContext.vendors === null) {
-                await VendorContext.listVendors()
+            // fetch customers
+            if (CustomerContext.customers === null) {
+                await CustomerContext.listCustomers()
             }
         }
 
         init()
-    }, [router, PurOrdContext, ProductContext, VendorContext, isEditPage])
+    }, [router, SalesOrderContext, ProductContext, CustomerContext, isEditPage])
 
     return (
         <>
             <UserLayout>
                 <PageHeader
                     title={
-                        PurOrdContext.selectedOrder ? (
-                            <code>#{PurOrdContext.selectedOrder.id}</code>
+                        SalesOrderContext.selectedOrder ? (
+                            <code>#{SalesOrderContext.selectedOrder.id}</code>
                         ) : (
                             'New Order'
                         )
@@ -128,15 +129,15 @@ const PurchaseOrderPageContent = () => {
 
                 <div className="flex flex-col md:flex-row gap-3 mb-3">
                     <div className="w-full md:max-w-sm">
-                        <Card title="Vendor Details">
-                            <AddEditVendorFormForPurchaseOrder
-                                error={vendorsError}
-                                clearError={() => setVendorsError('')}
+                        <Card title="Customer Details">
+                            <SalesOrderCustomerForm
+                                error={customersError}
+                                clearError={() => setCustomersError('')}
                             />
                         </Card>
                     </div>
                     <OrderProductsTable
-                        products={PurOrdContext.draftOrder?.products}
+                        products={SalesOrderContext.draftOrder.products}
                         onAdd={() => {
                             AppContext.openDialog('add-order-product-dialog')
                         }}
@@ -148,19 +149,19 @@ const PurchaseOrderPageContent = () => {
                 </div>
                 <div className="flex flex-col md:flex-row gap-3">
                     <OrderRemarksForm
-                        remarks={PurOrdContext.draftOrder?.remarks}
+                        remarks={SalesOrderContext.draftOrder.remarks}
                         onChange={(remarks: string) => {
-                            PurOrdContext.setDraftOrder((prev) => ({
+                            SalesOrderContext.setDraftOrder((prev) => ({
                                 ...prev,
                                 remarks: remarks,
                             }))
                         }}
                     />
                     <OrderTotalsCard
-                        total={PurOrdContext.draftOrder.total}
-                        onSubmit={onSubmit}
+                        total={SalesOrderContext.draftOrder?.total}
                         disabled={submitButtonDisabled}
                         loading={submitButtonLoading}
+                        onSubmit={onSubmit}
                         buttonText={
                             isEditPage ? 'Update Order' : 'Create Order'
                         }
@@ -168,12 +169,12 @@ const PurchaseOrderPageContent = () => {
                 </div>
             </UserLayout>
 
-            <AddOrderProductDialog type="purchase" />
+            <AddOrderProductDialog type="sales" />
             <ConfirmDialog
                 text={`Remove product?`}
                 dialogKey="remove-order-product-dialog"
                 onConfirm={() => {
-                    PurOrdContext.setDraftOrder((prev) => {
+                    SalesOrderContext.setDraftOrder((prev) => {
                         const products = prev.products.filter(
                             (p) => p.id !== selectedProduct
                         )
@@ -194,14 +195,14 @@ const PurchaseOrderPageContent = () => {
     )
 }
 
-const PurchaseOrderPage = () => (
+const SalesOrderPage = () => (
     <ProductContextProvider>
-        <VendorContextProvider>
-            <PurchaseOrderContextProvider>
-                <PurchaseOrderPageContent />
-            </PurchaseOrderContextProvider>
-        </VendorContextProvider>
+        <CustomerContextProvider>
+            <SalesOrderContextProvider>
+                <SalesOrderPageContent />
+            </SalesOrderContextProvider>
+        </CustomerContextProvider>
     </ProductContextProvider>
 )
 
-export default PurchaseOrderPage
+export default SalesOrderPage

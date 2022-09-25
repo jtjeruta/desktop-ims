@@ -1,14 +1,15 @@
-import { useCallback, useEffect } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { v4 as uuid } from 'uuid'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
+import { useSalesOrderContext } from '../../contexts/SalesOrderContext/SalesOrderContext'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Dialog from '../Dialog/Dialog'
 import TextField from '../TextField/TextField'
 import Select from '../Select/Select'
+import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 
 const addOrderProductSchema = yup
     .object({
@@ -18,10 +19,15 @@ const addOrderProductSchema = yup
     })
     .required()
 
-const AddOrderProductDialog = () => {
+type Props = {
+    type: 'purchase' | 'sales'
+}
+
+const AddOrderProductDialog: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
     const PurOrdContext = usePurchaseOrderContext()
+    const SalesOrderContext = useSalesOrderContext()
     const methods = useForm({ resolver: yupResolver(addOrderProductSchema) })
 
     const onSubmit = async (data: FieldValues) => {
@@ -46,11 +52,19 @@ const AddOrderProductDialog = () => {
             warehouse: warehouse || null,
         }
 
-        PurOrdContext.setDraftOrder((prev) => ({
-            ...prev,
-            products: [...prev.products, productDoc],
-            total: prev.total + productDoc.totalPrice,
-        }))
+        if (props.type === 'purchase') {
+            PurOrdContext.setDraftOrder((prev) => ({
+                ...prev,
+                products: [...prev.products, productDoc],
+                total: prev.total + productDoc.totalPrice,
+            }))
+        } else if (props.type === 'sales') {
+            SalesOrderContext.setDraftOrder((prev) => ({
+                ...prev,
+                products: [...prev.products, productDoc],
+                total: prev.total + productDoc.totalPrice,
+            }))
+        }
 
         AppContext.closeDialog()
     }

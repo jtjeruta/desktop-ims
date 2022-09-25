@@ -42,7 +42,9 @@ const Navbar = () => {
         },
         {
             text: 'Sales Orders',
-            active: router.asPath === '/sales-orders',
+            active: ['/sales-orders', '/sales-orders/[orderId]'].includes(
+                router.pathname
+            ),
             roles: ['admin', 'employee'],
             onClick: () => router.push('/sales-orders'),
         },
