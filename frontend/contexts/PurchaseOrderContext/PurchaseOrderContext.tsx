@@ -18,6 +18,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         total: 0,
         remarks: null,
         orderDate: null,
+        invoiceNumber: null,
     })
 
     const createOrder: Types.CreatePurchaseOrder = async (purchaseOrderDoc) => {

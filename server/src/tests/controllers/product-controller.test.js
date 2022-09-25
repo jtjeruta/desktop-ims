@@ -13,7 +13,7 @@ const testdata = require('../testdata')
 
 use(deepEqualInAnyOrder)
 
-describe('List products', () => {
+describe('Controller: List products', () => {
     setup()
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
@@ -70,7 +70,7 @@ describe('List products', () => {
     })
 })
 
-describe('Get product', () => {
+describe('Controller: Get product', () => {
     let createdProduct = null
 
     setup()
@@ -135,7 +135,7 @@ describe('Get product', () => {
     })
 })
 
-describe('Create product', () => {
+describe('Controller: Create product', () => {
     setup()
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
@@ -207,14 +207,7 @@ describe('Create product', () => {
                     expect(res.statusCode).to.equal(400)
                     expect(
                         Object.keys(res.body.errors)
-                    ).to.deep.equalInAnyOrder([
-                        'name',
-                        'company',
-                        'category',
-                        'subCategory',
-                        'price',
-                        'storeQty',
-                    ])
+                    ).to.deep.equalInAnyOrder(['name', 'price', 'storeQty'])
                     done()
                 })
                 .catch((err) => done(err))
@@ -255,7 +248,7 @@ describe('Create product', () => {
     })
 })
 
-describe('Update product', () => {
+describe('Controller: Update product', () => {
     const createdProducts = {}
 
     setup()
@@ -349,14 +342,7 @@ describe('Update product', () => {
                     expect(res.statusCode).to.equal(400)
                     expect(
                         Object.keys(res.body.errors)
-                    ).to.deep.equalInAnyOrder([
-                        'name',
-                        'company',
-                        'category',
-                        'subCategory',
-                        'published',
-                        'price',
-                    ])
+                    ).to.deep.equalInAnyOrder(['name', 'published', 'price'])
                     done()
                 })
                 .catch((err) => done(err))
@@ -397,7 +383,7 @@ describe('Update product', () => {
     })
 })
 
-describe('Transfer stock', () => {
+describe('Controller: Transfer stock', () => {
     const created = {}
 
     setup()

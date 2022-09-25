@@ -37,6 +37,7 @@ describe('Controller: List purchase orders', () => {
             ],
             vendor: vendor._id,
             orderDate: moment().unix(),
+            invoiceNumber: 'invoice-number-1',
         })
 
         await PurchaseOrdersModule.createPurchaseOrder({
@@ -50,6 +51,7 @@ describe('Controller: List purchase orders', () => {
             ],
             vendor: vendor._id,
             orderDate: moment().unix(),
+            invoiceNumber: 'invoice-number-2',
         })
     })
 
@@ -118,6 +120,7 @@ describe('Controller: Get purchase order', () => {
                 ],
                 vendor: vendor._id,
                 orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
             })
         )[1]
     })
@@ -193,6 +196,8 @@ describe('Controller: Create purchase order', () => {
                         itemPrice: 10,
                     },
                 ],
+                orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
             })
             .set('Authorization', token)
 
@@ -272,6 +277,7 @@ describe('Controller: Update purchase order', () => {
                 ],
                 vendor: vendor._id,
                 orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
             })
         )[1]
     })
@@ -293,6 +299,8 @@ describe('Controller: Update purchase order', () => {
                         itemPrice: 10,
                     },
                 ],
+                orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
             })
             .set('Authorization', token)
 

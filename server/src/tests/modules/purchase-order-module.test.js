@@ -29,11 +29,13 @@ describe('Module: Create Purchase Order', () => {
                 ],
                 vendor: vendor._id,
                 orderDate: 12345,
+                invoiceNumber: 'invoice-number',
             })
 
         expect(createdPurchaseOrder[0]).to.equal(201)
         expect(createdPurchaseOrder[1].products[0].totalPrice).to.equal(1000)
         expect(createdPurchaseOrder[1].orderDate).to.equal(12345)
+        expect(createdPurchaseOrder[1].invoiceNumber).to.equal('invoice-number')
         expect(createdPurchaseOrder[1].total).to.equal(1000)
     })
 
@@ -69,6 +71,7 @@ describe('Module: List PurchaseOrders', () => {
             ],
             vendor: vendor._id,
             orderDate: 12345,
+            invoiceNumber: 'invoice-number',
         })
 
         const purchaseOrders = await PurchaseOrdersModule.listPurchaseOrders()
@@ -79,6 +82,7 @@ describe('Module: List PurchaseOrders', () => {
             testdata.product1.name
         )
         expect(purchaseOrders[1][0].orderDate).to.equal(12345)
+        expect(purchaseOrders[1][0].invoiceNumber).to.equal('invoice-number')
     })
 })
 
@@ -103,6 +107,7 @@ describe('Module: Get PurchaseOrder by id', () => {
                 ],
                 vendor: vendor._id,
                 orderDate: 12345,
+                invoiceNumber: 'invoice-number',
             })
         )[1]
     })
@@ -122,6 +127,7 @@ describe('Module: Get PurchaseOrder by id', () => {
             testdata.product1.name
         )
         expect(foundPurchaseOrder[1].orderDate).to.equal(12345)
+        expect(foundPurchaseOrder[1].invoiceNumber).to.equal('invoice-number')
     })
 
     it('Fail: given wrong id', async () => {
@@ -156,6 +162,7 @@ describe('Module: Update PurchaseOrder', () => {
                 ],
                 vendor: vendor._id,
                 orderDate: 12345,
+                invoiceNumber: 'invoice-number',
             })
         )[1]
     })
@@ -173,11 +180,15 @@ describe('Module: Update PurchaseOrder', () => {
                     },
                 ],
                 orderDate: 54321,
+                invoiceNumber: 'new-invoice-number',
             })
 
         expect(updatedPurchaseOrder[0]).to.equal(200)
         expect(updatedPurchaseOrder[1].products.length).to.equal(2)
         expect(updatedPurchaseOrder[1].orderDate).to.equal(54321)
+        expect(updatedPurchaseOrder[1].invoiceNumber).to.equal(
+            'new-invoice-number'
+        )
         expect(updatedPurchaseOrder[1].total).to.equal(5000)
     })
 

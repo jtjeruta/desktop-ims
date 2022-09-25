@@ -11,7 +11,6 @@ import {
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { PurchaseOrder } from '../../contexts/PurchaseOrderContext/types'
-import { formatCurrency } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
 const PurchaseOrdersPageContent = () => {
@@ -23,10 +22,9 @@ const PurchaseOrdersPageContent = () => {
     const filteredOrders = (PurOrdContext.orders || []).filter((order) => {
         const regex = new RegExp(search, 'igm')
         return [
-            order.products.map((p) => p.product.name).join('-'),
-            order.vendor.name,
-            order.total,
             formatDate(order.createdAt),
+            order.invoiceNumber,
+            order.remarks,
         ].some((item) => regex.test(`${item}`))
     })
 
@@ -69,33 +67,18 @@ const PurchaseOrdersPageContent = () => {
                             sort: (order) => order.orderDate,
                         },
                         {
-                            title: 'Vendor',
+                            title: 'Invoice #',
                             format: (row) => {
                                 const order = row as PurchaseOrder
-                                return order.vendor.name
+                                return order.invoiceNumber ?? ''
                             },
-                            sort: (order) => order.vendor.name,
+                            sort: (order) => order.invoiceNumber ?? '',
                         },
                         {
-                            title: 'Products',
+                            title: 'Remarks',
                             format: (row) => {
                                 const order = row as PurchaseOrder
-                                return (
-                                    <div>
-                                        {order.products.map((p) => (
-                                            <div key={p.id}>
-                                                {p.product.name}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )
-                            },
-                        },
-                        {
-                            title: 'Total',
-                            format: (row) => {
-                                const order = row as PurchaseOrder
-                                return formatCurrency(order.total)
+                                return <div>{order.remarks}</div>
                             },
                         },
                         {

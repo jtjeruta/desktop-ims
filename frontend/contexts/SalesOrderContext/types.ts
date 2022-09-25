@@ -17,6 +17,7 @@ export type SalesOrder = {
     total: number
     remarks: string | null
     orderDate: number | null
+    invoiceNumber: string | null
 }
 
 export type DraftSalesOrder = {
@@ -33,6 +34,7 @@ export type DraftSalesOrder = {
     total: number
     remarks: string | null
     orderDate: number | null
+    invoiceNumber: string | null
 }
 
 export type AddEditSalesOrderDoc = {
@@ -45,6 +47,7 @@ export type AddEditSalesOrderDoc = {
     customer: string
     remarks: string | null
     orderDate: number | null
+    invoiceNumber: string | null
 }
 
 export type CreateUpdateSalesOrderErrors = {

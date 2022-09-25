@@ -12,27 +12,33 @@ type Props = {
     loading?: boolean
     onSubmit: () => void
     buttonText: string
-    onDateChange: (date: number) => void
-    date: number | null
+    onChange: (date: number, invoiceNumber: string) => void
+    orderDate: number | null
+    invoiceNumber: string | null
 }
 
-const OrderTotalsCard: FC<Props> = (props) => {
+const OrderSummary: FC<Props> = (props) => {
     const methods = useForm()
 
     // set defaults
     useEffect(() => {
-        if (props.date && props.date !== methods.getValues('date'))
+        if (props.orderDate && props.orderDate !== methods.getValues('date')) {
             methods.setValue(
                 'date',
-                moment(props.date * 1000).format('YYYY-MM-DD')
+                moment(props.orderDate * 1000).format('YYYY-MM-DD')
             )
-    }, [methods, props.date])
+        }
+
+        if (props.invoiceNumber != methods.getValues('invoiceNumber')) {
+            methods.setValue('invoiceNumber', props.invoiceNumber)
+        }
+    }, [methods, props])
 
     // set on change
     useEffect(() => {
         const subscription = methods.watch((data) => {
             const date = moment(data.date, 'YYYY-MM-DD').unix()
-            props.onDateChange(date)
+            props.onChange(date, data.invoiceNumber)
         })
         return () => subscription.unsubscribe()
     }, [methods, props])
@@ -42,14 +48,8 @@ const OrderTotalsCard: FC<Props> = (props) => {
             <div className="flex flex-col justify-center h-full">
                 <FormProvider {...methods}>
                     <form>
-                        <div className="flex justify-between text-2xl mb-5">
-                            <b>Order Date:</b>
-                            <TextField
-                                name="date"
-                                type="date"
-                                disableHelperText
-                            />
-                        </div>
+                        <TextField name="date" label="Order Date" type="date" />
+                        <TextField name="invoiceNumber" label="Invoice #" />
                     </form>
                 </FormProvider>
                 <div className="flex justify-between text-2xl mb-5">
@@ -69,4 +69,4 @@ const OrderTotalsCard: FC<Props> = (props) => {
     )
 }
 
-export default OrderTotalsCard
+export default OrderSummary

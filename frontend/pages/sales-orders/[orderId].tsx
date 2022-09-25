@@ -22,7 +22,7 @@ import {
 } from '../../contexts/CustomerContext/CustomerContext'
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 import SalesOrderCustomerForm from '../../components/SalesOrderCustomerForm/SalesOrderCustomerForm'
-import OrderTotalsCard from '../../components/OrderTotalsCard/OrderTotalsCard'
+import OrderSummary from '../../components/OrderSummary/OrderSummary'
 
 const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -70,6 +70,7 @@ const SalesOrderPageContent = () => {
             customer: customerRes[1].id,
             remarks: orderData.remarks ?? '',
             orderDate: orderData.orderDate,
+            invoiceNumber: orderData.invoiceNumber,
         }
 
         const purOrdRes = await (orderId
@@ -158,7 +159,7 @@ const SalesOrderPageContent = () => {
                             }))
                         }}
                     />
-                    <OrderTotalsCard
+                    <OrderSummary
                         total={SalesOrderContext.draftOrder?.total}
                         disabled={submitButtonDisabled}
                         loading={submitButtonLoading}
@@ -166,13 +167,20 @@ const SalesOrderPageContent = () => {
                         buttonText={
                             isEditPage ? 'Update Order' : 'Create Order'
                         }
-                        onDateChange={(date: number) => {
+                        onChange={(
+                            orderDate: number,
+                            invoiceNumber: string
+                        ) => {
                             SalesOrderContext.setDraftOrder((prev) => ({
                                 ...prev,
-                                orderDate: date,
+                                orderDate,
+                                invoiceNumber,
                             }))
                         }}
-                        date={SalesOrderContext.draftOrder.orderDate}
+                        orderDate={SalesOrderContext.draftOrder.orderDate}
+                        invoiceNumber={
+                            SalesOrderContext.draftOrder.invoiceNumber
+                        }
                     />
                 </div>
             </UserLayout>

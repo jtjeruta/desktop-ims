@@ -11,7 +11,6 @@ import {
     useSalesOrderContext,
 } from '../../contexts/SalesOrderContext/SalesOrderContext'
 import { SalesOrder } from '../../contexts/SalesOrderContext/types'
-import { formatCurrency } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
 const SalesOrdersPageContent = () => {
@@ -23,10 +22,9 @@ const SalesOrdersPageContent = () => {
     const filteredOrders = (SalesOrderContext.orders || []).filter((order) => {
         const regex = new RegExp(search, 'igm')
         return [
-            order.products.map((p) => p.product.name).join('-'),
-            order.customer.name,
-            order.total,
             formatDate(order.createdAt),
+            order.invoiceNumber,
+            order.remarks,
         ].some((item) => regex.test(`${item}`))
     })
 
@@ -69,33 +67,18 @@ const SalesOrdersPageContent = () => {
                             sort: (order) => order.orderDate,
                         },
                         {
-                            title: 'Vendor',
+                            title: 'Invoice #',
                             format: (row) => {
                                 const order = row as SalesOrder
-                                return order.customer.name
+                                return order.invoiceNumber ?? ''
                             },
-                            sort: (order) => order.customer.name,
+                            sort: (order) => order.invoiceNumber ?? '',
                         },
                         {
-                            title: 'Products',
+                            title: 'Remarks',
                             format: (row) => {
                                 const order = row as SalesOrder
-                                return (
-                                    <div>
-                                        {order.products.map((p) => (
-                                            <div key={p.id}>
-                                                {p.product.name}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )
-                            },
-                        },
-                        {
-                            title: 'Total',
-                            format: (row) => {
-                                const order = row as SalesOrder
-                                return formatCurrency(order.total)
+                                return <div>{order.remarks}</div>
                             },
                         },
                         {

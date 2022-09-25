@@ -4,7 +4,7 @@ const ProductsModule = require('../../modules/products-module')
 const setup = require('../setup')
 const testdata = require('../testdata')
 
-describe('Create Product', () => {
+describe('Module: Create Product', () => {
     setup()
 
     it('Success: create product using correct data', async () => {
@@ -38,15 +38,6 @@ describe('Create Product', () => {
         expect(createdProduct[1].errors.name.message).to.equal(
             'Path `name` is required.'
         )
-        expect(createdProduct[1].errors.company.message).to.equal(
-            'Path `company` is required.'
-        )
-        expect(createdProduct[1].errors.category.message).to.equal(
-            'Path `category` is required.'
-        )
-        expect(createdProduct[1].errors.subCategory.message).to.equal(
-            'Path `subCategory` is required.'
-        )
         expect(createdProduct[1].errors.price.message).to.equal(
             'path price can not be less than 0.'
         )
@@ -68,7 +59,7 @@ describe('Create Product', () => {
     })
 })
 
-describe('List Products', () => {
+describe('Module: List Products', () => {
     setup()
 
     it('Success: list all products', async () => {
@@ -80,7 +71,7 @@ describe('List Products', () => {
     })
 })
 
-describe('Get Product by id', () => {
+describe('Module: Get Product by id', () => {
     setup()
 
     it('Success: given correct id', async () => {
@@ -105,7 +96,7 @@ describe('Get Product by id', () => {
     })
 })
 
-describe('Update Product', () => {
+describe('Module: Update Product', () => {
     setup()
 
     it('Success: update product using correct data', async () => {
@@ -172,7 +163,7 @@ describe('Update Product', () => {
     })
 })
 
-describe('Generate SKU', () => {
+describe('Module: Generate SKU', () => {
     it('Suceess: returns 8 characters composed of capital letters and numbers', async () => {
         const sku = ProductsModule.generateSKU()
         const regex = /^[A-Z 0-9]{8}$/

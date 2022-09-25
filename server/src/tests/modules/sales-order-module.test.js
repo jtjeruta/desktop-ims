@@ -29,11 +29,13 @@ describe('Module: Create Sales Order', () => {
             ],
             customer: customer._id,
             orderDate: 12345,
+            invoiceNumber: 'invoice-number-1',
         })
 
         expect(createdSalesOrder[0]).to.equal(201)
         expect(createdSalesOrder[1].products[0].totalPrice).to.equal(1000)
         expect(createdSalesOrder[1].orderDate).to.equal(12345)
+        expect(createdSalesOrder[1].invoiceNumber).to.equal('invoice-number-1')
         expect(createdSalesOrder[1].total).to.equal(1000)
     })
 
@@ -70,6 +72,7 @@ describe('Module: List SalesOrders', () => {
             ],
             customer: customer._id,
             orderDate: 12345,
+            invoiceNumber: 'invoice-number-1',
         })
 
         const salesOrders = await SalesOrdersModule.listSalesOrders()
@@ -79,6 +82,7 @@ describe('Module: List SalesOrders', () => {
             testdata.customer1.name
         )
         expect(salesOrders[1][0].orderDate).to.equal(12345)
+        expect(salesOrders[1][0].invoiceNumber).to.equal('invoice-number-1')
         expect(salesOrders[1][0].products[0].product.name).to.equal(
             testdata.product1.name
         )
@@ -106,6 +110,7 @@ describe('Module: Get SalesOrder by id', () => {
                 ],
                 customer: customer._id,
                 orderDate: 12345,
+                invoiceNumber: 'invoice-number-1',
             })
         )[1]
     })
@@ -126,6 +131,7 @@ describe('Module: Get SalesOrder by id', () => {
             testdata.product1.name
         )
         expect(foundSalesOrder[1].orderDate).to.equal(12345)
+        expect(foundSalesOrder[1].invoiceNumber).to.equal('invoice-number-1')
     })
 
     it('Fail: given wrong id', async () => {
@@ -159,6 +165,7 @@ describe('Module: Update SalesOrder', () => {
                 ],
                 customer: customer._id,
                 orderDate: 12345,
+                invoiceNumber: 'invoice-number-1',
             })
         )[1]
     })
@@ -177,12 +184,16 @@ describe('Module: Update SalesOrder', () => {
                     },
                 ],
                 orderDate: 54321,
+                invoiceNumber: 'new-invoice-number-1',
             }
         )
 
         expect(updatedSalesOrder[0]).to.equal(200)
         expect(updatedSalesOrder[1].products.length).to.equal(2)
         expect(updatedSalesOrder[1].orderDate).to.equal(54321)
+        expect(updatedSalesOrder[1].invoiceNumber).to.equal(
+            'new-invoice-number-1'
+        )
         expect(updatedSalesOrder[1].total).to.equal(5000)
     })
 

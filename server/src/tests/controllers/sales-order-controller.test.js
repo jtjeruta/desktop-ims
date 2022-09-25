@@ -39,6 +39,7 @@ describe('Controller: List sales orders', () => {
             ],
             customer: customer._id,
             orderDate: moment().unix(),
+            invoiceNumber: 'invoice-number-1',
         })
 
         await SalesOrdersModule.createSalesOrder({
@@ -52,6 +53,7 @@ describe('Controller: List sales orders', () => {
             ],
             customer: customer._id,
             orderDate: moment().unix(),
+            invoiceNumber: 'invoice-number-1',
         })
     })
 
@@ -122,6 +124,7 @@ describe('Controller: Get sales order', () => {
                 ],
                 customer: customer._id,
                 orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
             })
         )[1]
     })
@@ -197,6 +200,7 @@ describe('Controller: Create sales order', () => {
                         itemPrice: 10,
                     },
                 ],
+                invoiceNumber: 'invoice-number-1',
             })
             .set('Authorization', token)
 
@@ -276,6 +280,7 @@ describe('Controller: Update sales order', () => {
                 ],
                 customer: customer._id,
                 orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
             })
         )[1]
     })
@@ -297,6 +302,7 @@ describe('Controller: Update sales order', () => {
                         itemPrice: 10,
                     },
                 ],
+                invoiceNumber: 'invoice-number-1',
             })
             .set('Authorization', token)
 

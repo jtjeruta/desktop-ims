@@ -24,5 +24,6 @@ module.exports.PurchaseOrderView = (document) => {
         createdAt: document.createdAt,
         remarks: document.remarks,
         orderDate: document.orderDate,
+        invoiceNumber: document.invoiceNumber,
     }
 }

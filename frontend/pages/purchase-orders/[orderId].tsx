@@ -22,7 +22,7 @@ import {
 } from '../../contexts/VendorContext/VendorContext'
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 import AddEditVendorFormForPurchaseOrder from '../../components/AddEditVendorFormForPurchaseOrder/AddEditVendorFormForPurchaseOrder'
-import OrderTotalsCard from '../../components/OrderTotalsCard/OrderTotalsCard'
+import OrderSummary from '../../components/OrderSummary/OrderSummary'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -69,6 +69,7 @@ const PurchaseOrderPageContent = () => {
             vendor: vendorRes[1].id,
             remarks: orderData.remarks ?? '',
             orderDate: orderData.orderDate,
+            invoiceNumber: orderData.invoiceNumber,
         }
 
         const purOrdRes = await (orderId
@@ -157,7 +158,7 @@ const PurchaseOrderPageContent = () => {
                             }))
                         }}
                     />
-                    <OrderTotalsCard
+                    <OrderSummary
                         total={PurOrdContext.draftOrder.total}
                         onSubmit={onSubmit}
                         disabled={submitButtonDisabled}
@@ -165,13 +166,18 @@ const PurchaseOrderPageContent = () => {
                         buttonText={
                             isEditPage ? 'Update Order' : 'Create Order'
                         }
-                        onDateChange={(date: number) => {
+                        onChange={(
+                            orderDate: number,
+                            invoiceNumber: string
+                        ) => {
                             PurOrdContext.setDraftOrder((prev) => ({
                                 ...prev,
-                                orderDate: date,
+                                orderDate,
+                                invoiceNumber,
                             }))
                         }}
-                        date={PurOrdContext.draftOrder.orderDate}
+                        orderDate={PurOrdContext.draftOrder.orderDate}
+                        invoiceNumber={PurOrdContext.draftOrder.invoiceNumber}
                     />
                 </div>
             </UserLayout>
