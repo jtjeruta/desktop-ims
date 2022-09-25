@@ -19,7 +19,7 @@ const ProductDetailsCard: FC = () => {
     }
 
     return (
-        <Card cardClsx="basis-0 grow" title="Extra Details">
+        <Card cardClsx="basis-0 grow" title="Details">
             <ul className="w-full text-gray-900">
                 {(Object.keys(details) as Array<keyof typeof details>).map(
                     (key, index) => {
