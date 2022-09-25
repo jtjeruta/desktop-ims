@@ -8,6 +8,7 @@ const VendorController = require('./controllers/vendor-controller')
 const PurchaseOrderController = require('./controllers/purchase-order-controller')
 const HealthCheckController = require('./controllers/health-check-controller')
 const CustomerController = require('./controllers/customer-controller')
+const SalesOrderController = require('./controllers/sales-order-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -99,6 +100,28 @@ router.put(
     '/api/v1/customers/:customerId',
     isAdmin,
     CustomerController.updateCustomer
+)
+
+// sales orders
+router.get(
+    '/api/v1/sales-orders',
+    isAdmin,
+    SalesOrderController.listSalesOrders
+)
+router.get(
+    '/api/v1/sales-orders/:salesOrderId',
+    isAdmin,
+    SalesOrderController.getSalesOrder
+)
+router.put(
+    '/api/v1/sales-orders/:salesOrderId',
+    isAdmin,
+    SalesOrderController.updateSalesOrder
+)
+router.post(
+    '/api/v1/sales-orders',
+    isAdmin,
+    SalesOrderController.createSalesOrder
 )
 
 module.exports = router
