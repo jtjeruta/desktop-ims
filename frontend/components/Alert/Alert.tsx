@@ -11,7 +11,7 @@ type Props = {
 
 const Alert: FC<Props> = (props) => {
     const style = {
-        info: 'bg-teal-100 border-teal-500 text-teal-900',
+        info: 'bg-sky-100 border-sky-500 text-sky-900',
     }
 
     return (
