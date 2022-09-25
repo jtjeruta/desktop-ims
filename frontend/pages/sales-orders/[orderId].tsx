@@ -69,6 +69,7 @@ const SalesOrderPageContent = () => {
             })),
             customer: customerRes[1].id,
             remarks: orderData.remarks ?? '',
+            orderDate: orderData.orderDate,
         }
 
         const purOrdRes = await (orderId
@@ -165,6 +166,13 @@ const SalesOrderPageContent = () => {
                         buttonText={
                             isEditPage ? 'Update Order' : 'Create Order'
                         }
+                        onDateChange={(date: number) => {
+                            SalesOrderContext.setDraftOrder((prev) => ({
+                                ...prev,
+                                orderDate: date,
+                            }))
+                        }}
+                        date={SalesOrderContext.draftOrder.orderDate}
                     />
                 </div>
             </UserLayout>

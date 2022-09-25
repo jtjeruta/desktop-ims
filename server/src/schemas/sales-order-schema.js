@@ -55,6 +55,9 @@ const SalesOrderSchema = new mongoose.Schema({
     remarks: {
         type: String,
     },
+    orderDate: {
+        type: Number,
+    },
 })
 
 const SalesOrderModel = mongoose.model('SalesOrder', SalesOrderSchema)

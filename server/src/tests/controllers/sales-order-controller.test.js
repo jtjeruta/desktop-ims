@@ -1,6 +1,7 @@
 const { expect, use } = require('chai')
 const request = require('supertest')
 const deepEqualInAnyOrder = require('deep-equal-in-any-order')
+const moment = require('moment')
 
 const setup = require('../setup')
 const app = require('../../app')
@@ -37,6 +38,7 @@ describe('Controller: List sales orders', () => {
                 },
             ],
             customer: customer._id,
+            orderDate: moment().unix(),
         })
 
         await SalesOrdersModule.createSalesOrder({
@@ -49,6 +51,7 @@ describe('Controller: List sales orders', () => {
                 },
             ],
             customer: customer._id,
+            orderDate: moment().unix(),
         })
     })
 
@@ -118,6 +121,7 @@ describe('Controller: Get sales order', () => {
                     },
                 ],
                 customer: customer._id,
+                orderDate: moment().unix(),
             })
         )[1]
     })
@@ -271,6 +275,7 @@ describe('Controller: Update sales order', () => {
                     },
                 ],
                 customer: customer._id,
+                orderDate: moment().unix(),
             })
         )[1]
     })

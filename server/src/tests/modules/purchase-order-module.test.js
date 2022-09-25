@@ -28,10 +28,12 @@ describe('Module: Create Purchase Order', () => {
                     },
                 ],
                 vendor: vendor._id,
+                orderDate: 12345,
             })
 
         expect(createdPurchaseOrder[0]).to.equal(201)
         expect(createdPurchaseOrder[1].products[0].totalPrice).to.equal(1000)
+        expect(createdPurchaseOrder[1].orderDate).to.equal(12345)
         expect(createdPurchaseOrder[1].total).to.equal(1000)
     })
 
@@ -66,6 +68,7 @@ describe('Module: List PurchaseOrders', () => {
                 },
             ],
             vendor: vendor._id,
+            orderDate: 12345,
         })
 
         const purchaseOrders = await PurchaseOrdersModule.listPurchaseOrders()
@@ -75,6 +78,7 @@ describe('Module: List PurchaseOrders', () => {
         expect(purchaseOrders[1][0].products[0].product.name).to.equal(
             testdata.product1.name
         )
+        expect(purchaseOrders[1][0].orderDate).to.equal(12345)
     })
 })
 
@@ -98,6 +102,7 @@ describe('Module: Get PurchaseOrder by id', () => {
                     },
                 ],
                 vendor: vendor._id,
+                orderDate: 12345,
             })
         )[1]
     })
@@ -116,6 +121,7 @@ describe('Module: Get PurchaseOrder by id', () => {
         expect(foundPurchaseOrder[1].products[0].product.name).to.equal(
             testdata.product1.name
         )
+        expect(foundPurchaseOrder[1].orderDate).to.equal(12345)
     })
 
     it('Fail: given wrong id', async () => {
@@ -149,6 +155,7 @@ describe('Module: Update PurchaseOrder', () => {
                     },
                 ],
                 vendor: vendor._id,
+                orderDate: 12345,
             })
         )[1]
     })
@@ -165,10 +172,12 @@ describe('Module: Update PurchaseOrder', () => {
                         itemPrice: 20,
                     },
                 ],
+                orderDate: 54321,
             })
 
         expect(updatedPurchaseOrder[0]).to.equal(200)
         expect(updatedPurchaseOrder[1].products.length).to.equal(2)
+        expect(updatedPurchaseOrder[1].orderDate).to.equal(54321)
         expect(updatedPurchaseOrder[1].total).to.equal(5000)
     })
 

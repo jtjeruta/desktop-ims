@@ -104,7 +104,7 @@ const Table: FC<Props> = (props) => {
                 ) : (
                     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td
-                            className="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
+                            className="px-6 py-3 border-b border-gray-200 whitespace-nowrap"
                             colSpan={props.columns.length}
                         >
                             No results found.
@@ -134,7 +134,7 @@ const TableRow: FC<TableRow> = (props) => {
                 <td
                     key={col.title}
                     className={clsx(
-                        'px-6 py-4 border-b border-gray-200 whitespace-nowrap',
+                        'px-6 py-3 border-b border-gray-200 whitespace-nowrap',
                         col.bodyClsx
                     )}
                 >

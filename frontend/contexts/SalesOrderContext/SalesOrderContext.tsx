@@ -18,6 +18,7 @@ const SalesOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         customer: null,
         total: 0,
         remarks: null,
+        orderDate: null,
     })
 
     const createOrder: Types.CreateSalesOrder = async (salesOrderDoc) => {

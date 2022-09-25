@@ -16,6 +16,7 @@ export type SalesOrder = {
     customer: Customer
     total: number
     remarks: string | null
+    orderDate: number | null
 }
 
 export type DraftSalesOrder = {
@@ -31,6 +32,7 @@ export type DraftSalesOrder = {
     customer: Customer | null
     total: number
     remarks: string | null
+    orderDate: number | null
 }
 
 export type AddEditSalesOrderDoc = {
@@ -42,6 +44,7 @@ export type AddEditSalesOrderDoc = {
     }[]
     customer: string
     remarks: string | null
+    orderDate: number | null
 }
 
 export type CreateUpdateSalesOrderErrors = {

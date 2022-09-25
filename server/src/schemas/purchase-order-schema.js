@@ -55,6 +55,9 @@ const PurchaseOrderSchema = new mongoose.Schema({
     remarks: {
         type: String,
     },
+    orderDate: {
+        type: Number,
+    },
 })
 
 const PurchaseOrderModel = mongoose.model('PurchaseOrder', PurchaseOrderSchema)

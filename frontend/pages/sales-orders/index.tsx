@@ -59,12 +59,14 @@ const SalesOrdersPageContent = () => {
                     loading={AppContext.isLoading('list-sales-orders')}
                     columns={[
                         {
-                            title: 'Created',
+                            title: 'Order Date',
                             format: (row) => {
                                 const order = row as SalesOrder
-                                return formatDate(order.createdAt)
+                                return order.orderDate
+                                    ? formatDate(order.orderDate)
+                                    : ''
                             },
-                            sort: (order) => order.createdAt,
+                            sort: (order) => order.orderDate,
                         },
                         {
                             title: 'Vendor',

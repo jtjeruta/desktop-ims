@@ -59,12 +59,14 @@ const PurchaseOrdersPageContent = () => {
                     loading={AppContext.isLoading('list-purchase-orders')}
                     columns={[
                         {
-                            title: 'Created',
+                            title: 'Order Date',
                             format: (row) => {
                                 const order = row as PurchaseOrder
-                                return formatDate(order.createdAt)
+                                return order.orderDate
+                                    ? formatDate(order.orderDate)
+                                    : ''
                             },
-                            sort: (order) => order.createdAt,
+                            sort: (order) => order.orderDate,
                         },
                         {
                             title: 'Vendor',

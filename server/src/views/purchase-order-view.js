@@ -23,5 +23,6 @@ module.exports.PurchaseOrderView = (document) => {
         total: document.total,
         createdAt: document.createdAt,
         remarks: document.remarks,
+        orderDate: document.orderDate,
     }
 }

@@ -5,10 +5,11 @@ import { useFormContext } from 'react-hook-form'
 type Props = {
     error?: boolean
     helperText?: string
-    label: string
+    disableHelperText?: boolean
+    label?: string
     placeholder?: string
     required?: boolean
-    type?: 'text' | 'number' | 'password' | 'tel'
+    type?: 'text' | 'number' | 'password' | 'tel' | 'date'
     name: string
     autoFocus?: boolean
     min?: number
@@ -50,14 +51,18 @@ const TextField: FC<Props> = (props) => {
                 max={props.max}
                 {...register}
             />
-            {!errorMessage ? (
-                props.helperText ? (
-                    <small>{props.helperText}</small>
-                ) : (
-                    <small className="invisible">no text</small>
-                )
-            ) : (
-                <small className="text-red-500">{errorMessage}</small>
+            {!props.disableHelperText && (
+                <>
+                    {!errorMessage ? (
+                        props.helperText ? (
+                            <small>{props.helperText}</small>
+                        ) : (
+                            <small className="invisible">no text</small>
+                        )
+                    ) : (
+                        <small className="text-red-500">{errorMessage}</small>
+                    )}
+                </>
             )}
         </div>
     )

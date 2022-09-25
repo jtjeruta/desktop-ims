@@ -56,7 +56,7 @@ module.exports.getSalesOrderById = async (id) => {
             .populate('products.product.warehouses')
             .populate('products.warehouse')
 
-        if (!salesOrder) return [404, { message: 'Purchase order not found.' }]
+        if (!salesOrder) return [404, { message: 'Sales order not found.' }]
         return [200, salesOrder]
     } catch (error) {
         console.error('Failed to get sales order by id')

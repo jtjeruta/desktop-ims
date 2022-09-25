@@ -16,6 +16,7 @@ export type PurchaseOrder = {
     vendor: Vendor
     total: number
     remarks: string | null
+    orderDate: number | null
 }
 
 export type DraftPurchaseOrder = {
@@ -31,6 +32,7 @@ export type DraftPurchaseOrder = {
     vendor: Vendor | null
     total: number
     remarks: string | null
+    orderDate: number | null
 }
 
 export type AddEditPurchaseOrderDoc = {
@@ -42,6 +44,7 @@ export type AddEditPurchaseOrderDoc = {
     }[]
     vendor: string
     remarks: string | null
+    orderDate: number | null
 }
 
 export type CreateUpdatePurchaseOrderErrors = {
