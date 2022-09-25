@@ -14,7 +14,7 @@ describe('Create Product', () => {
 
         expect(createdProduct[0]).to.equal(201)
         expect(createdProduct[1].name).to.equal(testdata.product1.name)
-        expect(createdProduct[1].brand).to.equal(testdata.product1.brand)
+        expect(createdProduct[1].company).to.equal(testdata.product1.company)
         expect(createdProduct[1].category).to.equal(testdata.product1.category)
         expect(createdProduct[1].subCategory).to.equal(
             testdata.product1.subCategory
@@ -38,8 +38,8 @@ describe('Create Product', () => {
         expect(createdProduct[1].errors.name.message).to.equal(
             'Path `name` is required.'
         )
-        expect(createdProduct[1].errors.brand.message).to.equal(
-            'Path `brand` is required.'
+        expect(createdProduct[1].errors.company.message).to.equal(
+            'Path `company` is required.'
         )
         expect(createdProduct[1].errors.category.message).to.equal(
             'Path `category` is required.'
@@ -119,7 +119,7 @@ describe('Update Product', () => {
 
         expect(updatedProduct[0]).to.equal(200)
         expect(updatedProduct[1].name).to.equal(testdata.product2.name)
-        expect(updatedProduct[1].brand).to.equal(testdata.product2.brand)
+        expect(updatedProduct[1].company).to.equal(testdata.product2.company)
         expect(updatedProduct[1].category).to.equal(testdata.product2.category)
         expect(updatedProduct[1].subCategory).to.equal(
             testdata.product2.subCategory

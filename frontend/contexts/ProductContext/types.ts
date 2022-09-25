@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios'
 export type Product = {
     id: string
     name: string
-    brand: string
+    company: string
     category: string
     subCategory: string
     price: number
@@ -30,7 +30,7 @@ export type Warehouse = {
 
 export type CreateProductDoc = {
     name: string
-    brand: string
+    company: string
     category: string
     subCategory: string
     price: number
@@ -39,7 +39,7 @@ export type CreateProductDoc = {
 
 export type UpdateProductDoc = {
     name?: string
-    brand?: string
+    company?: string
     category?: string
     subCategory?: string
     price?: number

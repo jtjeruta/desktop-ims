@@ -31,7 +31,7 @@ const InventoryPageContent = () => {
             const regex = new RegExp(search, 'igm')
             return [
                 product.name,
-                product.brand,
+                product.company,
                 product.aveUnitCost,
                 product.category,
                 product.price,
@@ -136,9 +136,9 @@ const InventoryPageContent = () => {
                             sort: (product) => product.markup,
                         },
                         {
-                            title: 'Brand',
-                            key: 'brand',
-                            sort: (product) => product.brand,
+                            title: 'Company',
+                            key: 'company',
+                            sort: (product) => product.company,
                         },
                         {
                             title: 'SKU',

@@ -11,7 +11,7 @@ module.exports.ProductView = (productDocument) => {
     return {
         id: productDocument._id,
         name: productDocument.name,
-        brand: productDocument.brand,
+        company: productDocument.company,
         category: productDocument.category,
         subCategory: productDocument.subCategory,
         price: productDocument.price,

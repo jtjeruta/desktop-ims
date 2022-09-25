@@ -8,7 +8,7 @@ module.exports.createProduct = async (req, res) => {
         sku: ProductsModule.generateSKU(),
         name: req.body.name,
         price: req.body.price,
-        brand: req.body.brand,
+        company: req.body.company,
         category: req.body.category,
         subCategory: req.body.subCategory,
         aveUnitCost: null,
@@ -77,7 +77,7 @@ module.exports.updateProduct = async (req, res) => {
     const updateDoc = {
         name: req.body.name,
         price: req.body.price,
-        brand: req.body.brand,
+        company: req.body.company,
         category: req.body.category,
         subCategory: req.body.subCategory,
         published: req.body.published,

@@ -28,7 +28,7 @@ const AddEditProductForm: FC<Props> = (props) => {
 
         const doc = {
             name: values.name as string,
-            brand: values.brand as string,
+            company: values.company as string,
             category: values.category as string,
             subCategory: values.subCategory as string,
             price: +values.price,
@@ -68,7 +68,7 @@ const AddEditProductForm: FC<Props> = (props) => {
 
     useEffect(() => {
         methods.setValue('name', ProductContext.product?.name)
-        methods.setValue('brand', ProductContext.product?.brand)
+        methods.setValue('company', ProductContext.product?.company)
         methods.setValue('category', ProductContext.product?.category)
         methods.setValue('subCategory', ProductContext.product?.subCategory)
         methods.setValue('price', +(ProductContext.product?.price || 0))
@@ -124,9 +124,9 @@ const AddEditProductForm: FC<Props> = (props) => {
                         />
                     )}
                     <TextField
-                        name="brand"
-                        label="Brand"
-                        placeholder="Brand 1"
+                        name="company"
+                        label="Company"
+                        placeholder="Company 1"
                         required
                     />
                 </div>

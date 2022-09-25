@@ -165,7 +165,7 @@ describe('Create product', () => {
                         'variants',
                         'warehouses',
                         'aveUnitCost',
-                        'brand',
+                        'company',
                         'category',
                         'createdAt',
                         'id',
@@ -209,7 +209,7 @@ describe('Create product', () => {
                         Object.keys(res.body.errors)
                     ).to.deep.equalInAnyOrder([
                         'name',
-                        'brand',
+                        'company',
                         'category',
                         'subCategory',
                         'price',
@@ -298,8 +298,8 @@ describe('Update product', () => {
                     expect(res.body.product.name).to.equal(
                         testdata.product3.name
                     )
-                    expect(res.body.product.brand).to.equal(
-                        testdata.product3.brand
+                    expect(res.body.product.company).to.equal(
+                        testdata.product3.company
                     )
                     expect(res.body.product.category).to.equal(
                         testdata.product3.category
@@ -338,7 +338,7 @@ describe('Update product', () => {
                 .put(`/api/v1/products/${createdProducts.product1.id}`)
                 .send({
                     name: '',
-                    brand: '',
+                    company: '',
                     category: '',
                     subCategory: '',
                     published: null,
@@ -351,7 +351,7 @@ describe('Update product', () => {
                         Object.keys(res.body.errors)
                     ).to.deep.equalInAnyOrder([
                         'name',
-                        'brand',
+                        'company',
                         'category',
                         'subCategory',
                         'published',

@@ -27,7 +27,7 @@ module.exports.employee2 = {
 
 module.exports.product1 = {
     name: 'Product 1',
-    brand: 'brand 1',
+    company: 'company 1',
     category: 'category 1',
     subCategory: 'sub-category 1',
     price: 15,
@@ -40,7 +40,7 @@ module.exports.product1 = {
 
 module.exports.product2 = {
     name: 'Product 2',
-    brand: 'brand 2',
+    company: 'company 2',
     category: 'category 2',
     subCategory: 'sub-category 2',
     price: 24,
@@ -53,7 +53,7 @@ module.exports.product2 = {
 
 module.exports.product3 = {
     name: 'Product 3',
-    brand: 'brand 3',
+    company: 'company 3',
     category: 'category 3',
     subCategory: 'sub-category 3',
     price: 70,
