@@ -43,7 +43,7 @@ const ManageProductWarehouses = () => {
                                 rows={ProductContext.product?.warehouses || []}
                                 columns={[
                                     {
-                                        title: 'Warehouse',
+                                        title: 'Stock Location',
                                         key: 'name',
                                     },
                                     {
