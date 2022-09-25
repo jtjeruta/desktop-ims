@@ -9,15 +9,12 @@ const ProductSchema = new mongoose.Schema({
     },
     company: {
         type: String,
-        required: true,
     },
     category: {
         type: String,
-        required: true,
     },
     subCategory: {
         type: String,
-        required: true,
     },
     price: {
         type: Number,

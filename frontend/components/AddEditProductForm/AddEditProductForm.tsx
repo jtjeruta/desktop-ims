@@ -127,7 +127,6 @@ const AddEditProductForm: FC<Props> = (props) => {
                         name="company"
                         label="Company"
                         placeholder="Company 1"
-                        required
                     />
                 </div>
                 <div className="grid gap-3 mb-2 lg:grid-cols-2">
@@ -135,13 +134,11 @@ const AddEditProductForm: FC<Props> = (props) => {
                         name="category"
                         label="Category"
                         placeholder="category 1"
-                        required
                     />
                     <TextField
                         name="subCategory"
                         label="Sub Category"
                         placeholder="sub category 1"
-                        required
                     />
                 </div>
                 <div className="flex justify-end">
