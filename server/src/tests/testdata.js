@@ -97,3 +97,17 @@ module.exports.vendor2 = {
     address: '09123 Sunrise Court San Bennedict, SA 09231',
     email: 'vendor2@test.com',
 }
+
+module.exports.customer1 = {
+    name: 'Customer 1',
+    phone: '',
+    address: '',
+    email: '',
+}
+
+module.exports.customer2 = {
+    name: 'Customer 2',
+    phone: '+639053215665',
+    address: 'Lot 2 Blk 12, San Francisco Village, Lapuz, Iloilo City',
+    email: 'customer2@mail.com',
+}

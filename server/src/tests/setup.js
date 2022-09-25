@@ -4,6 +4,8 @@ const { VariantModel } = require('../schemas/variant-schema')
 const { WarehouseModel } = require('../schemas/warehouse-schema')
 const { VendorModel } = require('../schemas/vendor-schema')
 const { PurchaseOrderModel } = require('../schemas/purchase-order-schema')
+const { CustomerModel } = require('../schemas/customer-schema')
+const { SalesOrderModel } = require('../schemas/sales-order-schema')
 
 const models = [
     UserModel,
@@ -12,6 +14,8 @@ const models = [
     WarehouseModel,
     VendorModel,
     PurchaseOrderModel,
+    CustomerModel,
+    SalesOrderModel,
 ]
 
 const setup = () => {
