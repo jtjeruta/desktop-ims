@@ -119,13 +119,12 @@ const PurchaseOrderPageContent = () => {
         <>
             <UserLayout>
                 <PageHeader
-                    title={
-                        PurOrdContext.selectedOrder ? (
-                            <code>#{PurOrdContext.selectedOrder.id}</code>
-                        ) : (
-                            'New Order'
-                        )
-                    }
+                    breadcrumbs={[
+                        { text: 'Purchase Orders', url: '/purchase-orders' },
+                        {
+                            text: router.query.orderId as string,
+                        },
+                    ]}
                 />
 
                 <div className="flex flex-col md:flex-row gap-3 mb-3">

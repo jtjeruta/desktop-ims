@@ -40,12 +40,12 @@ const CustomersPageContent = () => {
     return (
         <UserLayout>
             <PageHeader
-                title="Purchase Customers"
+                breadcrumbs={[{ text: 'Customers' }]}
                 searchbar={{ onSearch: (search) => setSearch(search) }}
                 buttons={[
                     {
                         text: 'Add Customer',
-                        onClick: () => router.push('/purchase-customers/new'),
+                        onClick: () => router.push('/customers/new'),
                     },
                 ]}
             />

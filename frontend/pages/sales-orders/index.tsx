@@ -41,7 +41,7 @@ const SalesOrdersPageContent = () => {
     return (
         <UserLayout>
             <PageHeader
-                title="Sales Orders"
+                breadcrumbs={[{ text: `Sales Orders` }]}
                 searchbar={{ onSearch: (search) => setSearch(search) }}
                 buttons={[
                     {

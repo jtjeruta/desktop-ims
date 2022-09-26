@@ -120,13 +120,12 @@ const SalesOrderPageContent = () => {
         <>
             <UserLayout>
                 <PageHeader
-                    title={
-                        SalesOrderContext.selectedOrder ? (
-                            <code>#{SalesOrderContext.selectedOrder.id}</code>
-                        ) : (
-                            'New Order'
-                        )
-                    }
+                    breadcrumbs={[
+                        { text: 'Sales Orders', url: '/sales-orders' },
+                        {
+                            text: router.query.orderId as string,
+                        },
+                    ]}
                 />
 
                 <div className="flex flex-col md:flex-row gap-3 mb-3">

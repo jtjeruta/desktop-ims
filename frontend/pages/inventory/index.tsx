@@ -92,7 +92,7 @@ const InventoryPageContent = () => {
     return (
         <UserLayout>
             <PageHeader
-                title="Inventory"
+                breadcrumbs={[{ text: 'Inventory' }]}
                 searchbar={{ onSearch: (search) => setSearch(search) }}
                 buttons={[
                     {

@@ -43,7 +43,7 @@ const Button: FC<Props> = (props) => {
         <button
             type={props.type || 'submit'}
             className={clsx(
-                'relative flex align-center justify-center gap-2 py-2 px-4 ',
+                'relative flex align-center justify-center gap-2 py-2 px-4',
                 btnStyle,
                 btnColor,
                 props.className

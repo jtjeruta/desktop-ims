@@ -26,7 +26,7 @@ const PageContent: FC = () => {
     return (
         <UserLayout>
             <PageHeader
-                title="Manage Users"
+                breadcrumbs={[{ text: 'Manage Users' }]}
                 buttons={[
                     {
                         text: 'Add User',

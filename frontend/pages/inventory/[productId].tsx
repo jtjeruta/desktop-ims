@@ -53,7 +53,12 @@ const ProductPageContent = () => {
         <UserLayout>
             <PageHeader
                 headerClsx="!flex-row"
-                title={<code>#{ProductContext.product?.sku}</code>}
+                breadcrumbs={[
+                    { text: 'Inventory', url: '/inventory' },
+                    {
+                        text: router.query.productId as string,
+                    },
+                ]}
                 switches={[
                     {
                         toggled: published,
@@ -64,19 +69,20 @@ const ProductPageContent = () => {
                     },
                 ]}
             />
-            {!ProductContext.product?.published && (
-                <Alert
-                    type="info"
-                    title="NOT AVAILABLE"
-                    content={
-                        <span>
-                            Product is currently set to <b>NOT AVAILABLE</b> and
-                            will not be available for purchase.
-                        </span>
-                    }
-                    className="mb-4"
-                />
-            )}
+            {ProductContext.product != null &&
+                !ProductContext.product.published && (
+                    <Alert
+                        type="info"
+                        title="NOT AVAILABLE"
+                        content={
+                            <span>
+                                Product is currently set to <b>NOT AVAILABLE</b>{' '}
+                                and will not be available for purchase.
+                            </span>
+                        }
+                        className="mb-4"
+                    />
+                )}
             <div className="flex gap-4 pb-4 flex-col md:flex-row">
                 <Card cardClsx="grow basis-0">
                     <AddEditProductForm type="update" />
