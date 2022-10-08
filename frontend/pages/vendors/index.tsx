@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
@@ -11,17 +10,17 @@ import {
     useVendorContext,
 } from '../../contexts/VendorContext/VendorContext'
 import { Vendor } from '../../contexts/VendorContext/types'
+import VendorDialog from '../../components/VendorDialog/VendorDialog'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
-    const router = useRouter()
     const [search, setSearch] = useState<string>('')
 
     const filteredVendors = (VendorContext.vendors || []).filter((vendor) => {
         const regex = new RegExp(search, 'igm')
-        return [vendor.name, vendor.email, vendor.phone].some((item) =>
-            regex.test(`${item}`)
+        return [vendor.name, vendor.email, vendor.phone, vendor.address].some(
+            (item) => regex.test(`${item}`)
         )
     })
 
@@ -43,7 +42,10 @@ const VendorsPageContent = () => {
                 buttons={[
                     {
                         text: 'Add Vendor',
-                        onClick: () => router.push('/vendors/new'),
+                        onClick: () => {
+                            VendorContext.setSelectedVendor(null)
+                            AppContext.openDialog('add-edit-vendor-dialog')
+                        },
                     },
                 ]}
             />
@@ -78,6 +80,14 @@ const VendorsPageContent = () => {
                             sort: (vendor) => vendor.phone,
                         },
                         {
+                            title: 'Address',
+                            format: (row) => {
+                                const vendor = row as Vendor
+                                return vendor.address
+                            },
+                            sort: (vendor) => vendor.address,
+                        },
+                        {
                             title: ' ',
                             bodyClsx: 'w-0',
                             format: (row) => {
@@ -85,11 +95,16 @@ const VendorsPageContent = () => {
                                 return (
                                     <Button
                                         style="link"
-                                        onClick={() =>
-                                            router.push(`/vendors/${vendor.id}`)
-                                        }
+                                        onClick={() => {
+                                            VendorContext.setSelectedVendor(
+                                                vendor
+                                            )
+                                            AppContext.openDialog(
+                                                'add-edit-vendor-dialog'
+                                            )
+                                        }}
                                     >
-                                        View
+                                        Edit
                                     </Button>
                                 )
                             },
@@ -97,6 +112,7 @@ const VendorsPageContent = () => {
                     ]}
                 />
             </Card>
+            <VendorDialog />
         </UserLayout>
     )
 }
