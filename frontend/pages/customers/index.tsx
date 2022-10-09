@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import AddEditCustomerDialog from '../../components/AddEditCustomerDialog/AddEditCustomerDialog'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -45,7 +46,10 @@ const CustomersPageContent = () => {
                 buttons={[
                     {
                         text: 'Add Customer',
-                        onClick: () => router.push('/customers/new'),
+                        onClick: () => {
+                            CustomerContext.setSelectedCustomer(null)
+                            AppContext.openDialog('add-edit-customer-dialog')
+                        },
                     },
                 ]}
             />
@@ -87,13 +91,16 @@ const CustomersPageContent = () => {
                                 return (
                                     <Button
                                         style="link"
-                                        onClick={() =>
-                                            router.push(
-                                                `/customers/${customer.id}`
+                                        onClick={() => {
+                                            CustomerContext.setSelectedCustomer(
+                                                customer
                                             )
-                                        }
+                                            AppContext.openDialog(
+                                                'add-edit-customer-dialog'
+                                            )
+                                        }}
                                     >
-                                        View
+                                        Edit
                                     </Button>
                                 )
                             },
@@ -101,6 +108,7 @@ const CustomersPageContent = () => {
                     ]}
                 />
             </Card>
+            <AddEditCustomerDialog />
         </UserLayout>
     )
 }
