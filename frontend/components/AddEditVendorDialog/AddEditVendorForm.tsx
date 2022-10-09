@@ -17,7 +17,7 @@ const vendorSchema = yup
     })
     .required()
 
-const VendorForm: FC = () => {
+const AddEditVendorForm: FC = () => {
     const methods = useForm({ resolver: yupResolver(vendorSchema) })
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
@@ -106,4 +106,4 @@ const VendorForm: FC = () => {
     )
 }
 
-export default VendorForm
+export default AddEditVendorForm

@@ -10,7 +10,7 @@ import {
     useVendorContext,
 } from '../../contexts/VendorContext/VendorContext'
 import { Vendor } from '../../contexts/VendorContext/types'
-import VendorDialog from '../../components/VendorDialog/VendorDialog'
+import AddEditVendorDialog from '../../components/AddEditVendorDialog/AddEditVendorDialog'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
@@ -112,7 +112,7 @@ const VendorsPageContent = () => {
                     ]}
                 />
             </Card>
-            <VendorDialog />
+            <AddEditVendorDialog />
         </UserLayout>
     )
 }
