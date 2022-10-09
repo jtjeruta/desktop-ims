@@ -89,6 +89,7 @@ module.exports.vendor1 = {
     phone: '+639052345665',
     address: '8785 Sunset Court San Jose, CA 95127',
     email: 'vendor1@test.com',
+    remarks: 'This is a test.',
 }
 
 module.exports.vendor2 = {
@@ -96,6 +97,7 @@ module.exports.vendor2 = {
     phone: '+639056745665',
     address: '09123 Sunrise Court San Bennedict, SA 09231',
     email: 'vendor2@test.com',
+    remarks: 'This is a test.',
 }
 
 module.exports.customer1 = {

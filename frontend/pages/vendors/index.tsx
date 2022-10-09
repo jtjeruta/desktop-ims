@@ -19,9 +19,13 @@ const VendorsPageContent = () => {
 
     const filteredVendors = (VendorContext.vendors || []).filter((vendor) => {
         const regex = new RegExp(search, 'igm')
-        return [vendor.name, vendor.email, vendor.phone, vendor.address].some(
-            (item) => regex.test(`${item}`)
-        )
+        return [
+            vendor.name,
+            vendor.email,
+            vendor.phone,
+            vendor.address,
+            vendor.remarks,
+        ].some((item) => regex.test(`${item}`))
     })
 
     useEffect(() => {
@@ -86,6 +90,14 @@ const VendorsPageContent = () => {
                                 return vendor.address
                             },
                             sort: (vendor) => vendor.address,
+                        },
+                        {
+                            title: 'Remarks',
+                            format: (row) => {
+                                const vendor = row as Vendor
+                                return vendor.remarks
+                            },
+                            sort: (vendor) => vendor.remarks,
                         },
                         {
                             title: ' ',

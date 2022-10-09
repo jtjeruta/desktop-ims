@@ -7,6 +7,7 @@ import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
 import Button from '../Button/Button'
 import { useVendorContext } from '../../contexts/VendorContext/VendorContext'
+import TextArea from '../TextArea/TextArea'
 
 const vendorSchema = yup
     .object({
@@ -14,6 +15,7 @@ const vendorSchema = yup
         phone: yup.string(),
         email: yup.string().email(),
         address: yup.string(),
+        remarks: yup.string(),
     })
     .required()
 
@@ -28,6 +30,7 @@ const AddEditVendorForm: FC = () => {
             phone: values.phone as string,
             email: values.email as string,
             address: values.address as string,
+            remarks: values.remarks as string,
         }
 
         const response = await (VendorContext.selectedVendor
@@ -64,6 +67,7 @@ const AddEditVendorForm: FC = () => {
         methods.setValue('phone', VendorContext.selectedVendor?.phone)
         methods.setValue('email', VendorContext.selectedVendor?.email)
         methods.setValue('address', VendorContext.selectedVendor?.address)
+        methods.setValue('remarks', VendorContext.selectedVendor?.remarks)
     }, [VendorContext.selectedVendor, methods])
 
     return (
@@ -90,6 +94,7 @@ const AddEditVendorForm: FC = () => {
                         label="Address"
                         helperText="Eg. shop 52, San Francisco Village, lapaz, Iloilo City"
                     />
+                    <TextArea name="remarks" label="Remarks" />
                     <div className="flex justify-end">
                         <Button
                             loading={

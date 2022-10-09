@@ -8,6 +8,7 @@ import { useVendorContext } from '../../contexts/VendorContext/VendorContext'
 import AddEditVendorFormSkeleton from './Skeleton'
 import { AddEditVendorDoc } from '../../contexts/VendorContext/types'
 import Select from '../Select/Select'
+import TextArea from '../TextArea/TextArea'
 
 const vendorSchema = yup
     .object({
@@ -15,6 +16,7 @@ const vendorSchema = yup
         phone: yup.string(),
         email: yup.string().email(),
         address: yup.string(),
+        remarks: yup.string(),
     })
     .required()
 
@@ -39,6 +41,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
         methods.setValue('phone', VendorContext.draftVendor?.phone)
         methods.setValue('email', VendorContext.draftVendor?.email)
         methods.setValue('address', VendorContext.draftVendor?.address)
+        methods.setValue('remarks', VendorContext.draftVendor?.address)
     }, [VendorContext, methods])
 
     // set on change
@@ -103,6 +106,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
                         name="address"
                         helperText="Eg. shop 52, San Francisco Village, lapaz, Iloilo City"
                     />
+                    <TextArea name="remarks" label="Remarks" />
                 </div>
             </form>
         </FormProvider>

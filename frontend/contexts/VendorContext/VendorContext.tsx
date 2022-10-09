@@ -18,6 +18,7 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
         email: '',
         phone: '',
         address: '',
+        remarks: '',
     })
 
     const createVendor: Types.CreateVendor = async (vendorDoc) => {

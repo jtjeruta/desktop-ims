@@ -6,6 +6,7 @@ export type Vendor = {
     email: string
     phone: string
     address: string
+    remarks: string
 }
 
 export type AddEditVendorDoc = {
@@ -14,6 +15,7 @@ export type AddEditVendorDoc = {
     email: string
     phone: string
     address: string
+    remarks: string
 }
 
 export type CreateUpdateVendorErrors = Record<keyof Vendor, { message: string }>
