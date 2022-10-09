@@ -2,6 +2,7 @@ const { expect } = require('chai')
 
 const PurchaseOrdersModule = require('../../modules/purchase-orders-module')
 const ProductsModule = require('../../modules/products-module')
+const WarehousesModule = require('../../modules/warehouses-module')
 const VendorsModule = require('../../modules/vendors-module')
 const setup = require('../setup')
 const testdata = require('../testdata')
@@ -10,9 +11,16 @@ describe('Module: Create Purchase Order', () => {
     setup()
     let product = null
     let vendor = null
+    let warehouse = null
 
     beforeEach(async () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
         vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
     })
 
@@ -25,6 +33,11 @@ describe('Module: Create Purchase Order', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse: warehouse._id,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 vendor: vendor._id,
@@ -57,8 +70,16 @@ describe('Module: List PurchaseOrders', () => {
     setup()
 
     it('Success: list all purchase orders', async () => {
-        product = (await ProductsModule.createProduct(testdata.product1))[1]
-        vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        const product = (
+            await ProductsModule.createProduct(testdata.product1)
+        )[1]
+        const vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         await PurchaseOrdersModule.createPurchaseOrder({
             products: [
@@ -67,6 +88,11 @@ describe('Module: List PurchaseOrders', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse: warehouse._id,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             vendor: vendor._id,
@@ -94,6 +120,12 @@ describe('Module: Get PurchaseOrder by id', () => {
     beforeEach(async () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         purchaseOrder = (
             await PurchaseOrdersModule.createPurchaseOrder({
@@ -103,6 +135,11 @@ describe('Module: Get PurchaseOrder by id', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse: warehouse._id,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 vendor: vendor._id,
@@ -143,12 +180,18 @@ describe('Module: Get PurchaseOrder by id', () => {
 describe('Module: Update PurchaseOrder', () => {
     setup()
 
-    let product1, product2, vendor, purchaseOrder
+    let product1, product2, vendor, purchaseOrder, warehouse
 
     beforeEach(async () => {
         product1 = (await ProductsModule.createProduct(testdata.product1))[1]
         product2 = (await ProductsModule.createProduct(testdata.product2))[1]
         vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product1._id,
+            })
+        )[1]
 
         purchaseOrder = (
             await PurchaseOrdersModule.createPurchaseOrder({
@@ -158,6 +201,11 @@ describe('Module: Update PurchaseOrder', () => {
                         product: product1._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse: warehouse._id,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 vendor: vendor._id,
@@ -177,6 +225,11 @@ describe('Module: Update PurchaseOrder', () => {
                         product: product2._id,
                         quantity: 200,
                         itemPrice: 20,
+                        warehouse: warehouse._id,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 orderDate: 54321,

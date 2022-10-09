@@ -11,6 +11,10 @@ export type SalesOrder = {
         itemPrice: number
         totalPrice: number
         warehouse: Warehouse | null
+        variant: {
+            name: string
+            quantity: number
+        } | null
     }[]
     createdAt: number
     customer: Customer
@@ -29,6 +33,10 @@ export type DraftSalesOrder = {
         itemPrice: number
         totalPrice: number
         warehouse: Warehouse | null
+        variant: {
+            name: string
+            quantity: number
+        } | null
     }[]
     customer: Customer | null
     total: number
@@ -43,6 +51,10 @@ export type AddEditSalesOrderDoc = {
         quantity: number
         itemPrice: number
         warehouse: string | null
+        variant: {
+            name: string
+            quantity: number
+        } | null
     }[]
     customer: string
     remarks: string | null

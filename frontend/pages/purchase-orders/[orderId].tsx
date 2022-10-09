@@ -66,6 +66,7 @@ const PurchaseOrderPageContent = () => {
                 quantity: product.quantity,
                 itemPrice: product.itemPrice,
                 warehouse: product.warehouse?.id ?? null,
+                variant: product.variant,
             })),
             vendor: vendorRes[1].id,
             remarks: orderData.remarks ?? '',

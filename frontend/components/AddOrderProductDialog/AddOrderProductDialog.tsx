@@ -43,13 +43,24 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             (warehouse) => warehouse.id === data.warehouse
         )
 
+        const variant = product.variants.find(
+            (variant) => variant.id === data.variant
+        )
+
+        if (!variant) {
+            return methods.setError('variant', {
+                message: 'Unit not found',
+            })
+        }
+
         const productDoc = {
             id: uuid(),
             product,
             quantity: data.quantity,
             itemPrice: data.itemPrice,
             totalPrice: data.quantity * data.itemPrice,
-            warehouse: warehouse || null,
+            warehouse: warehouse ?? null,
+            variant,
         }
 
         if (props.type === 'purchase') {
@@ -122,29 +133,48 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                     })
                                 )}
                             />
-                            <Select
-                                label="Remove Stock From"
-                                name="warehouse"
-                                required
-                                options={[
-                                    {
-                                        value: 'store',
-                                        text: 'Store',
-                                    },
-                                    ...(
-                                        ProductContext.product?.warehouses || []
-                                    ).map((warehouse) => ({
-                                        value: warehouse.id,
-                                        text: warehouse.name,
-                                    })),
-                                ]}
-                            />
                             <div className="flex gap-3">
+                                <Select
+                                    label="Unit"
+                                    name="variant"
+                                    required
+                                    options={[
+                                        ...(
+                                            ProductContext.product?.variants ||
+                                            []
+                                        ).map((variant) => ({
+                                            value: variant.id,
+                                            text: variant.name,
+                                        })),
+                                    ]}
+                                    className="grow"
+                                />
                                 <TextField
                                     label="Quantity"
                                     name="quantity"
                                     min={1}
                                     required
+                                />
+                            </div>
+                            <div className="flex gap-3">
+                                <Select
+                                    label="Remove Stock From"
+                                    name="warehouse"
+                                    required
+                                    options={[
+                                        {
+                                            value: 'store',
+                                            text: 'Store',
+                                        },
+                                        ...(
+                                            ProductContext.product
+                                                ?.warehouses || []
+                                        ).map((warehouse) => ({
+                                            value: warehouse.id,
+                                            text: warehouse.name,
+                                        })),
+                                    ]}
+                                    className="grow"
                                 />
                                 <TextField
                                     label={

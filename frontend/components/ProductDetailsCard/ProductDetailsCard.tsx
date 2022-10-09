@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import { FC } from 'react'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
-import { getProductMarkup } from '../../uitls/product-utils'
 import Card from '../Card/Card'
 
 const ProductDetailsCard: FC = () => {

@@ -9,6 +9,7 @@ const UsersModule = require('../../modules/users-module')
 const ProductsModule = require('../../modules/products-module')
 const PurchaseOrdersModule = require('../../modules/purchase-orders-module')
 const VendorsModule = require('../../modules/vendors-module')
+const WarehousesModule = require('../../modules/warehouses-module')
 const { login } = require('../helpers')
 const testdata = require('../testdata')
 
@@ -25,6 +26,12 @@ describe('Controller: List purchase orders', () => {
             await ProductsModule.createProduct(testdata.product1)
         )[1]
         const vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         await PurchaseOrdersModule.createPurchaseOrder({
             products: [
@@ -33,6 +40,11 @@ describe('Controller: List purchase orders', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             vendor: vendor._id,
@@ -47,6 +59,11 @@ describe('Controller: List purchase orders', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             vendor: vendor._id,
@@ -107,6 +124,12 @@ describe('Controller: Get purchase order', () => {
             await ProductsModule.createProduct(testdata.product1)
         )[1]
         const vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         purchaseOrder = (
             await PurchaseOrdersModule.createPurchaseOrder({
@@ -116,6 +139,11 @@ describe('Controller: Get purchase order', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 vendor: vendor._id,
@@ -169,13 +197,19 @@ describe('Controller: Get purchase order', () => {
 
 describe('Controller: Create purchase order', () => {
     setup()
-    let product, vendor
+    let product, vendor, warehouse
 
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
         await UsersModule.createUser(testdata.employee1)
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product,
+            })
+        )[1]
     })
 
     it('Success: run as admin with correct data', async () => {
@@ -194,6 +228,11 @@ describe('Controller: Create purchase order', () => {
                         product: product._id,
                         quantity: 5,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 orderDate: moment().unix(),
@@ -264,6 +303,12 @@ describe('Controller: Update purchase order', () => {
 
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product,
+            })
+        )[1]
 
         purchaseOrder = (
             await PurchaseOrdersModule.createPurchaseOrder({
@@ -273,6 +318,11 @@ describe('Controller: Update purchase order', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 vendor: vendor._id,
@@ -295,8 +345,13 @@ describe('Controller: Update purchase order', () => {
                     {
                         id: 'test_product_1',
                         product: product._id,
-                        quantity: 100,
+                        quantity: 50,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 5,
+                        },
                     },
                 ],
                 orderDate: moment().unix(),
@@ -309,8 +364,8 @@ describe('Controller: Update purchase order', () => {
         expect(res.body.order.products[0].product.id).to.equal(
             product._id.toString()
         )
-        expect(res.body.order.products[0].totalPrice).to.equal(1000)
-        expect(res.body.order.total).to.equal(1000)
+        expect(res.body.order.products[0].totalPrice).to.equal(500)
+        expect(res.body.order.total).to.equal(500)
     })
 
     it('Fail: run as admin with incorrect data', async () => {

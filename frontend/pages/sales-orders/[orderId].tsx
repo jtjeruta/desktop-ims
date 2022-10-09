@@ -67,6 +67,7 @@ const SalesOrderPageContent = () => {
                 quantity: product.quantity,
                 itemPrice: product.itemPrice,
                 warehouse: product.warehouse?.id ?? null,
+                variant: product.variant,
             })),
             customer: customerRes[1].id,
             remarks: orderData.remarks ?? '',

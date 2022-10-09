@@ -35,9 +35,17 @@ const SalesOrderSchema = new mongoose.Schema({
                     required: true,
                     min: [0, 'Path `quantity` can not be less than 0.'],
                 },
+                // null warehouse means the stock is taken from the store
                 warehouse: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Warehouse',
+                },
+                variant: {
+                    required: true,
+                    type: {
+                        name: String,
+                        quantity: String,
+                    },
                 },
             },
         ],

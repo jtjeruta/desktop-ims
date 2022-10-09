@@ -14,6 +14,7 @@ module.exports.PurchaseOrderView = (document) => {
         quantity: product.quantity,
         totalPrice: product.totalPrice,
         warehouse: product.warehouse ? WarehouseView(product.warehouse) : null,
+        variant: product.variant,
     }))
 
     return {

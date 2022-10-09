@@ -41,6 +41,12 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 headerClsx: 'w-full',
                             },
                             {
+                                title: 'Unit',
+                                format: (row) =>
+                                    row.product.variant?.name ?? 'default',
+                                headerClsx: 'w-full',
+                            },
+                            {
                                 title: 'Selling Price',
                                 format: (row) => formatCurrency(row.itemPrice),
                                 bodyClsx: 'text-right',

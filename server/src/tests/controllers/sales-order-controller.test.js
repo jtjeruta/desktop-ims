@@ -9,6 +9,7 @@ const UsersModule = require('../../modules/users-module')
 const ProductsModule = require('../../modules/products-module')
 const SalesOrdersModule = require('../../modules/sales-orders-module')
 const CustomersModule = require('../../modules/customers-module')
+const WarehousesModule = require('../../modules/warehouses-module')
 const { login } = require('../helpers')
 const testdata = require('../testdata')
 
@@ -27,6 +28,12 @@ describe('Controller: List sales orders', () => {
         const customer = (
             await CustomersModule.createCustomer(testdata.customer1)
         )[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         await SalesOrdersModule.createSalesOrder({
             products: [
@@ -35,6 +42,11 @@ describe('Controller: List sales orders', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             customer: customer._id,
@@ -49,6 +61,11 @@ describe('Controller: List sales orders', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             customer: customer._id,
@@ -111,6 +128,12 @@ describe('Controller: Get sales order', () => {
         const customer = (
             await CustomersModule.createCustomer(testdata.customer1)
         )[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         salesOrder = (
             await SalesOrdersModule.createSalesOrder({
@@ -120,6 +143,11 @@ describe('Controller: Get sales order', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 customer: customer._id,
@@ -173,13 +201,19 @@ describe('Controller: Get sales order', () => {
 
 describe('Controller: Create sales order', () => {
     setup()
-    let product, customer
+    let product, customer, warehouse
 
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
         await UsersModule.createUser(testdata.employee1)
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
     })
 
     it('Success: run as admin with correct data', async () => {
@@ -198,6 +232,11 @@ describe('Controller: Create sales order', () => {
                         product: product._id,
                         quantity: 5,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 invoiceNumber: 'invoice-number-1',
@@ -259,7 +298,7 @@ describe('Controller: Create sales order', () => {
 
 describe('Controller: Update sales order', () => {
     setup()
-    let product, customer, salesOrder
+    let product, customer, salesOrder, warehouse
 
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
@@ -267,6 +306,12 @@ describe('Controller: Update sales order', () => {
 
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         salesOrder = (
             await SalesOrdersModule.createSalesOrder({
@@ -276,6 +321,11 @@ describe('Controller: Update sales order', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 customer: customer._id,
@@ -300,6 +350,11 @@ describe('Controller: Update sales order', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 invoiceNumber: 'invoice-number-1',

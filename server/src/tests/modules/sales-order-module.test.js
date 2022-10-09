@@ -4,6 +4,7 @@ const moment = require('moment')
 const SalesOrdersModule = require('../../modules/sales-orders-module')
 const ProductsModule = require('../../modules/products-module')
 const CustomersModule = require('../../modules/customers-module')
+const WarehousesModule = require('../../modules/warehouses-module')
 const setup = require('../setup')
 const testdata = require('../testdata')
 
@@ -11,10 +12,17 @@ describe('Module: Create Sales Order', () => {
     setup()
     let product = null
     let customer = null
+    let warehouse = null
 
     beforeEach(async () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
     })
 
     it('Success: using correct data', async () => {
@@ -25,6 +33,11 @@ describe('Module: Create Sales Order', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             customer: customer._id,
@@ -58,8 +71,18 @@ describe('Module: List SalesOrders', () => {
     setup()
 
     it('Success: list all sales orders', async () => {
-        product = (await ProductsModule.createProduct(testdata.product1))[1]
-        customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        const product = (
+            await ProductsModule.createProduct(testdata.product1)
+        )[1]
+        const customer = (
+            await CustomersModule.createCustomer(testdata.customer1)
+        )[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         await SalesOrdersModule.createSalesOrder({
             products: [
@@ -68,6 +91,11 @@ describe('Module: List SalesOrders', () => {
                     product: product._id,
                     quantity: 100,
                     itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
                 },
             ],
             customer: customer._id,
@@ -92,11 +120,17 @@ describe('Module: List SalesOrders', () => {
 describe('Module: Get SalesOrder by id', () => {
     setup()
 
-    let product, customer, salesOrder
+    let product, customer, salesOrder, warehouse
 
     beforeEach(async () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
 
         salesOrder = (
             await SalesOrdersModule.createSalesOrder({
@@ -106,6 +140,11 @@ describe('Module: Get SalesOrder by id', () => {
                         product: product._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 customer: customer._id,
@@ -146,12 +185,18 @@ describe('Module: Get SalesOrder by id', () => {
 describe('Module: Update SalesOrder', () => {
     setup()
 
-    let product1, product2, customer, salesOrder
+    let product1, product2, customer, salesOrder, warehouse
 
     beforeEach(async () => {
         product1 = (await ProductsModule.createProduct(testdata.product1))[1]
         product2 = (await ProductsModule.createProduct(testdata.product2))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product1._id,
+            })
+        )[1]
 
         salesOrder = (
             await SalesOrdersModule.createSalesOrder({
@@ -161,6 +206,11 @@ describe('Module: Update SalesOrder', () => {
                         product: product1._id,
                         quantity: 100,
                         itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
                     },
                 ],
                 customer: customer._id,
@@ -181,6 +231,11 @@ describe('Module: Update SalesOrder', () => {
                         product: product2._id,
                         quantity: 200,
                         itemPrice: 20,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 5,
+                        },
                     },
                 ],
                 orderDate: 54321,

@@ -11,6 +11,10 @@ export type PurchaseOrder = {
         itemPrice: number
         totalPrice: number
         warehouse: Warehouse | null
+        variant: {
+            name: string
+            quantity: number
+        } | null
     }[]
     createdAt: number
     vendor: Vendor
@@ -29,6 +33,10 @@ export type DraftPurchaseOrder = {
         itemPrice: number
         totalPrice: number
         warehouse: Warehouse | null
+        variant: {
+            name: string
+            quantity: number
+        } | null
     }[]
     vendor: Vendor | null
     total: number
@@ -43,6 +51,10 @@ export type AddEditPurchaseOrderDoc = {
         quantity: number
         itemPrice: number
         warehouse: string | null
+        variant: {
+            name: string
+            quantity: number
+        } | null
     }[]
     vendor: string
     remarks: string | null
