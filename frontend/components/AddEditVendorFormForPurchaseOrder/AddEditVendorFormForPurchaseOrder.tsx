@@ -29,7 +29,9 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
 
-    const isDisabled = AppContext.isLoading('get-purchase-order')
+    const isDisabled =
+        AppContext.isLoading('get-purchase-order') ||
+        VendorContext.vendors === null
 
     useEffect(() => {
         methods.setValue('id', VendorContext.draftVendor?.id)

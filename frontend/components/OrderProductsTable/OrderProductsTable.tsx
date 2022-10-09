@@ -41,7 +41,7 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 headerClsx: 'w-full',
                             },
                             {
-                                title: 'Unit Price',
+                                title: 'Selling Price',
                                 format: (row) => formatCurrency(row.itemPrice),
                                 bodyClsx: 'text-right',
                             },
@@ -51,7 +51,7 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 bodyClsx: 'text-right',
                             },
                             {
-                                title: 'Transfer to',
+                                title: 'Remove From',
                                 format: (row) => row.warehouse?.name ?? 'Store',
                                 headerClsx: 'w-full',
                             },

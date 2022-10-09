@@ -36,7 +36,8 @@ const SalesOrderPageContent = () => {
 
     const submitButtonDisabled =
         AppContext.isLoading('get-sales-order') ||
-        SalesOrderContext.draftOrder.products.length <= 0
+        SalesOrderContext.draftOrder.products.length <= 0 ||
+        CustomerContext.customers === null
 
     const submitButtonLoading =
         AppContext.isLoading('add-sales-order') ||

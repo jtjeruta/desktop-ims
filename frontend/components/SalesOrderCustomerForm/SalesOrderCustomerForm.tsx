@@ -29,7 +29,9 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const CustomerContext = useCustomerContext()
 
-    const isDisabled = AppContext.isLoading('get-sales-order')
+    const isDisabled =
+        AppContext.isLoading('get-sales-order') ||
+        CustomerContext.customers === null
 
     useEffect(() => {
         methods.setValue('id', CustomerContext.draftCustomer?.id)

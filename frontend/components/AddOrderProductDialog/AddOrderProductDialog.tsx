@@ -90,7 +90,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
         }
 
         methods.setValue('quantity', 1)
-        methods.setValue('itemPrice', 1)
+        methods.setValue('itemPrice', ProductContext.product?.price ?? 1)
     }, [methods, ProductContext, setSelectedProduct])
 
     // set on change
@@ -123,7 +123,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                 )}
                             />
                             <Select
-                                label="Transfer To"
+                                label="Remove Stock From"
                                 name="warehouse"
                                 required
                                 options={[
@@ -147,7 +147,11 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                     required
                                 />
                                 <TextField
-                                    label="Unit Price"
+                                    label={
+                                        props.type === 'sales'
+                                            ? 'Selling Price'
+                                            : 'Unit Price'
+                                    }
                                     name="itemPrice"
                                     type="number"
                                     min={0}

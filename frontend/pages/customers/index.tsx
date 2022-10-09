@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import AddEditCustomerDialog from '../../components/AddEditCustomerDialog/AddEditCustomerDialog'
 import Button from '../../components/Button/Button'
@@ -16,7 +15,6 @@ import { Customer } from '../../contexts/CustomerContext/types'
 const CustomersPageContent = () => {
     const AppContext = useAppContext()
     const CustomerContext = useCustomerContext()
-    const router = useRouter()
     const [search, setSearch] = useState<string>('')
 
     const filteredCustomers = (CustomerContext.customers || []).filter(

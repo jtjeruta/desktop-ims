@@ -36,7 +36,8 @@ const PurchaseOrderPageContent = () => {
 
     const submitButtonDisabled =
         AppContext.isLoading('get-purchase-order') ||
-        PurOrdContext.draftOrder.products.length <= 0
+        PurOrdContext.draftOrder.products.length <= 0 ||
+        VendorContext.vendors === null
 
     const submitButtonLoading =
         AppContext.isLoading('add-purchase-order') ||
