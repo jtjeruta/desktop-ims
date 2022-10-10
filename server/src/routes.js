@@ -25,7 +25,7 @@ router.post('/api/v1/auth/verify-token', AuthController.verifyToken)
 router.post('/api/v1/users', isAdmin, UserController.createUser)
 router.get('/api/v1/users', isAdmin, UserController.listUsers)
 router.put('/api/v1/users/:userId', isAdmin, UserController.updateUser)
-router.delete('/api/v1/users/:userId', isAdmin, UserController.deleteUser)
+router.delete('/api/v1/users/:userId', isAdmin, UserController.archiveUser)
 
 // products
 router.get('/api/v1/products/:productId', isAdmin, ProductController.getProduct)

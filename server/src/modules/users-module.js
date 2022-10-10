@@ -15,9 +15,9 @@ module.exports.createUser = async ({ password, ...rawUser }) => {
     }
 }
 
-module.exports.listUsers = async () => {
+module.exports.listUsers = async (query = {}) => {
     try {
-        const users = await UserModel.find({})
+        const users = await UserModel.find(query)
         return [200, users]
     } catch (error) {
         console.error('Failed to list users')

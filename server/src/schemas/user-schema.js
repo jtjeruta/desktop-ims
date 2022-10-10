@@ -24,6 +24,9 @@ const UserSchema = new mongoose.Schema({
         required: true,
         enum: ['admin', 'employee'],
     },
+    archived: {
+        type: Boolean,
+    },
 })
 
 UserSchema.index({ email: 1 }, { unique: true })
