@@ -29,20 +29,20 @@ services:
 
     mongodb_container:
         container_name: desktop-ims-db
-        image: mongo:5
+        image: bitnami/mongodb:5.0
         ports:
             - 27017:27017
         volumes:
-            - desktop-ims-db:/data/db
+            - ./data:/data
         networks:
             - desktop-ims
         logging:
             driver: none
+        environment:
+            MONGODB_REPLICA_SET_MODE: primary
+            ALLOW_EMPTY_PASSWORD: 'yes'
 
 networks:
     desktop-ims:
         name: desktop-ims
         external: false
-
-volumes:
-    desktop-ims-db:

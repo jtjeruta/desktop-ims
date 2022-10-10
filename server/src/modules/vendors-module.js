@@ -2,7 +2,7 @@ const moment = require('moment')
 const { getMongoError } = require('../lib/mongo-errors')
 const { VendorModel } = require('../schemas/vendor-schema')
 
-module.exports.createVendor = async (data) => {
+module.exports.createVendor = async (data, session = null) => {
     const doc = {
         ...data,
         createdAt: moment().unix(),
@@ -12,7 +12,7 @@ module.exports.createVendor = async (data) => {
     const vendor = new VendorModel(doc)
 
     try {
-        const createdVendor = await vendor.save()
+        const createdVendor = await vendor.save({ session })
         return [201, createdVendor]
     } catch (error) {
         console.error('Failed to create vendor')

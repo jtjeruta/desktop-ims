@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose')
 const VendorsModule = require('../modules/vendors-module')
 const { VendorsView, VendorView } = require('../views/vendor-view')
 
@@ -12,12 +13,17 @@ module.exports.listVendors = async (req, res) => {
 }
 
 module.exports.createVendor = async (req, res) => {
-    const response = await VendorsModule.createVendor(req.body)
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const response = await VendorsModule.createVendor(req.body, session)
 
     if (response[0] !== 201) {
+        await session.endSession()
         return res.status(response[0]).json(response[1])
     }
 
+    await session.commitTransaction()
+    await session.endSession()
     return res.status(201).json({ vendor: VendorView(response[1]) })
 }
 
