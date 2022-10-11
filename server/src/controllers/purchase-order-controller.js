@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose')
 const PurchaseOrdersModule = require('../modules/purchase-orders-module')
 const ProductsModule = require('../modules/products-module')
 const VendorsModule = require('../modules/vendors-module')
@@ -7,9 +8,18 @@ const {
 } = require('../views/purchase-order-view')
 
 module.exports.createPurchaseOrder = async (req, res) => {
-    const vendorRes = await VendorsModule.getVendorById(req.body.vendor)
+    const session = await mongoose.startSession()
+    session.startTransaction()
 
-    if (vendorRes[0] !== 200) return res.status(vendorRes[0]).json(vendorRes[1])
+    const vendorRes = await VendorsModule.getVendorById(
+        req.body.vendor,
+        session
+    )
+
+    if (vendorRes[0] !== 200) {
+        await session.endSession()
+        return res.status(vendorRes[0]).json(vendorRes[1])
+    }
 
     // Validate products
     const validatedProducts = await Promise.all(
@@ -21,17 +31,22 @@ module.exports.createPurchaseOrder = async (req, res) => {
     const invalidProduct = validatedProducts.find((p) => p[0] !== 200)
 
     if (invalidProduct) {
+        await session.endSession()
         return res.status(404).json({ message: 'Product not found.' })
     }
 
     // Create purchase order
     const createdPurchaseOrderRes =
-        await PurchaseOrdersModule.createPurchaseOrder({
-            ...req.body,
-            vendor: vendorRes[1]._id,
-        })
+        await PurchaseOrdersModule.createPurchaseOrder(
+            {
+                ...req.body,
+                vendor: vendorRes[1]._id,
+            },
+            session
+        )
 
     if (createdPurchaseOrderRes[0] !== 201) {
+        await session.endSession()
         return res
             .status(createdPurchaseOrderRes[0])
             .json(createdPurchaseOrderRes[1])
@@ -40,15 +55,19 @@ module.exports.createPurchaseOrder = async (req, res) => {
     // Get populated purchase order
     const populatedPurchaseOrderRes =
         await PurchaseOrdersModule.getPurchaseOrderById(
-            createdPurchaseOrderRes[1]._id
+            createdPurchaseOrderRes[1]._id,
+            session
         )
 
     if (populatedPurchaseOrderRes[0] !== 200) {
+        await session.endSession()
         return res
             .status(populatedPurchaseOrderRes[0])
             .json(populatedPurchaseOrderRes[1])
     }
 
+    await session.commitTransaction()
+    await session.endSession()
     return res
         .status(201)
         .json({ order: PurchaseOrderView(populatedPurchaseOrderRes[1]) })

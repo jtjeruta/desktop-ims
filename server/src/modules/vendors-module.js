@@ -49,9 +49,9 @@ module.exports.updateVendor = async (id, data) => {
     }
 }
 
-module.exports.getVendorById = async (id) => {
+module.exports.getVendorById = async (id, session = null) => {
     try {
-        const vendor = await VendorModel.findById(id)
+        const vendor = await VendorModel.findById(id).session(session)
 
         if (!vendor) return [404, { message: 'Vendor not found.' }]
         return [200, vendor]

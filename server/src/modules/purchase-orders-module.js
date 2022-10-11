@@ -2,7 +2,7 @@ const moment = require('moment')
 const { getMongoError } = require('../lib/mongo-errors')
 const { PurchaseOrderModel } = require('../schemas/purchase-order-schema')
 
-module.exports.createPurchaseOrder = async (data = {}) => {
+module.exports.createPurchaseOrder = async (data = {}, session = null) => {
     const { total, products } = calculateProductTotals(data.products)
 
     const doc = {
@@ -16,7 +16,7 @@ module.exports.createPurchaseOrder = async (data = {}) => {
     const purchaseOrder = new PurchaseOrderModel(doc)
 
     try {
-        const createdPurchaseOrder = await purchaseOrder.save()
+        const createdPurchaseOrder = await purchaseOrder.save({ session })
         return [201, createdPurchaseOrder]
     } catch (error) {
         console.error('Failed to create purchase order')
@@ -48,13 +48,14 @@ module.exports.updatePurchaseOrder = async (id, data) => {
     }
 }
 
-module.exports.getPurchaseOrderById = async (id) => {
+module.exports.getPurchaseOrderById = async (id, session = null) => {
     try {
         const purchaseOrder = await PurchaseOrderModel.findById(id)
             .populate('vendor')
             .populate('products.product')
             .populate('products.product.warehouses')
             .populate('products.warehouse')
+            .session(session)
 
         if (!purchaseOrder)
             return [404, { message: 'Purchase order not found.' }]
