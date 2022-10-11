@@ -1,6 +1,8 @@
 const moment = require('moment')
 const { getMongoError } = require('../lib/mongo-errors')
 const { PurchaseOrderModel } = require('../schemas/purchase-order-schema')
+const ProductsModule = require('../modules/products-module')
+const WarehousesModule = require('../modules/warehouses-module')
 
 module.exports.createPurchaseOrder = async (data = {}, session = null) => {
     const { total, products } = calculateProductTotals(data.products)
@@ -66,15 +68,49 @@ module.exports.getPurchaseOrderById = async (id, session = null) => {
     }
 }
 
-module.exports.listPurchaseOrders = async () => {
+module.exports.listPurchaseOrders = async (query = {}, session = null) => {
     try {
-        const purchaseOrders = await PurchaseOrderModel.find()
+        const purchaseOrders = await PurchaseOrderModel.find(query)
             .populate('vendor')
             .populate('products.product')
+            .session(session)
         return [200, purchaseOrders]
     } catch (error) {
         console.error('Failed to list purchase orders')
         return getMongoError(error)
+    }
+}
+
+module.exports.undoProductStockChanges = async (purchaseOrder, session) => {
+    let response = null
+
+    for (let product of purchaseOrder.products) {
+        const totalToSubtract =
+            product.quantity * (product.variant?.quantity ?? 1)
+
+        if (product.warehouse) {
+            response = await WarehousesModule.updateWarehouse(
+                product.warehouse._id,
+                { quantity: product.warehouse.quantity - totalToSubtract },
+                session
+            )
+        } else {
+            response = await ProductsModule.updateProduct(
+                product.product._id,
+                { storeQty: product.product.storeQty - totalToSubtract },
+                session
+            )
+        }
+
+        if (response[0] !== 200) {
+            break
+        }
+    }
+
+    if (response === null) {
+        return [200]
+    } else {
+        return response
     }
 }
 

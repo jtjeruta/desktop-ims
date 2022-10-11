@@ -10,7 +10,6 @@ const WarehouseSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
-        min: [0, 'Path `quantity` can not be less than 0.'],
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,

@@ -37,9 +37,6 @@ describe('Create Warehouse', () => {
         expect(createdWarehouse[1].errors.name.message).to.equal(
             'Path `name` is required.'
         )
-        expect(createdWarehouse[1].errors.quantity.message).to.equal(
-            'Path `quantity` can not be less than 0.'
-        )
         expect(createdWarehouse[1].errors.product.message).to.equal(
             'Path `product` is required.'
         )
@@ -118,9 +115,6 @@ describe('Update Warehouse', () => {
         expect(updatedWarehouse[0]).to.equal(400)
         expect(updatedWarehouse[1].errors.name.message).to.equal(
             'Path `name` is required.'
-        )
-        expect(updatedWarehouse[1].errors.quantity.message).to.equal(
-            'Path `quantity` can not be less than 0.'
         )
     })
 

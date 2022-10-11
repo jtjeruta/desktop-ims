@@ -20,7 +20,7 @@ module.exports.createWarehouse = async (data) => {
     }
 }
 
-module.exports.updateWarehouse = async (id, data) => {
+module.exports.updateWarehouse = async (id, data, session = null) => {
     const doc = {
         ...data,
         modifiedAt: moment().unix(),
@@ -30,7 +30,7 @@ module.exports.updateWarehouse = async (id, data) => {
         const updatedWarehouse = await WarehouseModel.findByIdAndUpdate(
             { _id: id },
             { $set: doc },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true, session }
         )
         return [200, updatedWarehouse]
     } catch (error) {

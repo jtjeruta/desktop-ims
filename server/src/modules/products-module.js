@@ -51,7 +51,7 @@ module.exports.getProductById = async (id, session = null) => {
     }
 }
 
-module.exports.updateProduct = async (id, data) => {
+module.exports.updateProduct = async (id, data, session = null) => {
     const doc = {
         ...data,
         modifiedAt: moment().unix(),
@@ -61,7 +61,7 @@ module.exports.updateProduct = async (id, data) => {
         const updatedProduct = await ProductModel.findByIdAndUpdate(
             { _id: id },
             { $set: doc },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true, session }
         )
         return [200, updatedProduct]
     } catch (error) {
