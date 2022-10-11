@@ -114,6 +114,38 @@ module.exports.undoProductStockChanges = async (purchaseOrder, session) => {
     }
 }
 
+module.exports.applyProductStockChanges = async (purchaseOrder, session) => {
+    let response = null
+
+    for (let product of purchaseOrder.products) {
+        const totalToAdd = product.quantity * (product.variant?.quantity ?? 1)
+
+        if (product.warehouse) {
+            response = await WarehousesModule.updateWarehouse(
+                product.warehouse._id,
+                { quantity: product.warehouse.quantity + totalToAdd },
+                session
+            )
+        } else {
+            response = await ProductsModule.updateProduct(
+                product.product._id,
+                { storeQty: product.product.storeQty + totalToAdd },
+                session
+            )
+        }
+
+        if (response[0] !== 200) {
+            break
+        }
+    }
+
+    if (response === null) {
+        return [200]
+    } else {
+        return response
+    }
+}
+
 const calculateProductTotals = (products = []) => {
     const [total, newProducts] = products.reduce(
         (acc, product) => {
