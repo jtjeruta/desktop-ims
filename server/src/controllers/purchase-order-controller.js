@@ -24,7 +24,7 @@ module.exports.createPurchaseOrder = async (req, res) => {
     // Validate products
     const validatedProducts = await Promise.all(
         (req.body.products || []).map((product) =>
-            ProductsModule.getProductById(product.product)
+            ProductsModule.getProductById(product.product, session)
         )
     )
 
@@ -89,23 +89,32 @@ module.exports.getPurchaseOrder = async (req, res) => {
 
 module.exports.updatePurchaseOrder = async (req, res) => {
     const { purchaseOrderId } = req.params
+    const session = await mongoose.startSession()
+    session.startTransaction()
 
     if (req.body.vendor) {
-        const vendorRes = await VendorsModule.getVendorById(req.body.vendor)
-        if (vendorRes[0] !== 200)
+        const vendorRes = await VendorsModule.getVendorById(
+            req.body.vendor,
+            session
+        )
+
+        if (vendorRes[0] !== 200) {
+            await session.endSession()
             return res.status(vendorRes[0]).json(vendorRes[1])
+        }
     }
 
     if (req.body.products) {
         const validatedProducts = await Promise.all(
             (req.body.products || []).map((product) =>
-                ProductsModule.getProductById(product.product)
+                ProductsModule.getProductById(product.product, session)
             )
         )
 
         const invalidProduct = validatedProducts.find((p) => p[0] !== 200)
 
         if (invalidProduct) {
+            await session.endSession()
             return res.status(404).json({ message: 'Product not found.' })
         }
     }
@@ -114,10 +123,12 @@ module.exports.updatePurchaseOrder = async (req, res) => {
     const updatedPurchaseOrderRes =
         await PurchaseOrdersModule.updatePurchaseOrder(
             purchaseOrderId,
-            req.body
+            req.body,
+            session
         )
 
     if (updatedPurchaseOrderRes[0] !== 200) {
+        await session.endSession()
         return res
             .status(updatedPurchaseOrderRes[0])
             .json(updatedPurchaseOrderRes[1])
@@ -126,15 +137,19 @@ module.exports.updatePurchaseOrder = async (req, res) => {
     // Get populated purchase order
     const populatedPurchaseOrderRes =
         await PurchaseOrdersModule.getPurchaseOrderById(
-            updatedPurchaseOrderRes[1]._id
+            updatedPurchaseOrderRes[1]._id,
+            session
         )
 
     if (populatedPurchaseOrderRes[0] !== 200) {
+        await session.endSession()
         return res
             .status(populatedPurchaseOrderRes[0])
             .json(populatedPurchaseOrderRes[1])
     }
 
+    await session.commitTransaction()
+    await session.endSession()
     return res
         .status(200)
         .json({ order: PurchaseOrderView(populatedPurchaseOrderRes[1]) })

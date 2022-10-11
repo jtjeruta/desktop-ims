@@ -33,11 +33,12 @@ module.exports.listProducts = async () => {
     }
 }
 
-module.exports.getProductById = async (id) => {
+module.exports.getProductById = async (id, session = null) => {
     try {
         const product = await ProductModel.findById(id)
             .populate('variants')
             .populate('warehouses')
+            .session(session)
 
         if (!product) {
             return [404, { message: 'Not found.' }]

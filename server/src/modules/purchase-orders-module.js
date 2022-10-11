@@ -24,7 +24,7 @@ module.exports.createPurchaseOrder = async (data = {}, session = null) => {
     }
 }
 
-module.exports.updatePurchaseOrder = async (id, data) => {
+module.exports.updatePurchaseOrder = async (id, data, session = null) => {
     let doc = {
         ...data,
         modifiedAt: moment().unix(),
@@ -39,7 +39,7 @@ module.exports.updatePurchaseOrder = async (id, data) => {
         const updatedPurchaseOrder = await PurchaseOrderModel.findByIdAndUpdate(
             { _id: id },
             { $set: doc },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true, session }
         )
         return [200, updatedPurchaseOrder]
     } catch (error) {
