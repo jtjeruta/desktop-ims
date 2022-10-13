@@ -253,7 +253,7 @@ describe('Controller: Create purchase order', () => {
             await WarehousesModule.getWarehouseById(warehouse)
         )[1]
 
-        expect(updatedWarehouse.quantity).to.equal(-40)
+        expect(updatedWarehouse.quantity).to.equal(60)
     })
 
     it('Fail: run as admin with incorrect data', async () => {

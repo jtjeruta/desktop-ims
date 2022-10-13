@@ -270,3 +270,160 @@ describe('Module: Update SalesOrder', () => {
         )
     })
 })
+
+describe('Module: Apply Product Stock Changes', () => {
+    setup()
+    let product, customer, warehouse
+
+    beforeEach(async () => {
+        product = (await ProductsModule.createProduct(testdata.product1))[1]
+        customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                product: product._id,
+            })
+        )[1]
+        await ProductsModule.updateProduct(product._id, {
+            warehouses: [warehouse._id],
+        })
+    })
+
+    it('Success: add stock changes to store', async () => {
+        const { _id: salesOrderId } = (
+            await SalesOrdersModule.createSalesOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse: null,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                customer: customer._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+
+        const salesOrder = (
+            await SalesOrdersModule.getSalesOrderById(salesOrderId)
+        )[1]
+
+        const response = await SalesOrdersModule.applyProductStockChanges(
+            'add',
+            salesOrder
+        )
+
+        const alteredProduct = (await ProductsModule.getProductById(product))[1]
+
+        expect(response[0]).to.equal(200)
+        expect(alteredProduct.storeQty).to.equal(1000)
+    })
+
+    it('Success: add stock changes to warehouse', async () => {
+        const { _id: salesOrderId } = (
+            await SalesOrdersModule.createSalesOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                customer: customer._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+
+        const salesOrder = (
+            await SalesOrdersModule.getSalesOrderById(salesOrderId)
+        )[1]
+
+        await SalesOrdersModule.applyProductStockChanges('add', salesOrder)
+        const alteredProduct = (await ProductsModule.getProductById(product))[1]
+        expect(alteredProduct.storeQty).to.equal(0)
+        expect(alteredProduct.warehouses[0].quantity).to.equal(1010)
+    })
+
+    it('Success: subtract stock changes from store', async () => {
+        const { _id: salesOrderId } = (
+            await SalesOrdersModule.createSalesOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse: null,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                customer: customer._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+
+        const salesOrder = (
+            await SalesOrdersModule.getSalesOrderById(salesOrderId)
+        )[1]
+
+        const response = await SalesOrdersModule.applyProductStockChanges(
+            'subtract',
+            salesOrder
+        )
+
+        const alteredProduct = (await ProductsModule.getProductById(product))[1]
+
+        expect(response[0]).to.equal(200)
+        expect(alteredProduct.storeQty).to.equal(-1000)
+    })
+
+    it('Success: subtract stock changes from warehouse', async () => {
+        const { _id: salesOrderId } = (
+            await SalesOrdersModule.createSalesOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                customer: customer._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+
+        const salesOrder = (
+            await SalesOrdersModule.getSalesOrderById(salesOrderId)
+        )[1]
+
+        await SalesOrdersModule.applyProductStockChanges('subtract', salesOrder)
+        const alteredProduct = (await ProductsModule.getProductById(product))[1]
+        expect(alteredProduct.storeQty).to.equal(0)
+        expect(alteredProduct.warehouses[0].quantity).to.equal(-990)
+    })
+})

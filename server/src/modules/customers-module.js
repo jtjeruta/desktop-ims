@@ -2,7 +2,7 @@ const moment = require('moment')
 const { getMongoError } = require('../lib/mongo-errors')
 const { CustomerModel } = require('../schemas/customer-schema')
 
-module.exports.createCustomer = async (data) => {
+module.exports.createCustomer = async (data, session = null) => {
     const doc = {
         ...data,
         createdAt: moment().unix(),
@@ -12,7 +12,7 @@ module.exports.createCustomer = async (data) => {
     const customer = new CustomerModel(doc)
 
     try {
-        const createdCustomer = await customer.save()
+        const createdCustomer = await customer.save({ session })
         return [201, createdCustomer]
     } catch (error) {
         console.error('Failed to create customer')
@@ -20,9 +20,9 @@ module.exports.createCustomer = async (data) => {
     }
 }
 
-module.exports.listCustomers = async () => {
+module.exports.listCustomers = async (query = {}, session = null) => {
     try {
-        const customers = await CustomerModel.find({})
+        const customers = await CustomerModel.find(query).session(session)
         return [200, customers]
     } catch (error) {
         console.error('Failed to list customers')
@@ -30,7 +30,7 @@ module.exports.listCustomers = async () => {
     }
 }
 
-module.exports.updateCustomer = async (id, data) => {
+module.exports.updateCustomer = async (id, data, session) => {
     const doc = {
         ...data,
         modifiedAt: moment().unix(),
@@ -40,7 +40,7 @@ module.exports.updateCustomer = async (id, data) => {
         const updatedCustomer = await CustomerModel.findByIdAndUpdate(
             { _id: id },
             { $set: doc },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true, session }
         )
         return [200, updatedCustomer]
     } catch (error) {
@@ -49,9 +49,9 @@ module.exports.updateCustomer = async (id, data) => {
     }
 }
 
-module.exports.getCustomerById = async (id) => {
+module.exports.getCustomerById = async (id, session) => {
     try {
-        const customer = await CustomerModel.findById(id)
+        const customer = await CustomerModel.findById(id).session(session)
 
         if (!customer) return [404, { message: 'Customer not found.' }]
         return [200, customer]

@@ -68,7 +68,7 @@ module.exports.createPurchaseOrder = async (req, res) => {
 
     const stockUpdateResponse =
         await PurchaseOrdersModule.applyProductStockChanges(
-            'subtract',
+            'add',
             populatedPurchaseOrderRes[1],
             session
         )

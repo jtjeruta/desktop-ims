@@ -250,6 +250,12 @@ describe('Controller: Create sales order', () => {
         )
         expect(res.body.order.products[0].totalPrice).to.equal(50)
         expect(res.body.order.total).to.equal(50)
+
+        const updatedWarehouse = (
+            await WarehousesModule.getWarehouseById(warehouse)
+        )[1]
+
+        expect(updatedWarehouse.quantity).to.equal(-40)
     })
 
     it('Fail: run as admin with incorrect data', async () => {
@@ -353,7 +359,7 @@ describe('Controller: Update sales order', () => {
                         warehouse,
                         variant: {
                             name: 'Test Variant',
-                            quantity: 10,
+                            quantity: 5,
                         },
                     },
                 ],
@@ -368,6 +374,12 @@ describe('Controller: Update sales order', () => {
         )
         expect(res.body.order.products[0].totalPrice).to.equal(1000)
         expect(res.body.order.total).to.equal(1000)
+
+        const updatedWarehouse = (
+            await WarehousesModule.getWarehouseById(warehouse)
+        )[1]
+
+        expect(updatedWarehouse.quantity).to.equal(-490)
     })
 
     it('Fail: run as admin with incorrect data', async () => {
