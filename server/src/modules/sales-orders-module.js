@@ -91,7 +91,17 @@ module.exports.applyProductStockChanges = async (
         const total = product.quantity * (product.variant?.quantity ?? 1)
 
         if (product.warehouse) {
-            const { quantity } = product.warehouse
+            const warehouseRes = await WarehousesModule.getWarehouseById(
+                product.warehouse,
+                session
+            )
+
+            if (warehouseRes[0] !== 200) {
+                response = warehouseRes
+                break
+            }
+
+            const { quantity } = warehouseRes[1]
             response = await WarehousesModule.updateWarehouse(
                 product.warehouse._id,
                 {
@@ -101,7 +111,17 @@ module.exports.applyProductStockChanges = async (
                 session
             )
         } else {
-            const { storeQty } = product.product
+            const productRes = await ProductsModule.getProductById(
+                product.product,
+                session
+            )
+
+            if (productRes[0] !== 200) {
+                response = productRes
+                break
+            }
+
+            const { storeQty } = productRes[1]
             response = await ProductsModule.updateProduct(
                 product.product._id,
                 {

@@ -158,7 +158,11 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                             </div>
                             <div className="flex gap-3">
                                 <Select
-                                    label="Remove Stock From"
+                                    label={
+                                        props.type === 'sales'
+                                            ? 'Remove Stock From'
+                                            : 'Add Stock To'
+                                    }
                                     name="warehouse"
                                     required
                                     options={[

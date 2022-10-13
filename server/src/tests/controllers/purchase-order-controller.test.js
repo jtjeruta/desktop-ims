@@ -248,7 +248,6 @@ describe('Controller: Create purchase order', () => {
         expect(res.body.order.products[0].totalPrice).to.equal(50)
         expect(res.body.order.total).to.equal(50)
 
-        // warehouse should have its stock diminished
         const updatedWarehouse = (
             await WarehousesModule.getWarehouseById(warehouse)
         )[1]
