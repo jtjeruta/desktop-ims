@@ -262,93 +262,6 @@ describe('Module: Update PurchaseOrder', () => {
     })
 })
 
-describe('Module: Undo Product Stock Changes', () => {
-    setup()
-    let product, vendor, warehouse
-
-    beforeEach(async () => {
-        product = (await ProductsModule.createProduct(testdata.product1))[1]
-        vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
-        warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
-        )[1]
-        await ProductsModule.updateProduct(product._id, {
-            warehouses: [warehouse._id],
-        })
-    })
-
-    it('Success: undo stock changes to store', async () => {
-        const { _id: purchaseOrderId } = (
-            await PurchaseOrdersModule.createPurchaseOrder({
-                products: [
-                    {
-                        id: 'test_product_1',
-                        product: product._id,
-                        quantity: 100,
-                        itemPrice: 10,
-                        warehouse: null,
-                        variant: {
-                            name: 'Test Variant',
-                            quantity: 10,
-                        },
-                    },
-                ],
-                vendor: vendor._id,
-                orderDate: 12345,
-                invoiceNumber: 'invoice-number',
-            })
-        )[1]
-
-        const purchaseOrder = (
-            await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrderId)
-        )[1]
-
-        const response = await PurchaseOrdersModule.undoProductStockChanges(
-            purchaseOrder
-        )
-
-        const alteredProduct = (await ProductsModule.getProductById(product))[1]
-
-        expect(response[0]).to.equal(200)
-        expect(alteredProduct.storeQty).to.equal(-1000)
-    })
-
-    it('Success: undo stock changes to warehouse', async () => {
-        const { _id: purchaseOrderId } = (
-            await PurchaseOrdersModule.createPurchaseOrder({
-                products: [
-                    {
-                        id: 'test_product_1',
-                        product: product._id,
-                        quantity: 100,
-                        itemPrice: 10,
-                        warehouse,
-                        variant: {
-                            name: 'Test Variant',
-                            quantity: 10,
-                        },
-                    },
-                ],
-                vendor: vendor._id,
-                orderDate: 12345,
-                invoiceNumber: 'invoice-number',
-            })
-        )[1]
-
-        const purchaseOrder = (
-            await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrderId)
-        )[1]
-
-        await PurchaseOrdersModule.undoProductStockChanges(purchaseOrder)
-        const alteredProduct = (await ProductsModule.getProductById(product))[1]
-        expect(alteredProduct.storeQty).to.equal(0)
-        expect(alteredProduct.warehouses[0].quantity).to.equal(-990)
-    })
-})
-
 describe('Module: Apply Product Stock Changes', () => {
     setup()
     let product, vendor, warehouse
@@ -367,7 +280,7 @@ describe('Module: Apply Product Stock Changes', () => {
         })
     })
 
-    it('Success: apply stock changes to store', async () => {
+    it('Success: add stock changes to store', async () => {
         const { _id: purchaseOrderId } = (
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
@@ -394,6 +307,7 @@ describe('Module: Apply Product Stock Changes', () => {
         )[1]
 
         const response = await PurchaseOrdersModule.applyProductStockChanges(
+            'add',
             purchaseOrder
         )
 
@@ -403,7 +317,7 @@ describe('Module: Apply Product Stock Changes', () => {
         expect(alteredProduct.storeQty).to.equal(1000)
     })
 
-    it('Success: apply stock changes to warehouse', async () => {
+    it('Success: add stock changes to warehouse', async () => {
         const { _id: purchaseOrderId } = (
             await PurchaseOrdersModule.createPurchaseOrder({
                 products: [
@@ -429,9 +343,84 @@ describe('Module: Apply Product Stock Changes', () => {
             await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrderId)
         )[1]
 
-        await PurchaseOrdersModule.applyProductStockChanges(purchaseOrder)
+        await PurchaseOrdersModule.applyProductStockChanges(
+            'add',
+            purchaseOrder
+        )
         const alteredProduct = (await ProductsModule.getProductById(product))[1]
         expect(alteredProduct.storeQty).to.equal(0)
         expect(alteredProduct.warehouses[0].quantity).to.equal(1010)
+    })
+
+    it('Success: subtract stock changes from store', async () => {
+        const { _id: purchaseOrderId } = (
+            await PurchaseOrdersModule.createPurchaseOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse: null,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                vendor: vendor._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+
+        const purchaseOrder = (
+            await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrderId)
+        )[1]
+
+        const response = await PurchaseOrdersModule.applyProductStockChanges(
+            'subtract',
+            purchaseOrder
+        )
+
+        const alteredProduct = (await ProductsModule.getProductById(product))[1]
+
+        expect(response[0]).to.equal(200)
+        expect(alteredProduct.storeQty).to.equal(-1000)
+    })
+
+    it('Success: subtract stock changes from warehouse', async () => {
+        const { _id: purchaseOrderId } = (
+            await PurchaseOrdersModule.createPurchaseOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                vendor: vendor._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+
+        const purchaseOrder = (
+            await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrderId)
+        )[1]
+
+        await PurchaseOrdersModule.applyProductStockChanges(
+            'subtract',
+            purchaseOrder
+        )
+        const alteredProduct = (await ProductsModule.getProductById(product))[1]
+        expect(alteredProduct.storeQty).to.equal(0)
+        expect(alteredProduct.warehouses[0].quantity).to.equal(-990)
     })
 })

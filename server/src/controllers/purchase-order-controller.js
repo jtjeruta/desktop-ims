@@ -66,6 +66,18 @@ module.exports.createPurchaseOrder = async (req, res) => {
             .json(populatedPurchaseOrderRes[1])
     }
 
+    const stockUpdateResponse =
+        await PurchaseOrdersModule.applyProductStockChanges(
+            'subtract',
+            populatedPurchaseOrderRes[1],
+            session
+        )
+
+    if (stockUpdateResponse[0] !== 200) {
+        await session.endSession()
+        return res.status(stockUpdateResponse[0]).json(stockUpdateResponse[1])
+    }
+
     await session.commitTransaction()
     await session.endSession()
     return res
@@ -119,6 +131,19 @@ module.exports.updatePurchaseOrder = async (req, res) => {
         }
     }
 
+    const foundPurchaseOrderRes =
+        await PurchaseOrdersModule.getPurchaseOrderById(
+            purchaseOrderId,
+            session
+        )
+
+    if (foundPurchaseOrderRes[0] !== 200) {
+        await session.endSession()
+        return res
+            .status(foundPurchaseOrderRes[0])
+            .json(foundPurchaseOrderRes[1])
+    }
+
     // Update purchase order
     const updatedPurchaseOrderRes =
         await PurchaseOrdersModule.updatePurchaseOrder(
@@ -146,6 +171,32 @@ module.exports.updatePurchaseOrder = async (req, res) => {
         return res
             .status(populatedPurchaseOrderRes[0])
             .json(populatedPurchaseOrderRes[1])
+    }
+
+    const undoStockUpdateResponse =
+        await PurchaseOrdersModule.applyProductStockChanges(
+            'subtract',
+            foundPurchaseOrderRes[1],
+            session
+        )
+
+    if (undoStockUpdateResponse[0] !== 200) {
+        await session.endSession()
+        return res
+            .status(undoStockUpdateResponse[0])
+            .json(undoStockUpdateResponse[1])
+    }
+
+    const stockUpdateResponse =
+        await PurchaseOrdersModule.applyProductStockChanges(
+            'add',
+            populatedPurchaseOrderRes[1],
+            session
+        )
+
+    if (stockUpdateResponse[0] !== 200) {
+        await session.endSession()
+        return res.status(stockUpdateResponse[0]).json(stockUpdateResponse[1])
     }
 
     await session.commitTransaction()

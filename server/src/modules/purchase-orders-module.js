@@ -81,55 +81,34 @@ module.exports.listPurchaseOrders = async (query = {}, session = null) => {
     }
 }
 
-module.exports.undoProductStockChanges = async (purchaseOrder, session) => {
+module.exports.applyProductStockChanges = async (
+    type = 'add',
+    purchaseOrder,
+    session
+) => {
     let response = null
 
     for (let product of purchaseOrder.products) {
-        const totalToSubtract =
-            product.quantity * (product.variant?.quantity ?? 1)
+        const total = product.quantity * (product.variant?.quantity ?? 1)
 
         if (product.warehouse) {
+            const { quantity } = product.warehouse
             response = await WarehousesModule.updateWarehouse(
                 product.warehouse._id,
-                { quantity: product.warehouse.quantity - totalToSubtract },
+                {
+                    quantity:
+                        type === 'add' ? quantity + total : quantity - total,
+                },
                 session
             )
         } else {
+            const { storeQty } = product.product
             response = await ProductsModule.updateProduct(
                 product.product._id,
-                { storeQty: product.product.storeQty - totalToSubtract },
-                session
-            )
-        }
-
-        if (response[0] !== 200) {
-            break
-        }
-    }
-
-    if (response === null) {
-        return [200]
-    } else {
-        return response
-    }
-}
-
-module.exports.applyProductStockChanges = async (purchaseOrder, session) => {
-    let response = null
-
-    for (let product of purchaseOrder.products) {
-        const totalToAdd = product.quantity * (product.variant?.quantity ?? 1)
-
-        if (product.warehouse) {
-            response = await WarehousesModule.updateWarehouse(
-                product.warehouse._id,
-                { quantity: product.warehouse.quantity + totalToAdd },
-                session
-            )
-        } else {
-            response = await ProductsModule.updateProduct(
-                product.product._id,
-                { storeQty: product.product.storeQty + totalToAdd },
+                {
+                    storeQty:
+                        type === 'add' ? storeQty + total : storeQty - total,
+                },
                 session
             )
         }
