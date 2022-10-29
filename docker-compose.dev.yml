@@ -26,12 +26,12 @@ services:
             - '4000:4000'
         networks:
             - desktop-ims
+        depends_on:
+            - db
 
-    mongodb_container:
+    db:
         container_name: desktop-ims-db
         image: bitnami/mongodb:5.0
-        ports:
-            - 27017:27017
         volumes:
             - ./data:/data
         networks:
@@ -41,6 +41,19 @@ services:
         environment:
             MONGODB_REPLICA_SET_MODE: primary
             ALLOW_EMPTY_PASSWORD: 'yes'
+
+    db_gui:
+        container_name: 'desktop-ims-db-gui'
+        image: ugleiton/mongo-gui
+        restart: always
+        ports:
+            - '3001:4321'
+        environment:
+            - MONGO_URL=mongodb://desktop-ims-db
+        networks:
+            - desktop-ims
+        depends_on:
+            - db
 
 networks:
     desktop-ims:
