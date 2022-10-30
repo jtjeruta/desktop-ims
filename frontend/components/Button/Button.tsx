@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { FaSpinner } from 'react-icons/fa'
 
 type Props = {
-    children: string | JSX.Element
+    children: string | JSX.Element | JSX.Element[]
     type?: 'submit' | 'button'
     loading?: boolean
     className?: string
@@ -26,7 +26,7 @@ const Button: FC<Props> = (props) => {
                 'bg-blue-500 enabled:hover:bg-blue-700 disabled:bg-slate-400 text-white',
             secondary:
                 'bg-slate-500 enabled:hover:bg-slate-700 disabled:bg-slate-400 text-white',
-            light: 'bg-white enabled:hover:bg-slate-700 disabled:bg-slate-400 text-gray-500',
+            light: 'bg-white enabled:hover:bg-slate-700 disabled:bg-slate-400 text-gray-500 enabled:hover:text-white',
         },
         link: {
             primary: 'text-blue-600 dark:text-blue-500 disabled:text-slate-400',

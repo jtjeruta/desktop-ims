@@ -12,7 +12,7 @@ export const listPurchaseOrders = () =>
             true,
             response.data.orders,
         ])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])
 
 export const getPurchaseOrder = (id: string) =>
     Axios()

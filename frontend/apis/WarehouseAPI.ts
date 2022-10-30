@@ -12,4 +12,4 @@ export const deleteWarehouse = (warehouseId: string) =>
     Axios()
         .delete(`/api/v1/warehouses/${warehouseId}`)
         .then((): [true] => [true])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])

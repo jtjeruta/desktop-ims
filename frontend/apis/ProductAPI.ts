@@ -11,7 +11,7 @@ export const listProducts = () =>
     Axios()
         .get('/api/v1/products')
         .then((response): [true, Product[]] => [true, response.data.products])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])
 
 export const getProduct = (id: string) =>
     Axios()

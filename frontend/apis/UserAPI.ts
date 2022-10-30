@@ -6,7 +6,7 @@ export const listUsers = () =>
     Axios()
         .get('/api/v1/users')
         .then((response): [true, User[]] => [true, response.data.users])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])
 
 export const createUser = (data: CreateUpdateUserDoc) =>
     Axios()

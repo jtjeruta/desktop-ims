@@ -52,7 +52,6 @@ const ProductPageContent = () => {
     return (
         <UserLayout>
             <PageHeader
-                headerClsx="!flex-row"
                 breadcrumbs={[
                     { text: 'Inventory', url: '/inventory' },
                     {

@@ -9,7 +9,7 @@ export const listCustomers = () =>
             true,
             response.data.customers,
         ])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])
 
 export const getCustomer = (customerId: string) =>
     Axios()
@@ -18,7 +18,7 @@ export const getCustomer = (customerId: string) =>
             true,
             response.data.customer,
         ])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])
 
 export const createCustomer = (data: Types.AddEditCustomerDoc) =>
     Axios()

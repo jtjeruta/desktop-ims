@@ -9,7 +9,7 @@ export const listSalesOrders = () =>
     Axios()
         .get('/api/v1/sales-orders')
         .then((response): [true, SalesOrder[]] => [true, response.data.orders])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])
 
 export const getSalesOrder = (id: string) =>
     Axios()

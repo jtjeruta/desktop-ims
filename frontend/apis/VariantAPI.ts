@@ -12,4 +12,4 @@ export const deleteVariant = (variantId: string) =>
     Axios()
         .delete(`/api/v1/variants/${variantId}`)
         .then((): [true] => [true])
-        .catch((err): [false, string] => [false, err.response.message])
+        .catch((err): [false, string] => [false, err.response?.message])

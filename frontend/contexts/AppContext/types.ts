@@ -30,4 +30,6 @@ export type Context = {
     openDialog: OpenDialog
     closeDialog: CloseDialog
     dialogIsOpen: DialogIsOpen
+    sidebarOpen: boolean
+    setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
 }

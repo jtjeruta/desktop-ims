@@ -48,7 +48,7 @@ function AppContent({ Component, pageProps }: AppProps) {
             AuthContext.user?.role === 'admin' &&
             !['everyone', 'admin', 'authenticated'].includes(foundRoute.access)
         ) {
-            router.replace('/purchase-orders')
+            router.replace('/inventory')
         }
     }, [AppContext, AuthContext.user, router])
 

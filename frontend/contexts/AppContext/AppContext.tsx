@@ -18,6 +18,7 @@ const AppContext = React.createContext<Context | any>({})
 const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
+    const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false)
     const [notifications, setNotifications] = React.useState<Notification[]>([])
     const [loading, setLoading] = React.useState<string[]>([
         'auth-verify-token',
@@ -59,17 +60,19 @@ const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const value: Context = useMemo(
         () => ({
-            notifications,
-            addNotification,
-            removeNotification,
             addLoading,
-            removeLoading,
-            isLoading,
-            openDialog,
+            addNotification,
             closeDialog,
             dialogIsOpen,
+            isLoading,
+            notifications,
+            openDialog,
+            removeLoading,
+            removeNotification,
+            setSidebarOpen,
+            sidebarOpen,
         }),
-        [notifications, loading, openedDialog]
+        [notifications, loading, openedDialog, sidebarOpen]
     )
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>
