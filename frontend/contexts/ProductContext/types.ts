@@ -127,20 +127,21 @@ export type TransferStock = (
 >
 
 export type Context = {
-    products: Product[] | null
     createProduct: CreateProduct
-    updateProduct: UpdateProduct
-    listProducts: ListProducts
-    getProduct: GetProduct
-    product: Product | null
-    setProduct: (product: Product | null) => void
     createVariant: CreateVariant
-    deleteVariant: DeleteVariant
-    variantToDelete: Variant | null
-    setVariantToDelete: (variant: Variant | null) => void
     createWarehouse: CreateWarehouse
+    deleteVariant: DeleteVariant
     deleteWarehouse: DeleteWarehouse
+    getProduct: GetProduct
+    listProducts: ListProducts
+    product: Product | null
+    products: Product[] | null
     selectedWarehouse: Warehouse | null
+    setProduct: (product: Product | null) => void
+    setProducts: React.Dispatch<React.SetStateAction<Product[] | null>>
     setSelectedWarehouse: (warehouse: Warehouse | null) => void
+    setVariantToDelete: (variant: Variant | null) => void
     transferStock: TransferStock
+    updateProduct: UpdateProduct
+    variantToDelete: Variant | null
 }

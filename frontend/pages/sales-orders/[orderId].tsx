@@ -23,6 +23,7 @@ import {
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 import SalesOrderCustomerForm from '../../components/SalesOrderCustomerForm/SalesOrderCustomerForm'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
+import { undoProductOrWarehouseStockChanges } from '../../uitls/product-utils'
 
 const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -191,6 +192,12 @@ const SalesOrderPageContent = () => {
                 text={`Remove product?`}
                 dialogKey="remove-order-product-dialog"
                 onConfirm={() => {
+                    undoProductOrWarehouseStockChanges(
+                        ProductContext,
+                        SalesOrderContext,
+                        selectedProduct
+                    )
+
                     SalesOrderContext.setDraftOrder((prev) => {
                         const products = prev.products.filter(
                             (p) => p.id !== selectedProduct
@@ -205,6 +212,7 @@ const SalesOrderPageContent = () => {
                             ),
                         }
                     })
+
                     AppContext.closeDialog()
                 }}
             />

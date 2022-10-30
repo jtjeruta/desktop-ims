@@ -270,22 +270,23 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const value: Types.Context = useMemo(
         () => ({
-            products,
             createProduct,
-            updateProduct,
-            listProducts,
-            getProduct,
-            product,
-            setProduct,
             createVariant,
-            deleteVariant,
-            variantToDelete,
-            setVariantToDelete,
             createWarehouse,
+            deleteVariant,
             deleteWarehouse,
+            getProduct,
+            listProducts,
+            product,
+            products,
             selectedWarehouse,
+            setProduct,
+            setProducts,
             setSelectedWarehouse,
+            setVariantToDelete,
             transferStock,
+            updateProduct,
+            variantToDelete,
         }),
         [products, product, variantToDelete, selectedWarehouse]
     )

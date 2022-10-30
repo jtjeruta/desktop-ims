@@ -10,6 +10,10 @@ import Dialog from '../Dialog/Dialog'
 import TextField from '../TextField/TextField'
 import Select from '../Select/Select'
 import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
+import {
+    customerCanBuyProduct,
+    updateProductOrWarehouseQuantity,
+} from '../../uitls/product-utils'
 
 const addOrderProductSchema = yup
     .object({
@@ -70,6 +74,30 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                 total: prev.total + productDoc.totalPrice,
             }))
         } else if (props.type === 'sales') {
+            const { valid, remainingQuantity } = customerCanBuyProduct(
+                ProductContext.products ?? [],
+                product.id,
+                variant.id,
+                warehouse?.id ?? '',
+                data.quantity
+            )
+
+            if (!valid) {
+                return methods.setError('quantity', {
+                    type: 'manual',
+                    message: 'No stock available',
+                })
+            } else {
+                methods.clearErrors('quantity')
+            }
+
+            updateProductOrWarehouseQuantity(
+                ProductContext,
+                product.id,
+                warehouse?.id,
+                remainingQuantity
+            )
+
             SalesOrderContext.setDraftOrder((prev) => ({
                 ...prev,
                 products: [...prev.products, productDoc],
@@ -110,9 +138,33 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             if (name === 'product') {
                 setSelectedProduct(data.product)
             }
+
+            if (
+                ['quantity', 'product', 'warehouse', 'variant'].includes(
+                    name || ''
+                ) &&
+                props.type === 'sales'
+            ) {
+                const { valid } = customerCanBuyProduct(
+                    ProductContext.products || [],
+                    data.product,
+                    data.variant,
+                    data.warehouse,
+                    data.quantity ?? 1
+                )
+
+                if (!valid) {
+                    methods.setError('quantity', {
+                        type: 'manual',
+                        message: 'No stock available',
+                    })
+                } else {
+                    methods.clearErrors('quantity')
+                }
+            }
         })
         return () => subscription.unsubscribe()
-    }, [methods, setSelectedProduct])
+    }, [methods, setSelectedProduct, ProductContext.products, props.type])
 
     return (
         <Dialog
@@ -134,27 +186,32 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                 )}
                             />
                             <div className="flex gap-3">
-                                <Select
-                                    label="Unit"
-                                    name="variant"
-                                    required
-                                    options={[
-                                        ...(
-                                            ProductContext.product?.variants ||
-                                            []
-                                        ).map((variant) => ({
-                                            value: variant.id,
-                                            text: variant.name,
-                                        })),
-                                    ]}
-                                    className="grow"
-                                />
-                                <TextField
-                                    label="Quantity"
-                                    name="quantity"
-                                    min={1}
-                                    required
-                                />
+                                <span className="grow basis-0">
+                                    <Select
+                                        label="Unit"
+                                        name="variant"
+                                        required
+                                        options={[
+                                            ...(
+                                                ProductContext.product
+                                                    ?.variants || []
+                                            ).map((variant) => ({
+                                                value: variant.id,
+                                                text: variant.name,
+                                            })),
+                                        ]}
+                                        className="grow"
+                                    />
+                                </span>
+                                <span className="grow basis-0">
+                                    <TextField
+                                        label="Quantity"
+                                        name="quantity"
+                                        type="number"
+                                        min={1}
+                                        required
+                                    />
+                                </span>
                             </div>
                             <div className="flex gap-3">
                                 <Select
