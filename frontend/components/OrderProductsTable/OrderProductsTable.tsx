@@ -42,8 +42,7 @@ const OrderProductsTable: FC<Props> = (props) => {
                             },
                             {
                                 title: 'Unit',
-                                format: (row) =>
-                                    row.product.variant?.name ?? 'default',
+                                format: (row) => row.variant?.name ?? 'default',
                                 headerClsx: 'w-full',
                             },
                             {
