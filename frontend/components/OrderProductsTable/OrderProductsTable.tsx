@@ -36,13 +36,12 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 bodyClsx: 'text-right',
                             },
                             {
-                                title: 'Product',
-                                format: (row) => row.product.name,
-                                headerClsx: 'w-full',
-                            },
-                            {
                                 title: 'Unit',
                                 format: (row) => row.variant?.name ?? 'default',
+                            },
+                            {
+                                title: 'Product',
+                                format: (row) => row.product.name,
                                 headerClsx: 'w-full',
                             },
                             {
