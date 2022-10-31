@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { IconType } from 'react-icons'
 import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
-import { FaBoxes, FaListAlt, FaStore, FaTags, FaUsers } from 'react-icons/fa'
+import { FaBoxes, FaStore, FaTags, FaUsers } from 'react-icons/fa'
 import { BsPeopleFill } from 'react-icons/bs'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 

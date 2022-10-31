@@ -45,7 +45,6 @@ services:
     db_gui:
         container_name: 'desktop-ims-db-gui'
         image: ugleiton/mongo-gui
-        restart: always
         ports:
             - '3001:4321'
         environment:
