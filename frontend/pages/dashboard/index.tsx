@@ -40,7 +40,7 @@ const Dashboard = () => {
     return (
         <UserLayout>
             <PageHeader breadcrumbs={[{ text: 'Dashboard' }]} />
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap">
                 {singleStatCounters.map((stat) => (
                     <SingleStatCounter key={stat.title} {...stat} />
                 ))}

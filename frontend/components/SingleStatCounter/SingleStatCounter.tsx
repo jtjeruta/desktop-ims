@@ -11,6 +11,20 @@ const ReportCard = styled.div`
     border-style: solid;
     border-color: #e2e8f0;
 
+    &:hover {
+        .card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #fff;
+            transform: scale(1.01);
+        }
+
+        .footer {
+            padding: 0;
+            border-width: 0;
+        }
+    }
+
     .card {
         transition: all;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -43,6 +57,12 @@ const ReportCard = styled.div`
         font-size: 0.875rem;
         color: #a0aec0;
         color: rgba(160, 174, 192, 1);
+    }
+
+    .footer {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 300ms;
     }
 `
 
