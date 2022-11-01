@@ -115,16 +115,16 @@ const Sidebar = () => {
                     {pageGroups.map((pageGroup) => (
                         <div
                             key={pageGroup.title}
-                            className="flex flex-col gap-5"
+                            className="flex flex-col gap-4"
                         >
-                            <p className="uppercase text-lg text-gray-600 tracking-wider">
+                            <p className="uppercase text-xs text-gray-600 tracking-wider">
                                 {pageGroup.title}
                             </p>
                             {pageGroup.pages.map((page) => (
                                 <a
                                     key={page.text}
                                     className={clsx(
-                                        'capitalize text-lg cursor-pointer',
+                                        'capitalize text-sm cursor-pointer',
                                         'transition ease-in-out duration-200 hover:text-teal-600',
                                         page.active && 'text-teal-600'
                                     )}
