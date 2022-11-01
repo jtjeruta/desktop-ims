@@ -4,8 +4,11 @@ import SingleStatCounter, {
 } from '../../components/SingleStatCounter/SingleStatCounter'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { FaShoppingCart, FaSitemap, FaStore, FaUsers } from 'react-icons/fa'
+import TopSalesCard from '../../components/TopSalesCard/TopSalesCard'
+import { ProductContextProvider } from '../../contexts/ProductContext/ProductContext'
+import TopPurchasesCard from '../../components/TopPurchasesCard/TopPurchasesCard'
 
-const Dashboard = () => {
+const DashboardContent = () => {
     const singleStatCounters: SingleStatCounterType[] = [
         {
             title: 'Item Sales',
@@ -40,13 +43,29 @@ const Dashboard = () => {
     return (
         <UserLayout>
             <PageHeader breadcrumbs={[{ text: 'Dashboard' }]} />
-            <div className="flex gap-6 flex-wrap">
-                {singleStatCounters.map((stat) => (
-                    <SingleStatCounter key={stat.title} {...stat} />
-                ))}
+            <div className="flex flex-col gap-6">
+                <div className="flex gap-6 flex-wrap">
+                    {singleStatCounters.map((stat) => (
+                        <SingleStatCounter key={stat.title} {...stat} />
+                    ))}
+                </div>
+                <div className="flex gap-6">
+                    <span className="grow">
+                        <TopSalesCard />
+                    </span>
+                    <span className="grow">
+                        <TopPurchasesCard />
+                    </span>
+                </div>
             </div>
         </UserLayout>
     )
 }
+
+const Dashboard = () => (
+    <ProductContextProvider>
+        <DashboardContent />
+    </ProductContextProvider>
+)
 
 export default Dashboard
