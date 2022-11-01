@@ -50,15 +50,15 @@ const PageHeader: FC<Props> = (props) => {
                                         router.push(breadcrumb.url)
                                     }
                                     className={clsx(
-                                        'inline-flex items-center text-md font-medium dark:text-gray-400',
+                                        'inline-flex items-center text-md font-medium',
                                         breadcrumb.url
-                                            ? 'cursor-pointer hover:text-gray-900 dark:hover:text-white text-gray-700'
+                                            ? 'cursor-pointer hover:text-gray-900 text-gray-700'
                                             : 'cursor-default text-gray-500'
                                     )}
                                 >
                                     <>
                                         {index > 0 && (
-                                            <FaChevronRight className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mr-2" />
+                                            <FaChevronRight className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 mr-2" />
                                         )}
                                         {breadcrumb.text}
                                     </>

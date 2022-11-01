@@ -52,7 +52,7 @@ const Table: FC<Props> = (props) => {
     }
 
     return (
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase">
                 <tr>
                     {props.columns.map((col) => (
@@ -102,7 +102,7 @@ const Table: FC<Props> = (props) => {
                             />
                         ))
                 ) : (
-                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <tr className="bg-white border-b">
                         <td
                             className="px-6 py-3 border-b border-gray-200 whitespace-nowrap"
                             colSpan={props.columns.length}
@@ -129,7 +129,7 @@ type TableRow = {
 
 const TableRow: FC<TableRow> = (props) => {
     return (
-        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        <tr className="bg-white border-b">
             {props.columns.map((col) => (
                 <td
                     key={col.title}

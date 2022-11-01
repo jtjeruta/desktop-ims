@@ -28,7 +28,7 @@ const TextField: FC<Props> = (props) => {
     return (
         <div className={clsx('relative', props.className)}>
             {props.label && (
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                <label className="block mb-2 text-sm font-medium text-gray-900">
                     {props.required ? (
                         <span className="text-red-700">* </span>
                     ) : null}

@@ -29,9 +29,8 @@ const Button: FC<Props> = (props) => {
             light: 'bg-white enabled:hover:bg-slate-700 disabled:bg-slate-400 text-gray-500 enabled:hover:text-white',
         },
         link: {
-            primary: 'text-blue-600 dark:text-blue-500 disabled:text-slate-400',
-            secondary:
-                'text-slate-600 dark:text-slate-500 disabled:test-slate-400',
+            primary: 'text-blue-600 disabled:text-slate-400',
+            secondary: 'text-slate-600 disabled:test-slate-400',
             light: 'text-white disabled:test-slate-400',
         },
     }

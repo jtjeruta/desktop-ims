@@ -49,7 +49,7 @@ const PageContent: FC = () => {
                                 const user = row as User
                                 return (
                                     <>
-                                        <div className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                        <div className="font-medium text-gray-900 whitespace-nowrap">
                                             {user.firstName} {user.lastName}
                                         </div>
                                         <div>{user.email}</div>

@@ -11,8 +11,10 @@ const TopSalesCard = () => {
     const ProductContext = useProductContext()
 
     useEffect(() => {
-        ProductContext.listProducts()
-    }, [])
+        if (ProductContext.products === null) {
+            ProductContext.listProducts()
+        }
+    }, [ProductContext])
 
     return (
         <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
@@ -36,7 +38,7 @@ const TopSalesCard = () => {
                     },
                     {
                         title: 'Total',
-                        format: (row) => {
+                        format: () => {
                             return formatCurrency(100000)
                         },
                     },

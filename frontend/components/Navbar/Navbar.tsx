@@ -10,12 +10,12 @@ const Navbar = () => {
     const AuthContext = useAuthContext()
 
     return (
-        <nav className="bg-blue-500 shadow">
+        <nav className="bg-white border-b border-gray-300 shadow">
             <div className="justify-between px-6 md:items-center md:flex">
                 <div>
                     <div className="flex items-center justify-between py-3 md:py-5 md:block">
                         <Link href="/">
-                            <h2 className="text-2xl font-bold text-white cursor-pointer">
+                            <h2 className="text-lg font-bold cursor-pointer">
                                 INVENTORY SYSTEM
                             </h2>
                         </Link>
@@ -31,7 +31,7 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="hidden md:inline-block">
-                    <Button color="light" onClick={AuthContext.logout}>
+                    <Button color="secondary" onClick={AuthContext.logout}>
                         <div className="flex items-center gap-2">
                             <FiLogOut fontSize={18} />
                             <span>Logout</span>
