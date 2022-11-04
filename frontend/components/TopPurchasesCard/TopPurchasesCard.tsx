@@ -41,8 +41,7 @@ const TopPurchasesCard = () => {
                     },
                     {
                         title: 'Total',
-                        format: (row) => {
-                            const product = row as Product
+                        format: () => {
                             return 100
                         },
                     },

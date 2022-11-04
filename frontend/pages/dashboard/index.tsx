@@ -49,7 +49,7 @@ const DashboardContent = () => {
                         <SingleStatCounter key={stat.title} {...stat} />
                     ))}
                 </div>
-                <div className="flex gap-6">
+                <div className="flex gap-6 flex-wrap">
                     <span className="grow">
                         <TopSalesCard />
                     </span>

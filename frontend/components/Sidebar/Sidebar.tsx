@@ -106,7 +106,7 @@ const Sidebar = () => {
     return (
         <div
             className={clsx(
-                'transition-all',
+                'transition-all border-r border-gray-300',
                 AppContext.sidebarOpen ? 'w-64' : 'w-0 md:w-64'
             )}
         >
