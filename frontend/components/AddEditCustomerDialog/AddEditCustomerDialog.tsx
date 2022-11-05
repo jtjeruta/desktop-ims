@@ -15,7 +15,7 @@ const AddEditCustomerDialog = () => {
             open={AppContext.dialogIsOpen('add-edit-customer-dialog')}
             content={<AddEditCustomerForm />}
             showSaveButton={false}
-            showCancelButton
+            showCancelButton={false}
         />
     )
 }

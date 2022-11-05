@@ -13,7 +13,7 @@ const AddEditVendorDialog = () => {
             open={AppContext.dialogIsOpen('add-edit-vendor-dialog')}
             content={<AddEditVendorForm />}
             showSaveButton={false}
-            showCancelButton
+            showCancelButton={false}
         />
     )
 }

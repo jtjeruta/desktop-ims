@@ -86,21 +86,30 @@ const Dialog: FC<Props> = (props) => {
                 </div>
                 <hr />
                 <div className="p-3">{props.content}</div>
-                <hr />
-                {(props.showSaveButton !== false ||
-                    !props.showCancelButton) && (
-                    <div className="flex justify-end gap-3 p-3">
-                        <Button
-                            color="secondary"
-                            onClick={handleClose}
-                            loading={props.loading}
-                        >
-                            Cancel
-                        </Button>
-                        <Button onClick={props.onSave} loading={props.loading}>
-                            {props.saveButtonText || 'Save'}
-                        </Button>
-                    </div>
+                {(props.showCancelButton !== false ||
+                    props.showSaveButton !== false) && (
+                    <>
+                        <hr />
+                        <div className="flex justify-end gap-3 p-3">
+                            {props.showCancelButton !== false && (
+                                <Button
+                                    color="secondary"
+                                    onClick={handleClose}
+                                    loading={props.loading}
+                                >
+                                    Cancel
+                                </Button>
+                            )}
+                            {props.showSaveButton !== false && (
+                                <Button
+                                    onClick={props.onSave}
+                                    loading={props.loading}
+                                >
+                                    {props.saveButtonText || 'Save'}
+                                </Button>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

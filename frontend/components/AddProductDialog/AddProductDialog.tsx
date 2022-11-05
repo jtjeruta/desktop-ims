@@ -11,7 +11,7 @@ const AddProductDialog = () => {
             open={AppContext.dialogIsOpen('add-product-dialog')}
             content={<AddEditProductForm />}
             showSaveButton={false}
-            showCancelButton
+            showCancelButton={false}
         />
     )
 }
