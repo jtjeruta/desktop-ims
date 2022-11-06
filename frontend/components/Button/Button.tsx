@@ -8,7 +8,7 @@ type Props = {
     loading?: boolean
     className?: string
     onClick?: () => void
-    style?: 'default' | 'link'
+    style?: 'default' | 'link' | 'outline'
     color?: 'primary' | 'secondary' | 'light'
     disabled?: boolean
     disabledText?: string
@@ -18,6 +18,7 @@ const Button: FC<Props> = (props) => {
     const styles = {
         default: 'font-bold rounded',
         link: 'font-medium enabled:hover:underline',
+        outline: 'font-medium rouded',
     }
 
     const colors = {
@@ -30,8 +31,15 @@ const Button: FC<Props> = (props) => {
         },
         link: {
             primary: 'text-blue-600 disabled:text-slate-400',
-            secondary: 'text-slate-600 disabled:test-slate-400',
-            light: 'text-white disabled:test-slate-400',
+            secondary: 'text-slate-600 disabled:text-slate-400',
+            light: 'text-white disabled:text-slate-400',
+        },
+        outline: {
+            primary:
+                'bg-blue-500 enabled:hover:bg-blue-700 disabled:bg-slate-400 text-white',
+            secondary:
+                'text-slate-600 disabled:text-slate-400 border enabled:hover:bg-slate-100',
+            light: 'bg-white enabled:hover:bg-slate-700 disabled:bg-slate-400 text-gray-500 enabled:hover:text-white',
         },
     }
 

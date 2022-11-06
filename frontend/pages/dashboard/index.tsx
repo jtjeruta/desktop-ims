@@ -1,4 +1,3 @@
-import PageHeader from '../../components/PageHeader/PageHeader'
 import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
@@ -7,6 +6,7 @@ import { FaShoppingCart, FaSitemap, FaStore, FaUsers } from 'react-icons/fa'
 import TopSalesCard from '../../components/TopSalesCard/TopSalesCard'
 import { ProductContextProvider } from '../../contexts/ProductContext/ProductContext'
 import TopPurchasesCard from '../../components/TopPurchasesCard/TopPurchasesCard'
+import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
 
 const DashboardContent = () => {
     const singleStatCounters: SingleStatCounterType[] = [
@@ -42,7 +42,9 @@ const DashboardContent = () => {
 
     return (
         <UserLayout>
-            <PageHeader breadcrumbs={[{ text: 'Dashboard' }]} />
+            <div className="flex justify-end mb-6">
+                <DateRangePicker />
+            </div>
             <div className="flex flex-col gap-6">
                 <div className="flex gap-6 flex-wrap">
                     {singleStatCounters.map((stat) => (
