@@ -9,6 +9,7 @@ const PurchaseOrderController = require('./controllers/purchase-order-controller
 const HealthCheckController = require('./controllers/health-check-controller')
 const CustomerController = require('./controllers/customer-controller')
 const SalesOrderController = require('./controllers/sales-order-controller')
+const StatController = require('./controllers/stat-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -124,4 +125,6 @@ router.post(
     SalesOrderController.createSalesOrder
 )
 
+// stats
+router.get('/api/v1/stats/top-products', isAdmin, StatController.getTopProducts)
 module.exports = router
