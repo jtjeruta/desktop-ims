@@ -4,9 +4,9 @@ import SingleStatCounter, {
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { FaShoppingCart, FaSitemap, FaStore, FaUsers } from 'react-icons/fa'
 import TopSalesCard from '../../components/TopSalesCard/TopSalesCard'
-import { ProductContextProvider } from '../../contexts/ProductContext/ProductContext'
 import TopPurchasesCard from '../../components/TopPurchasesCard/TopPurchasesCard'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
+import { StatContextProvider } from '../../contexts/StatsContext/StatsContext'
 
 const DashboardContent = () => {
     const singleStatCounters: SingleStatCounterType[] = [
@@ -65,9 +65,9 @@ const DashboardContent = () => {
 }
 
 const Dashboard = () => (
-    <ProductContextProvider>
+    <StatContextProvider>
         <DashboardContent />
-    </ProductContextProvider>
+    </StatContextProvider>
 )
 
 export default Dashboard

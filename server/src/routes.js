@@ -126,5 +126,9 @@ router.post(
 )
 
 // stats
-router.get('/api/v1/stats/top-products', isAdmin, StatController.getTopProducts)
+router.get(
+    '/api/v1/stats/top-product-sales',
+    isAdmin,
+    StatController.listTopProductSales
+)
 module.exports = router

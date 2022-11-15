@@ -1,7 +1,8 @@
 const moment = require('moment')
+const mongoose = require('mongoose')
 const SalesOrderModule = require('../modules/sales-orders-module')
 
-module.exports.getTopProducts = async (req, res) => {
+module.exports.listTopProductSales = async (req, res) => {
     const { fromDate, toDate } = req.query
 
     const salesOrdersRes = await SalesOrderModule.listSalesOrders({
@@ -17,23 +18,32 @@ module.exports.getTopProducts = async (req, res) => {
 
     const products = salesOrdersRes[1].reduce((acc, order) => {
         order.products.forEach((product) => {
-            const productStats = acc.find((p) =>
-                p.id.equals(product.product._id)
+            const productStats = acc.find(
+                (p) =>
+                    p.product._id.equals(product.product._id) &&
+                    p.variant.name === product.variant.name
             ) ?? {
-                id: product.product._id,
-                // data: product.product,
+                id: mongoose.Types.ObjectId(),
+                product: product.product,
+                variant: product.variant,
                 quantity: 0,
                 total: 0,
             }
 
             productStats.quantity += product.quantity
             productStats.total += product.totalPrice
-            acc = acc.filter((p) => !p.id.equals(product.product._id))
+            acc = acc.filter(
+                (p) => !p.product._id.equals(productStats.product._id)
+            )
             acc = [...acc, productStats]
         })
 
         return acc
     }, [])
 
-    return res.status(200).json({ products })
+    const productsWithSales = products.filter(
+        (product, index) => product.quantity > 0 && index <= 9
+    )
+
+    return res.status(200).json({ products: productsWithSales })
 }

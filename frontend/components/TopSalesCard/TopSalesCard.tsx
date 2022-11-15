@@ -1,45 +1,53 @@
 import { useEffect } from 'react'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import { useProductContext } from '../../contexts/ProductContext/ProductContext'
-import { Product } from '../../contexts/ProductContext/types'
+import { useStatContext } from '../../contexts/StatsContext/StatsContext'
+import { ProductSale } from '../../contexts/StatsContext/types'
 import { formatCurrency } from '../../uitls'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
 
 const TopSalesCard = () => {
     const AppContext = useAppContext()
-    const ProductContext = useProductContext()
+    const StatContext = useStatContext()
 
     useEffect(() => {
-        if (ProductContext.products === null) {
-            ProductContext.listProducts()
+        if (StatContext.topProductSales === null) {
+            StatContext.listTopProductSales()
         }
-    }, [ProductContext])
+    }, [StatContext])
 
     return (
         <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
             <Table
-                rows={ProductContext.products ?? []}
-                loading={AppContext.isLoading('list-products')}
+                rows={StatContext.topProductSales ?? []}
+                loading={AppContext.isLoading('list-top-product-sales')}
                 columns={[
                     {
                         title: 'Top Sales',
                         format: (row) => {
-                            const product = row as Product
-                            return product.name
+                            const sale = row as ProductSale
+                            return sale.product.name
                         },
                     },
                     {
                         title: 'Unit',
                         format: (row) => {
-                            const product = row as Product
-                            return product.variants?.[0].name
+                            const sale = row as ProductSale
+                            return sale.variant.name
+                        },
+                    },
+                    {
+                        title: 'Qty',
+                        format: (row) => {
+                            const sale = row as ProductSale
+                            return sale.quantity
                         },
                     },
                     {
                         title: 'Total',
-                        format: () => {
-                            return formatCurrency(100000)
+                        format: (row) => {
+                            const sale = row as ProductSale
+                            return formatCurrency(sale.total)
                         },
                     },
                 ]}

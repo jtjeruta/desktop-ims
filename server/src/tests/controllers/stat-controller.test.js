@@ -76,7 +76,7 @@ describe('Controller: Get top products by date range', () => {
 
         const res = await request(app)
             .get(
-                `/api/v1/stats/top-products?fromDate=${fromDate}&toDate=${toDate}`
+                `/api/v1/stats/top-product-sales?fromDate=${fromDate}&toDate=${toDate}`
             )
             .set('Authorization', token)
 
@@ -97,7 +97,7 @@ describe('Controller: Get top products by date range', () => {
 
         const res = await request(app)
             .get(
-                `/api/v1/stats/top-products?fromDate=${fromDate}&toDate=${toDate}`
+                `/api/v1/stats/top-product-sales?fromDate=${fromDate}&toDate=${toDate}`
             )
             .set('Authorization', token)
 
@@ -114,7 +114,7 @@ describe('Controller: Get top products by date range', () => {
         })
 
         const res = await request(app)
-            .get('/api/v1/stats/top-products')
+            .get('/api/v1/stats/top-product-sales')
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(401)
@@ -124,7 +124,7 @@ describe('Controller: Get top products by date range', () => {
     })
 
     it('Fail: run as unauthorized', async () => {
-        const res = await request(app).get('/api/v1/stats/top-products')
+        const res = await request(app).get('/api/v1/stats/top-product-sales')
 
         expect(res.statusCode).to.equal(401)
         expect(res.body).to.deep.equal({
