@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import moment, { Moment } from 'moment'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -43,6 +43,10 @@ const ranges = {
         start: moment().subtract(29, 'day').startOf('day'),
         end: moment().endOf('day'),
     },
+    'Last 60 Days': {
+        start: moment().subtract(59, 'day').startOf('day'),
+        end: moment().endOf('day'),
+    },
     'This Month': {
         start: moment().startOf('month'),
         end: moment().endOf('day'),
@@ -51,14 +55,44 @@ const ranges = {
         start: moment().subtract(1, 'month').startOf('month'),
         end: moment().subtract(1, 'month').endOf('month'),
     },
+    'Last 2 Months': {
+        start: moment().subtract(2, 'month').startOf('month'),
+        end: moment().subtract(1, 'month').endOf('month'),
+    },
+    'This year': {
+        start: moment().startOf('year'),
+        end: moment().subtract(1, 'month').endOf('month'),
+    },
 }
 
-const DateRangePicker = () => {
+type RangeKey = keyof typeof ranges
+type Props = {
+    defaultStartDate: number
+    defaultEndDate: number
+    onChange: (startDate: number, endDate: number) => void
+}
+
+const DateRangePicker: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const [startDate, setStartDate] = useState<Moment>(
-        ranges['This Month'].start
+        moment(props.defaultStartDate * 1000)
     )
-    const [endDate, setEndDate] = useState<Moment>(ranges['This Month'].end)
+    const [endDate, setEndDate] = useState<Moment>(
+        moment(props.defaultEndDate * 1000)
+    )
+    const handleOnChange = (target: 'start' | 'end') => (date: Date) => {
+        target === 'start' && setStartDate(moment(date).startOf('day'))
+        target === 'end' && setEndDate(moment(date).endOf('day'))
+    }
+    const handleRangeSelect = (key: RangeKey) => () => {
+        setStartDate(ranges[key].start)
+        setEndDate(ranges[key].end)
+        AppContext.closeDialog()
+    }
+
+    useEffect(() => {
+        props.onChange(startDate.unix(), endDate.unix())
+    }, [startDate, endDate])
 
     return (
         <>
@@ -72,16 +106,14 @@ const DateRangePicker = () => {
                 <DatePicker
                     maxDate={endDate.toDate()}
                     selected={startDate.toDate()}
-                    onChange={(date) =>
-                        setStartDate(moment(date).startOf('day'))
-                    }
+                    onChange={handleOnChange('start')}
                     dateFormat="MMM dd, yyyy"
                 />
                 <FaArrowRight />
                 <DatePicker
                     minDate={startDate.toDate()}
                     selected={endDate.toDate()}
-                    onChange={(date) => setEndDate(moment(date).endOf('day'))}
+                    onChange={handleOnChange('end')}
                     dateFormat="MMM dd, yyyy"
                 />
                 <Button
@@ -108,14 +140,12 @@ const DateRangePicker = () => {
                                 style="outline"
                                 color="secondary"
                                 key={key}
-                                onClick={() => {
-                                    setStartDate(ranges[key].start)
-                                    setEndDate(ranges[key].end)
-                                    AppContext.closeDialog()
-                                }}
+                                onClick={handleRangeSelect(key)}
                                 disabled={
-                                    startDate.isSame(ranges[key].start) &&
-                                    endDate.isSame(ranges[key].end)
+                                    startDate.isSame(
+                                        ranges[key].start,
+                                        'day'
+                                    ) && endDate.isSame(ranges[key].end, 'day')
                                 }
                             >
                                 {key}

@@ -6,9 +6,14 @@ import { FaShoppingCart, FaSitemap, FaStore, FaUsers } from 'react-icons/fa'
 import TopSalesCard from '../../components/TopSalesCard/TopSalesCard'
 import TopPurchasesCard from '../../components/TopPurchasesCard/TopPurchasesCard'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
-import { StatContextProvider } from '../../contexts/StatsContext/StatsContext'
+import {
+    StatContextProvider,
+    useStatContext,
+} from '../../contexts/StatsContext/StatsContext'
+import { useEffect } from 'react'
 
 const DashboardContent = () => {
+    const StatContext = useStatContext()
     const singleStatCounters: SingleStatCounterType[] = [
         {
             title: 'Item Sales',
@@ -40,10 +45,24 @@ const DashboardContent = () => {
         },
     ]
 
+    useEffect(() => {
+        StatContext.listTopProductSales()
+        StatContext.listTopProductPurchases()
+    }, [StatContext.dateRange])
+
     return (
         <UserLayout>
             <div className="flex justify-end mb-6">
-                <DateRangePicker />
+                <DateRangePicker
+                    onChange={(start, end) =>
+                        StatContext.setDateRange({
+                            startDate: start,
+                            endDate: end,
+                        })
+                    }
+                    defaultStartDate={StatContext.dateRange.startDate}
+                    defaultEndDate={StatContext.dateRange.endDate}
+                />
             </div>
             <div className="flex flex-col gap-6">
                 <div className="flex gap-6 flex-wrap">

@@ -4,12 +4,12 @@ const SalesOrderModule = require('../modules/sales-orders-module')
 const PurchaseOrderModule = require('../modules/purchase-orders-module')
 
 module.exports.listTopProductSales = async (req, res) => {
-    const { fromDate, toDate } = req.query
+    const { startDate, endDate } = req.query
 
     const salesOrdersRes = await SalesOrderModule.listSalesOrders({
         orderDate: {
-            $gte: fromDate ?? moment().startOf('month').unix(),
-            $lte: toDate ?? moment().endOf('day').unix(),
+            $gte: +(startDate ?? moment().startOf('month').unix()),
+            $lte: +(endDate ?? moment().endOf('day').unix()),
         },
     })
 
@@ -50,12 +50,12 @@ module.exports.listTopProductSales = async (req, res) => {
 }
 
 module.exports.listTopProductPurchases = async (req, res) => {
-    const { fromDate, toDate } = req.query
+    const { startDate, endDate } = req.query
 
     const purchaseOrdersRes = await PurchaseOrderModule.listPurchaseOrders({
         orderDate: {
-            $gte: fromDate ?? moment().startOf('month').unix(),
-            $lte: toDate ?? moment().endOf('day').unix(),
+            $gte: startDate ?? moment().startOf('month').unix(),
+            $lte: endDate ?? moment().endOf('day').unix(),
         },
     })
 

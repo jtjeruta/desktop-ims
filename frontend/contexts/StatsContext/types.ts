@@ -23,6 +23,10 @@ export type ProductPurchase = {
 }
 
 export type Context = {
+    dateRange: { startDate: number; endDate: number }
+    setDateRange: React.Dispatch<
+        React.SetStateAction<{ startDate: number; endDate: number }>
+    >
     topProductSales: ProductSale[] | null
     topProductPurchases: ProductPurchase[] | null
     listTopProductSales: () => Promise<[true, ProductSale[]] | [false, string]>

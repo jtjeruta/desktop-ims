@@ -73,12 +73,12 @@ describe('Controller: Get top product sales by date range', () => {
             password: testdata.admin1.password,
         })
 
-        const fromDate = moment().startOf('month').unix()
-        const toDate = moment().endOf('day').unix()
+        const startDate = moment().startOf('month').unix()
+        const endDate = moment().endOf('day').unix()
 
         const res = await request(app)
             .get(
-                `/api/v1/stats/top-product-sales?fromDate=${fromDate}&toDate=${toDate}`
+                `/api/v1/stats/top-product-sales?startDate=${startDate}&endDate=${endDate}`
             )
             .set('Authorization', token)
 
@@ -94,12 +94,12 @@ describe('Controller: Get top product sales by date range', () => {
             password: testdata.admin1.password,
         })
 
-        const fromDate = moment().subtract(1, 'month').startOf('month').unix()
-        const toDate = moment().endOf('day').unix()
+        const startDate = moment().subtract(1, 'month').startOf('month').unix()
+        const endDate = moment().endOf('day').unix()
 
         const res = await request(app)
             .get(
-                `/api/v1/stats/top-product-sales?fromDate=${fromDate}&toDate=${toDate}`
+                `/api/v1/stats/top-product-sales?startDate=${startDate}&endDate=${endDate}`
             )
             .set('Authorization', token)
 
@@ -190,12 +190,12 @@ describe('Controller: Get top product purchases by date range', () => {
             password: testdata.admin1.password,
         })
 
-        const fromDate = moment().startOf('month').unix()
-        const toDate = moment().endOf('day').unix()
+        const startDate = moment().startOf('month').unix()
+        const endDate = moment().endOf('day').unix()
 
         const res = await request(app)
             .get(
-                `/api/v1/stats/top-product-purchases?fromDate=${fromDate}&toDate=${toDate}`
+                `/api/v1/stats/top-product-purchases?startDate=${startDate}&endDate=${endDate}`
             )
             .set('Authorization', token)
 
@@ -211,12 +211,12 @@ describe('Controller: Get top product purchases by date range', () => {
             password: testdata.admin1.password,
         })
 
-        const fromDate = moment().subtract(1, 'month').startOf('month').unix()
-        const toDate = moment().endOf('day').unix()
+        const startDate = moment().subtract(1, 'month').startOf('month').unix()
+        const endDate = moment().endOf('day').unix()
 
         const res = await request(app)
             .get(
-                `/api/v1/stats/top-product-purchases?fromDate=${fromDate}&toDate=${toDate}`
+                `/api/v1/stats/top-product-purchases?startDate=${startDate}&endDate=${endDate}`
             )
             .set('Authorization', token)
 
