@@ -1,48 +1,52 @@
 import { useEffect } from 'react'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import { useProductContext } from '../../contexts/ProductContext/ProductContext'
-import { Product } from '../../contexts/ProductContext/types'
-import { getProductWarehouseTotal } from '../../uitls/product-utils'
+import { useStatContext } from '../../contexts/StatsContext/StatsContext'
+import { ProductPurchase } from '../../contexts/StatsContext/types'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
 
 const TopPurchasesCard = () => {
     const AppContext = useAppContext()
-    const ProductContext = useProductContext()
+    const StatContext = useStatContext()
 
     useEffect(() => {
-        if (ProductContext.products === null) {
-            ProductContext.listProducts()
+        if (StatContext.topProductPurchases === null) {
+            StatContext.listTopProductPurchases()
         }
-    }, [ProductContext])
+    }, [StatContext])
 
     return (
         <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
             <Table
-                rows={ProductContext.products ?? []}
-                loading={AppContext.isLoading('list-products')}
+                rows={StatContext.topProductPurchases ?? []}
+                loading={AppContext.isLoading('list-top-product-purchases')}
                 columns={[
                     {
                         title: 'Top Purchases',
                         format: (row) => {
-                            const product = row as Product
-                            return product.name
+                            const product = row as ProductPurchase
+                            return product.product.name
                         },
                     },
                     {
-                        title: 'Stock',
+                        title: 'Unit',
                         format: (row) => {
-                            const product = row as Product
-                            return (
-                                product.storeQty +
-                                getProductWarehouseTotal(product)
-                            )
+                            const product = row as ProductPurchase
+                            return product.variant.name
+                        },
+                    },
+                    {
+                        title: 'Qty',
+                        format: (row) => {
+                            const product = row as ProductPurchase
+                            return product.quantity
                         },
                     },
                     {
                         title: 'Total',
-                        format: () => {
-                            return 100
+                        format: (row) => {
+                            const product = row as ProductPurchase
+                            return product.total
                         },
                     },
                 ]}

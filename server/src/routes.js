@@ -131,4 +131,9 @@ router.get(
     isAdmin,
     StatController.listTopProductSales
 )
+router.get(
+    '/api/v1/stats/top-product-purchases',
+    isAdmin,
+    StatController.listTopProductPurchases
+)
 module.exports = router
