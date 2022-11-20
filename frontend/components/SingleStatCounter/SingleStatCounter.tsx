@@ -1,8 +1,8 @@
-import clsx from 'clsx'
 import { FC } from 'react'
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
 import { IconType } from 'react-icons/lib'
 import styled from 'styled-components'
+import { useAppContext } from '../../contexts/AppContext/AppContext'
+import { formatCurrency } from '../../uitls'
 
 const ReportCard = styled.div`
     flex-grow: 1;
@@ -69,36 +69,32 @@ const ReportCard = styled.div`
 export type SingleStatCounterType = {
     title: string
     total: number
-    rate: number
+    loading: string
     icon: IconType
     iconClass: string
 }
 
 const SingleStatCounter: FC<SingleStatCounterType> = (props) => {
+    const Appcontext = useAppContext()
     return (
         <ReportCard>
             <div className="card">
                 <div className="card-body">
                     <div className="flex flex-row justify-between items-center">
-                        <props.icon className={props.iconClass} fontSize={24} />
-                        <span
-                            className={clsx(
-                                'rounded-full text-white badge bg-red-400 text-xs flex items-center gap-1',
-                                props.rate <= 0 ? 'bg-red-400' : 'bg-teal-400'
-                            )}
-                        >
-                            <span>{Math.abs(props.rate)}%</span>
-                            {props.rate <= 0 ? (
-                                <FaChevronDown />
+                        <div>
+                            {Appcontext.isLoading(props.loading) ? (
+                                <div
+                                    className="bg-slate-200 animate-pulse mb-2"
+                                    style={{ height: '1.75rem' }}
+                                />
                             ) : (
-                                <FaChevronUp />
+                                <h1 className="total">
+                                    {formatCurrency(props.total)}
+                                </h1>
                             )}
-                        </span>
-                    </div>
-
-                    <div className="mt-8">
-                        <h1 className="total">{props.total}</h1>
-                        <p className="title">{props.title}</p>
+                            <p className="title">{props.title}</p>
+                        </div>
+                        <props.icon className={props.iconClass} fontSize={38} />
                     </div>
                 </div>
             </div>

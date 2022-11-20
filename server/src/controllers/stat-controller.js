@@ -4,13 +4,10 @@ const SalesOrderModule = require('../modules/sales-orders-module')
 const PurchaseOrderModule = require('../modules/purchase-orders-module')
 
 module.exports.listTopProductSales = async (req, res) => {
-    const { startDate, endDate } = req.query
+    const { startDate, endDate } = getDateRangeFromQuery(req.query)
 
     const salesOrdersRes = await SalesOrderModule.listSalesOrders({
-        orderDate: {
-            $gte: +(startDate ?? moment().startOf('month').unix()),
-            $lte: +(endDate ?? moment().endOf('day').unix()),
-        },
+        orderDate: { $gte: startDate, $lte: endDate },
     })
 
     if (salesOrdersRes[0] !== 200) {
@@ -50,13 +47,10 @@ module.exports.listTopProductSales = async (req, res) => {
 }
 
 module.exports.listTopProductPurchases = async (req, res) => {
-    const { startDate, endDate } = req.query
+    const { startDate, endDate } = getDateRangeFromQuery(req.query)
 
     const purchaseOrdersRes = await PurchaseOrderModule.listPurchaseOrders({
-        orderDate: {
-            $gte: startDate ?? moment().startOf('month').unix(),
-            $lte: endDate ?? moment().endOf('day').unix(),
-        },
+        orderDate: { $gte: startDate, $lte: endDate },
     })
 
     if (purchaseOrdersRes[0] !== 200) {
@@ -93,4 +87,44 @@ module.exports.listTopProductPurchases = async (req, res) => {
     )
 
     return res.status(200).json({ products: productsWithPurchases })
+}
+
+module.exports.getTotalProductSales = async (req, res) => {
+    const { startDate, endDate } = getDateRangeFromQuery(req.query)
+
+    const salesOrdersRes = await SalesOrderModule.listSalesOrders({
+        orderDate: { $gte: startDate, $lte: endDate },
+    })
+
+    if (salesOrdersRes[0] !== 200) {
+        return res.status(salesOrdersRes[0]).json(salesOrdersRes[1])
+    }
+
+    const total = salesOrdersRes[1].reduce((acc, order) => acc + order.total, 0)
+    return res.status(200).json({ totalSales: total })
+}
+
+module.exports.getTotalProductPurchases = async (req, res) => {
+    const { startDate, endDate } = getDateRangeFromQuery(req.query)
+
+    const purchaseOrdersRes = await PurchaseOrderModule.listPurchaseOrders({
+        orderDate: { $gte: startDate, $lte: endDate },
+    })
+
+    if (purchaseOrdersRes[0] !== 200) {
+        return res.status(purchaseOrdersRes[0]).json(purchaseOrdersRes[1])
+    }
+
+    const total = purchaseOrdersRes[1].reduce(
+        (acc, order) => acc + order.total,
+        0
+    )
+    return res.status(200).json({ totalPurchases: total })
+}
+
+const getDateRangeFromQuery = (query) => {
+    return {
+        startDate: +(query.startDate ?? moment().startOf('month').unix()),
+        endDate: +(query.endDate ?? moment().endOf('day').unix()),
+    }
 }

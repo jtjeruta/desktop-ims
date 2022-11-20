@@ -57,11 +57,11 @@ const ranges = {
     },
     'Last 2 Months': {
         start: moment().subtract(2, 'month').startOf('month'),
-        end: moment().subtract(1, 'month').endOf('month'),
+        end: moment().endOf('day'),
     },
     'This year': {
         start: moment().startOf('year'),
-        end: moment().subtract(1, 'month').endOf('month'),
+        end: moment().endOf('day'),
     },
 }
 

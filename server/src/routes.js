@@ -136,4 +136,14 @@ router.get(
     isAdmin,
     StatController.listTopProductPurchases
 )
+router.get(
+    '/api/v1/stats/total-product-sales',
+    isAdmin,
+    StatController.getTotalProductSales
+)
+router.get(
+    '/api/v1/stats/total-product-purchases',
+    isAdmin,
+    StatController.getTotalProductPurchases
+)
 module.exports = router

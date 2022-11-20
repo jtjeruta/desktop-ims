@@ -16,30 +16,30 @@ const DashboardContent = () => {
     const StatContext = useStatContext()
     const singleStatCounters: SingleStatCounterType[] = [
         {
-            title: 'Item Sales',
-            total: 3822,
-            rate: 12,
+            title: 'Total Sales',
+            total: StatContext.totalProductSales ?? 0,
+            loading: 'get-total-product-sales',
             icon: FaShoppingCart,
             iconClass: 'text-indigo-700',
         },
         {
-            title: 'New Orders',
-            total: 10331,
-            rate: -6,
+            title: 'Total Purchases',
+            total: StatContext.totalProductPurchases ?? 0,
+            loading: 'get-total-product-purchases',
             icon: FaStore,
             iconClass: 'text-red-700',
         },
         {
-            title: 'Total Products',
+            title: 'Ave. Sales Order ',
             total: 1452,
-            rate: 72,
+            loading: 'get-average-sales-order',
             icon: FaSitemap,
             iconClass: 'text-yellow-600',
         },
         {
-            title: 'New Customers',
+            title: 'Ave. Purchase Order',
             total: 3990,
-            rate: 150,
+            loading: 'get-average-purchase-order',
             icon: FaUsers,
             iconClass: 'text-green-700',
         },
@@ -48,6 +48,8 @@ const DashboardContent = () => {
     useEffect(() => {
         StatContext.listTopProductSales()
         StatContext.listTopProductPurchases()
+        StatContext.getTotalProductSales()
+        StatContext.getTotalProductPurchases()
     }, [StatContext.dateRange])
 
     return (

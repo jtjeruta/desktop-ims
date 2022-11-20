@@ -29,8 +29,12 @@ export type Context = {
     >
     topProductSales: ProductSale[] | null
     topProductPurchases: ProductPurchase[] | null
+    totalProductSales: number | null
+    totalProductPurchases: number | null
     listTopProductSales: () => Promise<[true, ProductSale[]] | [false, string]>
     listTopProductPurchases: () => Promise<
         [true, ProductPurchase[]] | [false, string]
     >
+    getTotalProductSales: () => Promise<[true, number] | [false, string]>
+    getTotalProductPurchases: () => Promise<[true, number] | [false, string]>
 }
