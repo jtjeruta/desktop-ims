@@ -7,6 +7,7 @@ import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
 import Button from '../Button/Button'
 import { useCustomerContext } from '../../contexts/CustomerContext/CustomerContext'
+import AutoCompleteWrapper from '../AutoCompleteField/AutoCompleteField'
 
 const customerSchema = yup
     .object({
@@ -73,10 +74,16 @@ const AddEditCustomerForm: FC = () => {
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
-                    <TextField
+                    <AutoCompleteWrapper
                         name="name"
                         label="Name"
                         helperText="Eg. Customer 1"
+                        options={
+                            CustomerContext.customers?.map((customer) => ({
+                                value: customer.id,
+                                text: customer.name,
+                            })) ?? []
+                        }
                     />
                     <TextField
                         name="email"

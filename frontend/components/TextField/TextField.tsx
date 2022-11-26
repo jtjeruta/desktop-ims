@@ -2,7 +2,7 @@ import { FC } from 'react'
 import clsx from 'clsx'
 import { useFormContext } from 'react-hook-form'
 
-type Props = {
+export type Props = {
     error?: boolean
     helperText?: string
     disableHelperText?: boolean
@@ -15,6 +15,7 @@ type Props = {
     min?: number
     max?: number
     className?: string
+    autoComplete?: boolean
 }
 
 const TextField: FC<Props> = (props) => {
@@ -49,6 +50,7 @@ const TextField: FC<Props> = (props) => {
                 autoFocus={props.autoFocus}
                 min={props.min}
                 max={props.max}
+                autoComplete={props.autoComplete !== false ? 'on' : 'off'}
                 {...register}
             />
             {!props.disableHelperText && (
