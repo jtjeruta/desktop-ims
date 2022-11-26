@@ -29,6 +29,10 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [totalProductPurchases, setTotalProductPurchases] = useState<
         number | null
     >(null)
+    const [averageSales, setAverageSales] = useState<number | null>(null)
+    const [averagePurchases, setAveragePurchases] = useState<number | null>(
+        null
+    )
 
     const listTopProductSales = async () => {
         const key = 'list-top-product-sales'
@@ -122,8 +126,56 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const getAverageSales = async () => {
+        const key = 'get-average-sales'
+
+        AppContext.addLoading(key)
+        const response = await StatsAPI.getAverageSales(
+            dateRange.startDate,
+            dateRange.endDate
+        )
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return response
+        }
+
+        setAverageSales(response[1])
+        return response
+    }
+
+    const getAveragePurchases = async () => {
+        const key = 'get-average-purchases'
+
+        AppContext.addLoading(key)
+        const response = await StatsAPI.getAveragePurchases(
+            dateRange.startDate,
+            dateRange.endDate
+        )
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return response
+        }
+
+        setAveragePurchases(response[1])
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
+            averageSales,
+            averagePurchases,
             dateRange,
             setDateRange,
             topProductSales,
@@ -134,8 +186,12 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
             listTopProductPurchases,
             getTotalProductSales,
             getTotalProductPurchases,
+            getAverageSales,
+            getAveragePurchases,
         }),
         [
+            averageSales,
+            averagePurchases,
             dateRange,
             topProductSales,
             topProductPurchases,

@@ -31,15 +31,15 @@ const DashboardContent = () => {
         },
         {
             title: 'Ave. Sales Order ',
-            total: 1452,
-            loading: 'get-average-sales-order',
+            total: StatContext.averageSales ?? 0,
+            loading: 'get-average-sales',
             icon: FaSitemap,
             iconClass: 'text-yellow-600',
         },
         {
             title: 'Ave. Purchase Order',
-            total: 3990,
-            loading: 'get-average-purchase-order',
+            total: StatContext.averagePurchases ?? 0,
+            loading: 'get-average-purchases',
             icon: FaUsers,
             iconClass: 'text-green-700',
         },
@@ -50,6 +50,8 @@ const DashboardContent = () => {
         StatContext.listTopProductPurchases()
         StatContext.getTotalProductSales()
         StatContext.getTotalProductPurchases()
+        StatContext.getAverageSales()
+        StatContext.getAveragePurchases()
     }, [StatContext.dateRange])
 
     return (
