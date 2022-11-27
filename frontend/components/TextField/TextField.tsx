@@ -51,6 +51,7 @@ const TextField: FC<Props> = (props) => {
                 min={props.min}
                 max={props.max}
                 autoComplete={props.autoComplete !== false ? 'on' : 'off'}
+                data-lpignore="true"
                 {...register}
             />
             {!props.disableHelperText && (

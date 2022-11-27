@@ -1,5 +1,5 @@
+import { FC, useEffect, useState, KeyboardEvent } from 'react'
 import clsx from 'clsx'
-import { FC, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import styled from 'styled-components'
 import TextField, { Props as TextFieldProps } from '../TextField/TextField'
@@ -27,7 +27,6 @@ const Wrapper = styled.div`
         }
 
         .popup-card {
-            min-height: 3rem;
             background-color: #fff;
             border: 1px solid rgb(37, 99, 235);
             border-radius: 0.25rem;
@@ -39,32 +38,58 @@ const AutoCompleteWrapper: FC<Props> = (props) => {
     const methods = useFormContext()
     const [search, setSearch] = useState<string>('')
     const [open, setOpen] = useState<boolean>(false)
+    const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
     const filteredOptions = props.options.filter(
-        (option) => option.text.includes(search) && option.text.trim() !== ''
+        (option) =>
+            option.text.includes(search) &&
+            option.text !== search &&
+            option.text.trim() !== ''
     )
 
     // set on change
     useEffect(() => {
         const subscription = methods.watch((data, { name }) => {
-            if (name === props.name && data[name] && data[name].trim() !== '') {
-                setSearch(data[name])
-                setOpen(true)
-            } else {
-                setOpen(false)
-            }
+            if (name !== props.name) return
+            setSearch(data[name] ?? '')
+            setOpen(data[name] && data[name].trim() !== '')
         })
         return () => subscription.unsubscribe()
     }, [])
 
-    const handleClick = (option: Option) => () => {
+    const handleSelectOption = (option: Option) => {
         methods.setValue(props.name, option.text)
         props.onClick?.(option.value)
         setOpen(false)
     }
 
+    const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+        if (filteredOptions.length <= 0) return
+        if (e.key === 'ArrowDown') {
+            if (!open) {
+                setOpen(true)
+                setSelectedIndex(-1)
+            }
+
+            setSelectedIndex((prev) =>
+                prev >= filteredOptions.length - 1 ? 0 : prev + 1
+            )
+        } else if (e.key === 'ArrowUp' && open) {
+            setSelectedIndex((prev) =>
+                prev > 0 ? prev - 1 : filteredOptions.length - 1
+            )
+        } else if (e.key === 'Enter' && open) {
+            e.preventDefault()
+            const option = filteredOptions.find(
+                (_, index) => index === selectedIndex
+            )
+            if (!option) return
+            handleSelectOption(option)
+        }
+    }
+
     return (
-        <Wrapper onBlur={() => setOpen(false)}>
+        <Wrapper onBlur={() => setOpen(false)} onKeyDown={handleKeyDown}>
             <TextField {...props} autoComplete={false} />
             <div
                 className={clsx(
@@ -80,9 +105,10 @@ const AutoCompleteWrapper: FC<Props> = (props) => {
                                     key={option.value}
                                     className={clsx(
                                         'p-2 border-gray-200 w-full text-sm hover:bg-gray-100 cursor-pointer',
-                                        index > 0 && 'border-t'
+                                        index > 0 && 'border-t',
+                                        selectedIndex === index && 'bg-gray-100'
                                     )}
-                                    onClick={handleClick(option)}
+                                    onClick={() => handleSelectOption(option)}
                                 >
                                     {option.text}
                                 </li>
