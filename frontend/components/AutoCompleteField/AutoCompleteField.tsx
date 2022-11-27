@@ -38,6 +38,7 @@ const AutoCompleteField: FC<Props> = (props) => {
     const methods = useFormContext()
     const [search, setSearch] = useState<string>('')
     const [open, setOpen] = useState<boolean>(false)
+    const [focused, setFocused] = useState<boolean>(false)
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
     const filteredOptions = props.options.filter(
@@ -51,12 +52,12 @@ const AutoCompleteField: FC<Props> = (props) => {
     // set on change
     useEffect(() => {
         const subscription = methods.watch((data, { name }) => {
-            if (name !== props.name) return
+            if (name !== props.name || !focused) return
             setSearch(data[name] ?? '')
             setOpen(data[name] && data[name].trim() !== '')
         })
         return () => subscription.unsubscribe()
-    }, [])
+    }, [focused])
 
     const handleSelectOption = (option: Option) => {
         methods.setValue(props.name, option.text)
@@ -90,7 +91,14 @@ const AutoCompleteField: FC<Props> = (props) => {
     }
 
     return (
-        <Wrapper onBlur={() => setOpen(false)} onKeyDown={handleKeyDown}>
+        <Wrapper
+            onFocus={() => setFocused(true)}
+            onBlur={() => {
+                setOpen(false)
+                setFocused(false)
+            }}
+            onKeyDown={handleKeyDown}
+        >
             <TextField {...props} autoComplete={false} />
             <div
                 className={clsx(
