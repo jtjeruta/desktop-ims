@@ -5,17 +5,22 @@ const CustomersModule = require('../modules/customers-module')
 const { SalesOrdersView, SalesOrderView } = require('../views/sales-order-view')
 
 module.exports.createSalesOrder = async (req, res) => {
+    let customer = null
     const session = await mongoose.startSession()
     session.startTransaction()
 
-    const customerRes = await CustomersModule.getCustomerById(
-        req.body.customer,
-        session
-    )
+    if (req.body.customer) {
+        const customerRes = await CustomersModule.getCustomerById(
+            req.body.customer,
+            session
+        )
 
-    if (customerRes[0] !== 200) {
-        await session.endSession()
-        return res.status(customerRes[0]).json(customerRes[1])
+        if (customerRes[0] !== 200) {
+            await session.endSession()
+            return res.status(customerRes[0]).json(customerRes[1])
+        }
+
+        customer = customerRes[1]
     }
 
     // Validate products
@@ -36,7 +41,7 @@ module.exports.createSalesOrder = async (req, res) => {
     const createdSalesOrderRes = await SalesOrdersModule.createSalesOrder(
         {
             ...req.body,
-            customer: customerRes[1]._id,
+            customer: customer?._id ?? null,
         },
         session
     )

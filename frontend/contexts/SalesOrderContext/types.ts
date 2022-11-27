@@ -17,7 +17,7 @@ export type SalesOrder = {
         } | null
     }[]
     createdAt: number
-    customer: Customer
+    customer: Customer | null
     total: number
     remarks: string | null
     orderDate: number | null
@@ -56,7 +56,7 @@ export type AddEditSalesOrderDoc = {
             quantity: number
         } | null
     }[]
-    customer: string
+    customer: string | null
     remarks: string | null
     orderDate: number | null
     invoiceNumber: string | null

@@ -52,15 +52,39 @@ describe('Module: Create Sales Order', () => {
         expect(createdSalesOrder[1].total).to.equal(1000)
     })
 
+    it('Success: with no customer', async () => {
+        const createdSalesOrder = await SalesOrdersModule.createSalesOrder({
+            products: [
+                {
+                    id: 'test_product_1',
+                    product: product._id,
+                    quantity: 100,
+                    itemPrice: 10,
+                    warehouse,
+                    variant: {
+                        name: 'Test Variant',
+                        quantity: 10,
+                    },
+                },
+            ],
+            customer: null,
+            orderDate: 12345,
+            invoiceNumber: 'invoice-number-1',
+        })
+
+        expect(createdSalesOrder[0]).to.equal(201)
+        expect(createdSalesOrder[1].products[0].totalPrice).to.equal(1000)
+        expect(createdSalesOrder[1].orderDate).to.equal(12345)
+        expect(createdSalesOrder[1].invoiceNumber).to.equal('invoice-number-1')
+        expect(createdSalesOrder[1].total).to.equal(1000)
+    })
+
     it('Fail: using invalid data', async () => {
         const createdSalesOrder = await SalesOrdersModule.createSalesOrder({
             orderDate: moment(),
         })
 
         expect(createdSalesOrder[0]).to.equal(400)
-        expect(createdSalesOrder[1].errors.customer.message).to.equal(
-            'Path `customer` is required.'
-        )
         expect(createdSalesOrder[1].errors.products.message).to.equal(
             'Path `products` must contain atleast 1.'
         )
@@ -262,9 +286,6 @@ describe('Module: Update SalesOrder', () => {
         )
 
         expect(updatedSalesOrder[0]).to.equal(400)
-        expect(updatedSalesOrder[1].errors.customer.message).to.equal(
-            'Path `customer` is required.'
-        )
         expect(updatedSalesOrder[1].errors.products.message).to.equal(
             'Path `products` must contain atleast 1.'
         )

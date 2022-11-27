@@ -78,9 +78,9 @@ const SalesOrdersPageContent = () => {
                             title: 'Customer',
                             format: (row) => {
                                 const order = row as SalesOrder
-                                return order.customer.name
+                                return order.customer?.name ?? ''
                             },
-                            sort: (order) => order.customer.name,
+                            sort: (order) => order.customer?.name ?? '',
                         },
                         {
                             title: 'Remarks',

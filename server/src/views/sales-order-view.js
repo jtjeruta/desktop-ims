@@ -19,7 +19,7 @@ module.exports.SalesOrderView = (document) => {
 
     return {
         id: document._id,
-        customer: CustomerView(document.customer),
+        customer: document.customer ? CustomerView(document.customer) : null,
         products,
         total: document.total,
         createdAt: document.createdAt,

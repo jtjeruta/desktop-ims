@@ -47,18 +47,23 @@ const SalesOrderPageContent = () => {
         AppContext.isLoading('update-customer')
 
     const onSubmit = async () => {
-        if (!CustomerContext.draftCustomer) return
-        const { id: customerId, ...customerData } =
-            CustomerContext.draftCustomer
+        let customer = null
         const { id: orderId, ...orderData } = SalesOrderContext.draftOrder
 
-        const customerRes = await (customerId
-            ? CustomerContext.updateCustomer(customerId, customerData)
-            : CustomerContext.createCustomer(CustomerContext.draftCustomer))
+        if (CustomerContext.draftCustomer.name !== '') {
+            const { id: customerId, ...customerData } =
+                CustomerContext.draftCustomer
 
-        if (!customerRes[0]) {
-            setCustomersError(customerRes[1].message)
-            return
+            const customerRes = await (customerId
+                ? CustomerContext.updateCustomer(customerId, customerData)
+                : CustomerContext.createCustomer(CustomerContext.draftCustomer))
+
+            if (!customerRes[0]) {
+                setCustomersError(customerRes[1].message)
+                return
+            }
+
+            customer = customerRes[1]
         }
 
         const data: AddEditSalesOrderDoc = {
@@ -70,7 +75,7 @@ const SalesOrderPageContent = () => {
                 warehouse: product.warehouse?.id ?? null,
                 variant: product.variant,
             })),
-            customer: customerRes[1].id,
+            customer: customer?.id ?? null,
             remarks: orderData.remarks ?? '',
             orderDate: orderData.orderDate,
             invoiceNumber: orderData.invoiceNumber,
@@ -101,7 +106,8 @@ const SalesOrderPageContent = () => {
 
                 if (response[0]) {
                     SalesOrderContext.setDraftOrder(response[1])
-                    CustomerContext.setDraftCustomer(response[1].customer)
+                    response[1].customer &&
+                        CustomerContext.setDraftCustomer(response[1].customer)
                 }
             }
 
