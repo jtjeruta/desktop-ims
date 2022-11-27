@@ -16,6 +16,7 @@ export type Props = {
     max?: number
     className?: string
     autoComplete?: boolean
+    disabled?: boolean
 }
 
 const TextField: FC<Props> = (props) => {
@@ -27,7 +28,13 @@ const TextField: FC<Props> = (props) => {
         methods?.formState.errors[props.name]?.message
 
     return (
-        <div className={clsx('relative', props.className)}>
+        <div
+            className={clsx(
+                'relative',
+                props.disabled && 'opacity-60',
+                props.className
+            )}
+        >
             {props.label && (
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                     {props.required ? (
@@ -52,6 +59,7 @@ const TextField: FC<Props> = (props) => {
                 max={props.max}
                 autoComplete={props.autoComplete !== false ? 'on' : 'off'}
                 data-lpignore="true"
+                disabled={props.disabled}
                 {...register}
             />
             {!props.disableHelperText && (

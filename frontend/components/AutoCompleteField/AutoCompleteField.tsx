@@ -7,7 +7,7 @@ import TextField, { Props as TextFieldProps } from '../TextField/TextField'
 type Option = { text: string; value: string | number }
 type Props = TextFieldProps & {
     options: Option[]
-    onClick?: (option: string | number) => void
+    onSelectOption?: (option: string | number) => void
 }
 
 const Wrapper = styled.div`
@@ -34,17 +34,18 @@ const Wrapper = styled.div`
     }
 `
 
-const AutoCompleteWrapper: FC<Props> = (props) => {
+const AutoCompleteField: FC<Props> = (props) => {
     const methods = useFormContext()
     const [search, setSearch] = useState<string>('')
     const [open, setOpen] = useState<boolean>(false)
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
     const filteredOptions = props.options.filter(
-        (option) =>
+        (option, index) =>
             option.text.includes(search) &&
             option.text !== search &&
-            option.text.trim() !== ''
+            option.text.trim() !== '' &&
+            index < 5
     )
 
     // set on change
@@ -59,7 +60,7 @@ const AutoCompleteWrapper: FC<Props> = (props) => {
 
     const handleSelectOption = (option: Option) => {
         methods.setValue(props.name, option.text)
-        props.onClick?.(option.value)
+        props.onSelectOption?.(option.value)
         setOpen(false)
     }
 
@@ -121,4 +122,4 @@ const AutoCompleteWrapper: FC<Props> = (props) => {
     )
 }
 
-export default AutoCompleteWrapper
+export default AutoCompleteField

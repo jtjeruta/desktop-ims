@@ -6,12 +6,12 @@ import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
 import { useCustomerContext } from '../../contexts/CustomerContext/CustomerContext'
 import { AddEditCustomerDoc } from '../../contexts/CustomerContext/types'
-import Select from '../Select/Select'
-import SalesOrderCustomerFormSkeleton from './Skeleton'
+import AutoCompleteField from '../AutoCompleteField/AutoCompleteField'
+import { useSalesOrderContext } from '../../contexts/SalesOrderContext/SalesOrderContext'
 
 const customerSchema = yup
     .object({
-        name: yup.string().required(),
+        name: yup.string(),
         phone: yup.string(),
         email: yup.string().email(),
         address: yup.string(),
@@ -28,6 +28,7 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
     const methods = useForm({ resolver: yupResolver(customerSchema) })
     const AppContext = useAppContext()
     const CustomerContext = useCustomerContext()
+    const SalesOrderContext = useSalesOrderContext()
 
     const isDisabled =
         AppContext.isLoading('get-sales-order') ||
@@ -39,23 +40,27 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
         methods.setValue('phone', CustomerContext.draftCustomer?.phone)
         methods.setValue('email', CustomerContext.draftCustomer?.email)
         methods.setValue('address', CustomerContext.draftCustomer?.address)
-    }, [CustomerContext, methods])
+    }, [SalesOrderContext.selectedOrder])
 
-    // set on change
     useEffect(() => {
         const subscription = methods.watch(async (data, { name }) => {
             props.clearError && props.clearError()
-            if (name === 'id') {
-                // replace draft customer with customer data
+            let customerData = data as AddEditCustomerDoc
+
+            if (name === 'name' && data[name] !== '') {
                 const foundCustomer = CustomerContext.customers?.find(
-                    (customer) => customer.id === data.id
+                    (customer) => customer.name === data.name
                 )
 
-                if (!foundCustomer) return
-                CustomerContext.setDraftCustomer(foundCustomer)
-            } else {
-                if (await methods.trigger())
-                    CustomerContext.setDraftCustomer(data as AddEditCustomerDoc)
+                if (foundCustomer) {
+                    customerData = foundCustomer
+                } else {
+                    customerData = { ...customerData, id: undefined }
+                }
+            }
+
+            if (await methods.trigger()) {
+                CustomerContext.setDraftCustomer(customerData)
             }
         })
         return () => subscription.unsubscribe()
@@ -65,43 +70,39 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
         methods.setError('name', { message: props.error })
     }, [props, methods])
 
-    return isDisabled ? (
-        <SalesOrderCustomerFormSkeleton />
-    ) : (
+    return (
         <FormProvider {...methods}>
             <form>
                 <div className="flex flex-col gap-2">
-                    <Select
-                        label="Customer"
-                        name="id"
-                        options={(CustomerContext.customers || []).map(
-                            (customer) => ({
-                                value: customer.id,
-                                text: customer.name,
-                            })
-                        )}
-                        placeholder="New Customer"
-                        helperText="Create or Update customer"
-                    />
-                    <TextField
+                    <AutoCompleteField
                         label="Name"
                         name="name"
                         helperText="Eg. Customer 1"
+                        options={
+                            CustomerContext.customers?.map((customer) => ({
+                                value: customer.id,
+                                text: customer.name,
+                            })) ?? []
+                        }
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Email"
                         name="email"
                         helperText="Eg. customer1@gmail.com"
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Phone"
                         name="phone"
                         helperText="Eg. 09053454665"
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Address"
                         name="address"
                         helperText="Eg. shop 52, San Francisco Village, lapaz, Iloilo City"
+                        disabled={isDisabled}
                     />
                 </div>
             </form>
