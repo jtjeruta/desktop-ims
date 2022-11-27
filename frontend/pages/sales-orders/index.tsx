@@ -75,6 +75,14 @@ const SalesOrdersPageContent = () => {
                             sort: (order) => order.invoiceNumber ?? '',
                         },
                         {
+                            title: 'Customer',
+                            format: (row) => {
+                                const order = row as SalesOrder
+                                return order.customer.name
+                            },
+                            sort: (order) => order.customer.name,
+                        },
+                        {
                             title: 'Remarks',
                             format: (row) => {
                                 const order = row as SalesOrder
