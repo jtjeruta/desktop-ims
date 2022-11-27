@@ -77,7 +77,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
                         options={(VendorContext.vendors || []).map(
                             (vendor) => ({
                                 value: vendor.id,
-                                text: vendor.name,
+                                text: `${vendor.name} (${vendor.id})`,
                             })
                         )}
                         placeholder="New Vendor"
