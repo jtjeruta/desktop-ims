@@ -245,8 +245,8 @@ describe('Controller: Create purchase order', () => {
         expect(res.body.order.products[0].product.id).to.equal(
             product._id.toString()
         )
-        expect(res.body.order.products[0].totalPrice).to.equal(50)
-        expect(res.body.order.total).to.equal(50)
+        expect(res.body.order.products[0].totalPrice).to.equal(500)
+        expect(res.body.order.total).to.equal(500)
 
         const updatedWarehouse = (
             await WarehousesModule.getWarehouseById(warehouse)
@@ -370,8 +370,8 @@ describe('Controller: Update purchase order', () => {
         expect(res.body.order.products[0].product.id).to.equal(
             product._id.toString()
         )
-        expect(res.body.order.products[0].totalPrice).to.equal(500)
-        expect(res.body.order.total).to.equal(500)
+        expect(res.body.order.products[0].totalPrice).to.equal(2500)
+        expect(res.body.order.total).to.equal(2500)
 
         // warehouse should have its stock diminished
         const updatedWarehouse = (

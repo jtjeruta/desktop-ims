@@ -85,7 +85,7 @@ describe('Controller: Get top product sales by date range', () => {
         expect(res.statusCode).to.equal(200)
         expect(res.body.products.length).to.equal(1)
         expect(res.body.products[0].quantity).to.equal(100)
-        expect(res.body.products[0].total).to.equal(1000)
+        expect(res.body.products[0].total).to.equal(10000)
     })
 
     it('Success: get top products for the last 2 months', async () => {
@@ -106,7 +106,7 @@ describe('Controller: Get top product sales by date range', () => {
         expect(res.statusCode).to.equal(200)
         expect(res.body.products.length).to.equal(1)
         expect(res.body.products[0].quantity).to.equal(200)
-        expect(res.body.products[0].total).to.equal(2000)
+        expect(res.body.products[0].total).to.equal(20000)
     })
 
     it('Success: run as employee', async () => {
@@ -202,7 +202,7 @@ describe('Controller: Get top product purchases by date range', () => {
         expect(res.statusCode).to.equal(200)
         expect(res.body.products.length).to.equal(1)
         expect(res.body.products[0].quantity).to.equal(100)
-        expect(res.body.products[0].total).to.equal(1000)
+        expect(res.body.products[0].total).to.equal(10000)
     })
 
     it('Success: get top products for the last 2 months', async () => {
@@ -223,7 +223,7 @@ describe('Controller: Get top product purchases by date range', () => {
         expect(res.statusCode).to.equal(200)
         expect(res.body.products.length).to.equal(1)
         expect(res.body.products[0].quantity).to.equal(200)
-        expect(res.body.products[0].total).to.equal(2000)
+        expect(res.body.products[0].total).to.equal(20000)
     })
 
     it('Success: run as employee', async () => {

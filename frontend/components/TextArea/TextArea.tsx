@@ -14,6 +14,7 @@ type Props = {
     min?: number
     max?: number
     className?: string
+    disabled?: boolean
 }
 
 const TextArea: FC<Props> = (props) => {
@@ -25,7 +26,13 @@ const TextArea: FC<Props> = (props) => {
         methods?.formState.errors[props.name]?.message
 
     return (
-        <div className={clsx('relative', props.className)}>
+        <div
+            className={clsx(
+                'relative',
+                props.disabled && 'opacity-60',
+                props.className
+            )}
+        >
             {props.label && (
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                     {props.required ? (
@@ -46,6 +53,7 @@ const TextArea: FC<Props> = (props) => {
                 required={props.required}
                 autoFocus={props.autoFocus}
                 rows={5}
+                disabled={props.disabled}
                 {...register}
             />
             {!errorMessage ? (

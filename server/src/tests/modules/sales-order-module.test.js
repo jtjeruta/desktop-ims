@@ -46,10 +46,10 @@ describe('Module: Create Sales Order', () => {
         })
 
         expect(createdSalesOrder[0]).to.equal(201)
-        expect(createdSalesOrder[1].products[0].totalPrice).to.equal(1000)
+        expect(createdSalesOrder[1].products[0].totalPrice).to.equal(10000)
         expect(createdSalesOrder[1].orderDate).to.equal(12345)
         expect(createdSalesOrder[1].invoiceNumber).to.equal('invoice-number-1')
-        expect(createdSalesOrder[1].total).to.equal(1000)
+        expect(createdSalesOrder[1].total).to.equal(10000)
     })
 
     it('Success: with no customer', async () => {
@@ -73,10 +73,10 @@ describe('Module: Create Sales Order', () => {
         })
 
         expect(createdSalesOrder[0]).to.equal(201)
-        expect(createdSalesOrder[1].products[0].totalPrice).to.equal(1000)
+        expect(createdSalesOrder[1].products[0].totalPrice).to.equal(10000)
         expect(createdSalesOrder[1].orderDate).to.equal(12345)
         expect(createdSalesOrder[1].invoiceNumber).to.equal('invoice-number-1')
-        expect(createdSalesOrder[1].total).to.equal(1000)
+        expect(createdSalesOrder[1].total).to.equal(10000)
     })
 
     it('Fail: using invalid data', async () => {
@@ -273,7 +273,7 @@ describe('Module: Update SalesOrder', () => {
         expect(updatedSalesOrder[1].invoiceNumber).to.equal(
             'new-invoice-number-1'
         )
-        expect(updatedSalesOrder[1].total).to.equal(5000)
+        expect(updatedSalesOrder[1].total).to.equal(30000)
     })
 
     it('Fail: using invalid data', async () => {

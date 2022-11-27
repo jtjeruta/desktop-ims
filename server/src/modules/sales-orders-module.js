@@ -148,7 +148,9 @@ const calculateProductTotals = (products = []) => {
     const [total, newProducts] = products.reduce(
         (acc, product) => {
             const totalPrice =
-                (product.quantity || 0) * (product.itemPrice || 0)
+                (product.quantity || 0) *
+                (product.variant?.quantity ?? 1) *
+                (product.itemPrice || 0)
             acc[0] = acc[0] + totalPrice
             acc[1] = [...acc[1], { ...product, totalPrice }]
             return acc

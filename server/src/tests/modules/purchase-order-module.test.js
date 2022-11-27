@@ -46,10 +46,10 @@ describe('Module: Create Purchase Order', () => {
             })
 
         expect(createdPurchaseOrder[0]).to.equal(201)
-        expect(createdPurchaseOrder[1].products[0].totalPrice).to.equal(1000)
+        expect(createdPurchaseOrder[1].products[0].totalPrice).to.equal(10000)
         expect(createdPurchaseOrder[1].orderDate).to.equal(12345)
         expect(createdPurchaseOrder[1].invoiceNumber).to.equal('invoice-number')
-        expect(createdPurchaseOrder[1].total).to.equal(1000)
+        expect(createdPurchaseOrder[1].total).to.equal(10000)
     })
 
     it('Fail: using invalid data', async () => {
@@ -242,7 +242,7 @@ describe('Module: Update PurchaseOrder', () => {
         expect(updatedPurchaseOrder[1].invoiceNumber).to.equal(
             'new-invoice-number'
         )
-        expect(updatedPurchaseOrder[1].total).to.equal(5000)
+        expect(updatedPurchaseOrder[1].total).to.equal(50000)
     })
 
     it('Fail: using invalid data', async () => {

@@ -248,8 +248,8 @@ describe('Controller: Create sales order', () => {
         expect(res.body.order.products[0].product.id).to.equal(
             product._id.toString()
         )
-        expect(res.body.order.products[0].totalPrice).to.equal(50)
-        expect(res.body.order.total).to.equal(50)
+        expect(res.body.order.products[0].totalPrice).to.equal(500)
+        expect(res.body.order.total).to.equal(500)
 
         const updatedWarehouse = (
             await WarehousesModule.getWarehouseById(warehouse)
@@ -372,8 +372,8 @@ describe('Controller: Update sales order', () => {
         expect(res.body.order.products[0].product.id).to.equal(
             product._id.toString()
         )
-        expect(res.body.order.products[0].totalPrice).to.equal(1000)
-        expect(res.body.order.total).to.equal(1000)
+        expect(res.body.order.products[0].totalPrice).to.equal(5000)
+        expect(res.body.order.total).to.equal(5000)
 
         const updatedWarehouse = (
             await WarehousesModule.getWarehouseById(warehouse)

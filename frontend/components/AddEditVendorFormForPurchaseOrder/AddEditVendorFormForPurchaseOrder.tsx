@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import TextField from '../TextField/TextField'
 import { useVendorContext } from '../../contexts/VendorContext/VendorContext'
-import AddEditVendorFormSkeleton from './Skeleton'
 import { AddEditVendorDoc } from '../../contexts/VendorContext/types'
 import Select from '../Select/Select'
 import TextArea from '../TextArea/TextArea'
@@ -68,9 +67,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
         methods.setError('name', { message: props.error })
     }, [props, methods])
 
-    return isDisabled ? (
-        <AddEditVendorFormSkeleton />
-    ) : (
+    return (
         <FormProvider {...methods}>
             <form>
                 <div className="flex flex-col gap-2">
@@ -85,28 +82,37 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
                         )}
                         placeholder="New Vendor"
                         helperText="Create or Update vendor"
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Name"
                         name="name"
                         helperText="Eg. Vendor 1"
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Email"
                         name="email"
                         helperText="Eg. vendor1@gmail.com"
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Phone"
                         name="phone"
                         helperText="Eg. 09053454665"
+                        disabled={isDisabled}
                     />
                     <TextField
                         label="Address"
                         name="address"
                         helperText="Eg. shop 52, San Francisco Village, lapaz, Iloilo City"
+                        disabled={isDisabled}
                     />
-                    <TextArea name="remarks" label="Remarks" />
+                    <TextArea
+                        name="remarks"
+                        label="Remarks"
+                        disabled={isDisabled}
+                    />
                 </div>
             </form>
         </FormProvider>

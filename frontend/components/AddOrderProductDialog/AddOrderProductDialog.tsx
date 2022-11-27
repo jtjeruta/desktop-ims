@@ -62,7 +62,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             product,
             quantity: data.quantity,
             itemPrice: data.itemPrice,
-            totalPrice: data.quantity * data.itemPrice,
+            totalPrice: data.quantity * variant.quantity * data.itemPrice,
             warehouse: warehouse ?? null,
             variant,
         }

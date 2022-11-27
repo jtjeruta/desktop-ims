@@ -52,7 +52,7 @@ export const routes: Route[] = [
     },
     {
         pathname: '/sales-orders/[orderId]',
-        access: 'everyone',
+        access: 'admin',
     },
     {
         pathname: '/customers/[customerId]',

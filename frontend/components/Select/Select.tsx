@@ -11,6 +11,7 @@ type Props = {
     name: string
     options: { text?: string; value: string | number }[]
     className?: string
+    disabled?: boolean
 }
 
 const Select: FC<Props> = (props) => {
@@ -25,7 +26,13 @@ const Select: FC<Props> = (props) => {
         methods?.formState.errors[props.name]?.message
 
     return (
-        <div className={clsx('relative', props.className)}>
+        <div
+            className={clsx(
+                'relative',
+                props.disabled && 'opacity-60',
+                props.className
+            )}
+        >
             {props.label && (
                 <label className="block mb-2 text-sm font-medium text-gray-900">
                     {props.required ? (
@@ -43,6 +50,7 @@ const Select: FC<Props> = (props) => {
                     errorMessage && 'border-red-300'
                 )}
                 required={props.required}
+                disabled={props.disabled}
                 {...register}
             >
                 {!props.required && (
