@@ -113,6 +113,8 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             const foundProduct = ProductContext.products?.find(
                 (product) => product.id === id
             )
+            methods.setValue('warehouse', 'store')
+            methods.setValue('variant', foundProduct?.variants[0].id)
             ProductContext.setProduct(foundProduct || null)
         },
         [ProductContext]
