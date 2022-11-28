@@ -4,7 +4,6 @@ import { IconType } from 'react-icons'
 import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
 import { FaBoxes, FaStore, FaTags, FaUsers } from 'react-icons/fa'
-import { BsPeopleFill } from 'react-icons/bs'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 
 type PageGroupType = {
@@ -65,13 +64,6 @@ const Sidebar = () => {
             roles: ['admin'],
             icon: FaStore,
             onClick: () => router.push('/vendors'),
-        },
-        {
-            text: 'Customers',
-            active: router.asPath === '/customers',
-            roles: ['admin'],
-            icon: BsPeopleFill,
-            onClick: () => router.push('/customers'),
         },
     ]
 

@@ -55,10 +55,6 @@ export const routes: Route[] = [
         access: 'admin',
     },
     {
-        pathname: '/customers/[customerId]',
-        access: 'admin',
-    },
-    {
         pathname: '/dashboard',
         access: 'admin',
     },
