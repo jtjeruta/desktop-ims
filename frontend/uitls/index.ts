@@ -14,3 +14,7 @@ export const formatCurrency = (amount: number, currency = 'PHP') => {
         currency,
     }).format(amount)
 }
+
+export const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}

@@ -15,7 +15,7 @@ import AddProductDialog from '../../components/AddProductDialog/AddProductDialog
 import Switch from '../../components/Switch/Switch'
 import { formatDate } from '../../uitls/date-utils'
 import { getProductWarehouseTotal } from '../../uitls/product-utils'
-import { formatCurrency } from '../../uitls'
+import { escapeRegExp, formatCurrency } from '../../uitls'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -28,7 +28,7 @@ const InventoryPageContent = () => {
 
     const filteredProducts = (ProductContext.products || []).filter(
         (product) => {
-            const regex = new RegExp(search, 'igm')
+            const regex = new RegExp(escapeRegExp(search), 'igm')
             return [
                 product.name,
                 product.company,

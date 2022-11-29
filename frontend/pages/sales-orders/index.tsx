@@ -11,6 +11,7 @@ import {
     useSalesOrderContext,
 } from '../../contexts/SalesOrderContext/SalesOrderContext'
 import { SalesOrder } from '../../contexts/SalesOrderContext/types'
+import { escapeRegExp } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
 const SalesOrdersPageContent = () => {
@@ -20,7 +21,7 @@ const SalesOrdersPageContent = () => {
     const [search, setSearch] = useState<string>('')
 
     const filteredOrders = (SalesOrderContext.orders || []).filter((order) => {
-        const regex = new RegExp(search, 'igm')
+        const regex = new RegExp(escapeRegExp(search), 'igm')
         return [
             formatDate(order.createdAt),
             order.invoiceNumber,

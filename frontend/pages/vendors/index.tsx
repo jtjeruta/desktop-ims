@@ -11,6 +11,7 @@ import {
 } from '../../contexts/VendorContext/VendorContext'
 import { Vendor } from '../../contexts/VendorContext/types'
 import AddEditVendorDialog from '../../components/AddEditVendorDialog/AddEditVendorDialog'
+import { escapeRegExp } from '../../uitls'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
@@ -18,7 +19,7 @@ const VendorsPageContent = () => {
     const [search, setSearch] = useState<string>('')
 
     const filteredVendors = (VendorContext.vendors || []).filter((vendor) => {
-        const regex = new RegExp(search, 'igm')
+        const regex = new RegExp(escapeRegExp(search), 'igm')
         return [
             vendor.name,
             vendor.email,

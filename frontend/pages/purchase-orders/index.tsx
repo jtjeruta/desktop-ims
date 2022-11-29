@@ -11,6 +11,7 @@ import {
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { PurchaseOrder } from '../../contexts/PurchaseOrderContext/types'
+import { escapeRegExp } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
 const PurchaseOrdersPageContent = () => {
@@ -20,7 +21,7 @@ const PurchaseOrdersPageContent = () => {
     const [search, setSearch] = useState<string>('')
 
     const filteredOrders = (PurOrdContext.orders || []).filter((order) => {
-        const regex = new RegExp(search, 'igm')
+        const regex = new RegExp(escapeRegExp(search), 'igm')
         return [
             formatDate(order.createdAt),
             order.invoiceNumber,

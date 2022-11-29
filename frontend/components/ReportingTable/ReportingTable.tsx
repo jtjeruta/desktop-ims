@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useStatContext } from '../../contexts/StatsContext/StatsContext'
 import { ProductReport } from '../../contexts/StatsContext/types'
+import { escapeRegExp } from '../../uitls'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
 
@@ -12,7 +13,7 @@ const ReportingTable = () => {
 
     const filteredReports = (StatContext.productReports || []).filter(
         (report) => {
-            const regex = new RegExp(StatContext.search, 'igm')
+            const regex = new RegExp(escapeRegExp(StatContext.search), 'igm')
             return [
                 report.product.name,
                 report.variant.name,
