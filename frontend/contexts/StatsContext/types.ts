@@ -1,44 +1,33 @@
-import { Product } from '../ProductContext/types'
+import { Product, Variant } from '../ProductContext/types'
 
-export type ProductSale = {
+export type ProductReport = {
     id: string
     product: Product
-    variant: {
-        name: string
-        quantity: number
-    }
-    quantity: number
-    total: number
-}
-
-export type ProductPurchase = {
-    id: string
-    product: Product
-    variant: {
-        name: string
-        quantity: number
-    }
-    quantity: number
-    total: number
+    variant: Variant
+    stock: number
+    totalPur: number
+    purQty: number
+    totalSales: number
+    salesQty: number
+    aveSales: number
+    avePur: number
 }
 
 export type Context = {
+    productReports: ProductReport[] | null
     dateRange: { startDate: number; endDate: number }
     setDateRange: React.Dispatch<
         React.SetStateAction<{ startDate: number; endDate: number }>
     >
-    topProductSales: ProductSale[] | null
-    topProductPurchases: ProductPurchase[] | null
     totalProductSales: number | null
     totalProductPurchases: number | null
     averageSales: number | null
     averagePurchases: number | null
-    listTopProductSales: () => Promise<[true, ProductSale[]] | [false, string]>
-    listTopProductPurchases: () => Promise<
-        [true, ProductPurchase[]] | [false, string]
-    >
     getTotalProductSales: () => Promise<[true, number] | [false, string]>
     getTotalProductPurchases: () => Promise<[true, number] | [false, string]>
     getAverageSales: () => Promise<[true, number] | [false, string]>
     getAveragePurchases: () => Promise<[true, number] | [false, string]>
+    listProductReports: () => Promise<[true, ProductReport[]] | [false, string]>
+    search: string
+    setSearch: React.Dispatch<React.SetStateAction<string>>
 }

@@ -3,16 +3,16 @@ import SingleStatCounter, {
 } from '../../components/SingleStatCounter/SingleStatCounter'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { FaShoppingCart, FaSitemap, FaStore, FaUsers } from 'react-icons/fa'
-import TopSalesCard from '../../components/TopSalesCard/TopSalesCard'
-import TopPurchasesCard from '../../components/TopPurchasesCard/TopPurchasesCard'
+import ReportingTable from '../../components/ReportingTable/ReportingTable'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
 import {
     StatContextProvider,
     useStatContext,
 } from '../../contexts/StatsContext/StatsContext'
 import { useEffect } from 'react'
+import SearchBar from '../../components/SearchBar/SearchBar'
 
-const DashboardContent = () => {
+const ReportingContent = () => {
     const StatContext = useStatContext()
     const singleStatCounters: SingleStatCounterType[] = [
         {
@@ -46,17 +46,20 @@ const DashboardContent = () => {
     ]
 
     useEffect(() => {
-        StatContext.listTopProductSales()
-        StatContext.listTopProductPurchases()
         StatContext.getTotalProductSales()
         StatContext.getTotalProductPurchases()
         StatContext.getAverageSales()
         StatContext.getAveragePurchases()
+        StatContext.listProductReports()
     }, [StatContext.dateRange])
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6">
+            <div className="flex justify-end mb-6 gap-3">
+                <SearchBar
+                    onSearch={StatContext.setSearch}
+                    inputClass="!text-base h-full !bg-white"
+                />
                 <DateRangePicker
                     onChange={(start, end) =>
                         StatContext.setDateRange({
@@ -74,23 +77,16 @@ const DashboardContent = () => {
                         <SingleStatCounter key={stat.title} {...stat} />
                     ))}
                 </div>
-                <div className="flex gap-6 flex-wrap">
-                    <span className="grow">
-                        <TopSalesCard />
-                    </span>
-                    <span className="grow">
-                        <TopPurchasesCard />
-                    </span>
-                </div>
+                <ReportingTable />
             </div>
         </UserLayout>
     )
 }
 
-const Dashboard = () => (
+const Reporting = () => (
     <StatContextProvider>
-        <DashboardContent />
+        <ReportingContent />
     </StatContextProvider>
 )
 
-export default Dashboard
+export default Reporting

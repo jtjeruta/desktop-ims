@@ -25,10 +25,10 @@ const Sidebar = () => {
 
     const mainPages: PageType[] = [
         {
-            text: 'Dashboard',
-            active: router.asPath === '/dashboard',
+            text: 'Reporting',
+            active: router.asPath === '/reporting',
             roles: ['admin'],
-            onClick: () => router.push('/dashboard'),
+            onClick: () => router.push('/reporting'),
             icon: RiDashboardLine,
         },
         {

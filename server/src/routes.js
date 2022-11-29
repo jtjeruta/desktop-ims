@@ -127,16 +127,6 @@ router.post(
 
 // stats
 router.get(
-    '/api/v1/stats/top-product-sales',
-    isAdmin,
-    StatController.listTopProductSales
-)
-router.get(
-    '/api/v1/stats/top-product-purchases',
-    isAdmin,
-    StatController.listTopProductPurchases
-)
-router.get(
     '/api/v1/stats/total-product-sales',
     isAdmin,
     StatController.getTotalProductSales
@@ -155,5 +145,10 @@ router.get(
     '/api/v1/stats/average-purchases',
     isAdmin,
     StatController.getAveragePurchaseOrders
+)
+router.get(
+    '/api/v1/stats/product-reports',
+    isAdmin,
+    StatController.listProductReports
 )
 module.exports = router

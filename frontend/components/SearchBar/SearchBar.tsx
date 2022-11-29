@@ -1,9 +1,11 @@
+import clsx from 'clsx'
 import { FC, FormEventHandler } from 'react'
 import { FaSearch } from 'react-icons/fa'
 
 type Props = {
     onSearch: (value: string) => void
     placeholder?: string
+    inputClass?: string
 }
 
 let timeout: NodeJS.Timeout
@@ -23,7 +25,10 @@ const SearchBar: FC<Props> = (props) => {
             <input
                 type="text"
                 id="voice-search"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-1 outline-none"
+                className={clsx(
+                    'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-1 outline-none',
+                    props.inputClass
+                )}
                 placeholder={props.placeholder || 'Search...'}
                 onInput={onSearch}
             />

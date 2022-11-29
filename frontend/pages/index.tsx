@@ -12,7 +12,7 @@ const Home = () => {
         } else if (AuthContext.user.role === 'employee') {
             router.replace('/login')
         } else {
-            router.replace('/dashboard')
+            router.replace('/reporting')
         }
     }, [AuthContext.user, router])
 
