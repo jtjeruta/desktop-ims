@@ -101,59 +101,11 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
-    const getAverageSales = async () => {
-        const key = 'get-average-sales'
-
-        AppContext.addLoading(key)
-        const response = await StatsAPI.getAverageSales(
-            dateRange.startDate,
-            dateRange.endDate
-        )
-        AppContext.removeLoading(key)
-
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
-
-        setAverageSales(response[1])
-        return response
-    }
-
-    const getAveragePurchases = async () => {
-        const key = 'get-average-purchases'
-
-        AppContext.addLoading(key)
-        const response = await StatsAPI.getAveragePurchases(
-            dateRange.startDate,
-            dateRange.endDate
-        )
-        AppContext.removeLoading(key)
-
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
-
-        setAveragePurchases(response[1])
-        return response
-    }
-
     const value: Types.Context = useMemo(
         () => ({
             averagePurchases,
             averageSales,
             dateRange,
-            getAveragePurchases,
-            getAverageSales,
             getTotalProductPurchases,
             getTotalProductSales,
             listProductReports,

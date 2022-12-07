@@ -137,16 +137,6 @@ router.get(
     StatController.getTotalProductPurchases
 )
 router.get(
-    '/api/v1/stats/average-sales',
-    isAdmin,
-    StatController.getAverageSalesOrders
-)
-router.get(
-    '/api/v1/stats/average-purchases',
-    isAdmin,
-    StatController.getAveragePurchaseOrders
-)
-router.get(
     '/api/v1/stats/product-reports',
     isAdmin,
     StatController.listProductReports

@@ -20,25 +20,6 @@ export const getTotalProductPurchases = (startDate: number, endDate: number) =>
         ])
         .catch((err): [false, string] => [false, err.response?.message])
 
-export const getAverageSales = (startDate: number, endDate: number) =>
-    Axios()
-        .get(
-            `/api/v1/stats/average-sales?startDate=${startDate}&endDate=${endDate}`
-        )
-        .then((response): [true, number] => [true, response.data.averageSales])
-        .catch((err): [false, string] => [false, err.response?.message])
-
-export const getAveragePurchases = (startDate: number, endDate: number) =>
-    Axios()
-        .get(
-            `/api/v1/stats/average-purchases?startDate=${startDate}&endDate=${endDate}`
-        )
-        .then((response): [true, number] => [
-            true,
-            response.data.averagePurchases,
-        ])
-        .catch((err): [false, string] => [false, err.response?.message])
-
 export const listProductReports = (startDate: number, endDate: number) =>
     Axios()
         .get(

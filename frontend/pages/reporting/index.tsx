@@ -2,7 +2,7 @@ import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
 import UserLayout from '../../components/UserLayout/UserLayout'
-import { FaShoppingCart, FaSitemap, FaStore, FaUsers } from 'react-icons/fa'
+import { FaShoppingCart, FaStore } from 'react-icons/fa'
 import ReportingTable from '../../components/ReportingTable/ReportingTable'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
 import {
@@ -29,27 +29,11 @@ const ReportingContent = () => {
             icon: FaStore,
             iconClass: 'text-red-700',
         },
-        {
-            title: 'Ave. Sales Order ',
-            total: StatContext.averageSales ?? 0,
-            loading: 'get-average-sales',
-            icon: FaSitemap,
-            iconClass: 'text-yellow-600',
-        },
-        {
-            title: 'Ave. Purchase Order',
-            total: StatContext.averagePurchases ?? 0,
-            loading: 'get-average-purchases',
-            icon: FaUsers,
-            iconClass: 'text-green-700',
-        },
     ]
 
     useEffect(() => {
         StatContext.getTotalProductSales()
         StatContext.getTotalProductPurchases()
-        StatContext.getAverageSales()
-        StatContext.getAveragePurchases()
         StatContext.listProductReports()
     }, [StatContext.dateRange])
 
