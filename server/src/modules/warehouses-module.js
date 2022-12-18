@@ -39,14 +39,70 @@ module.exports.updateWarehouse = async (id, data, session = null) => {
     }
 }
 
-module.exports.getWarehouseById = async (id) => {
+module.exports.updateWarehouseProduct = async (
+    warehouseId,
+    productId,
+    stock,
+    session = null
+) => {
+    let warehouse = null
+
+    try {
+        warehouse = await WarehouseModel.findById(warehouseId).session(session)
+    } catch (err) {
+        console.error('Failed to get warehouse')
+        return getMongoError(err)
+    }
+
+    let wProducts = warehouse?.products ?? []
+    if (!wProducts.some((wp) => wp.source.equals(productId))) {
+        wProducts = [...wProducts, { source: productId, stock }]
+    } else {
+        wProducts = wProducts.map((wp) => {
+            if (wp.source.equals(productId)) {
+                wp.stock = stock
+            }
+            return wp
+        })
+    }
+
+    try {
+        await WarehouseModel.updateOne(
+            { _id: warehouseId },
+            { $set: { products: wProducts } },
+            { new: true, runValidators: true, session }
+        )
+    } catch (err) {
+        console.error('Failed to update warehouse product')
+        return getMongoError(err)
+    }
+
+    return this.getWarehouseById(warehouseId)
+}
+
+module.exports.getWarehouseById = async (id, session = null) => {
     try {
         const warehouse = await WarehouseModel.findById(id)
+            .populate('products.source')
+            .session(session)
 
         if (!warehouse) return [404, { message: 'Warehouse not found.' }]
         return [200, warehouse]
     } catch (error) {
         console.error('Failed to get warehouse by id')
+        return getMongoError(error)
+    }
+}
+
+module.exports.listWarehouses = async (query = {}, session = null) => {
+    try {
+        const warehouses = await WarehouseModel.find(query)
+            .populate('products.source')
+            .session(session)
+
+        return [200, warehouses]
+    } catch (error) {
+        console.error('Failed to get warehouses')
         return getMongoError(error)
     }
 }

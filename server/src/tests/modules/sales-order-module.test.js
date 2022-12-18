@@ -18,10 +18,7 @@ describe('Module: Create Sales Order', () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
         warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
     })
 
@@ -102,10 +99,7 @@ describe('Module: List SalesOrders', () => {
             await CustomersModule.createCustomer(testdata.customer1)
         )[1]
         const warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
 
         await SalesOrdersModule.createSalesOrder({
@@ -150,10 +144,7 @@ describe('Module: Get SalesOrder by id', () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
         warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
 
         salesOrder = (
@@ -216,10 +207,7 @@ describe('Module: Update SalesOrder', () => {
         product2 = (await ProductsModule.createProduct(testdata.product2))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
         warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product1._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
 
         salesOrder = (
@@ -300,14 +288,8 @@ describe('Module: Apply Product Stock Changes', () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
         warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
-        await ProductsModule.updateProduct(product._id, {
-            warehouses: [warehouse._id],
-        })
     })
 
     it('Success: add stock changes to store', async () => {
@@ -344,7 +326,7 @@ describe('Module: Apply Product Stock Changes', () => {
         const alteredProduct = (await ProductsModule.getProductById(product))[1]
 
         expect(response[0]).to.equal(200)
-        expect(alteredProduct.storeQty).to.equal(1000)
+        expect(alteredProduct.stock).to.equal(1000)
     })
 
     it('Success: add stock changes to warehouse', async () => {
@@ -375,8 +357,12 @@ describe('Module: Apply Product Stock Changes', () => {
 
         await SalesOrdersModule.applyProductStockChanges('add', salesOrder)
         const alteredProduct = (await ProductsModule.getProductById(product))[1]
-        expect(alteredProduct.storeQty).to.equal(0)
-        expect(alteredProduct.warehouses[0].quantity).to.equal(1010)
+        expect(alteredProduct.stock).to.equal(0)
+
+        const alteredWarehouse = (
+            await WarehousesModule.getWarehouseById(warehouse)
+        )[1]
+        expect(alteredWarehouse.products[0].stock).to.equal(1000)
     })
 
     it('Success: subtract stock changes from store', async () => {
@@ -413,7 +399,7 @@ describe('Module: Apply Product Stock Changes', () => {
         const alteredProduct = (await ProductsModule.getProductById(product))[1]
 
         expect(response[0]).to.equal(200)
-        expect(alteredProduct.storeQty).to.equal(-1000)
+        expect(alteredProduct.stock).to.equal(-1000)
     })
 
     it('Success: subtract stock changes from warehouse', async () => {
@@ -444,7 +430,11 @@ describe('Module: Apply Product Stock Changes', () => {
 
         await SalesOrdersModule.applyProductStockChanges('subtract', salesOrder)
         const alteredProduct = (await ProductsModule.getProductById(product))[1]
-        expect(alteredProduct.storeQty).to.equal(0)
-        expect(alteredProduct.warehouses[0].quantity).to.equal(-990)
+        expect(alteredProduct.stock).to.equal(0)
+
+        const alteredWarehouse = (
+            await WarehousesModule.getWarehouseById(warehouse)
+        )[1]
+        expect(alteredWarehouse.products[0].stock).to.equal(-1000)
     })
 })

@@ -11,7 +11,7 @@ export type Product = {
     createdAt: number
     sku: string
     published: boolean
-    storeQty: number
+    stock: number
     variants: Variant[]
     warehouses: Warehouse[]
 }
@@ -34,7 +34,7 @@ export type CreateProductDoc = {
     category: string
     subCategory: string
     price: number
-    storeQty: number
+    stock: number
 }
 
 export type UpdateProductDoc = {

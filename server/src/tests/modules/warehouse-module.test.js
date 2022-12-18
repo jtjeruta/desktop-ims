@@ -5,7 +5,7 @@ const ProductsModule = require('../../modules/products-module')
 const setup = require('../setup')
 const testdata = require('../testdata')
 
-describe('Create Warehouse', () => {
+describe('Modules: Create Warehouse', () => {
     const createdProducts = {}
     setup()
     beforeEach(async () => {
@@ -16,10 +16,9 @@ describe('Create Warehouse', () => {
     })
 
     it('Success: create warehouse using correct data', async () => {
-        const createdWarehouse = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: createdProducts.product1._id,
-        })
+        const createdWarehouse = await WarehousesModule.createWarehouse(
+            testdata.warehouse1
+        )
 
         expect(createdWarehouse[0]).to.equal(201)
         expect(createdWarehouse[1].name).to.equal(testdata.warehouse1.name)
@@ -29,62 +28,36 @@ describe('Create Warehouse', () => {
     })
 
     it('Fail: create warehouse using invalid data', async () => {
-        const createdWarehouse = await WarehousesModule.createWarehouse({
-            quantity: -2,
-        })
+        const createdWarehouse = await WarehousesModule.createWarehouse({})
 
         expect(createdWarehouse[0]).to.equal(400)
         expect(createdWarehouse[1].errors.name.message).to.equal(
             'Path `name` is required.'
         )
-        expect(createdWarehouse[1].errors.product.message).to.equal(
-            'Path `product` is required.'
-        )
     })
 
     it('Fail: create warehouse using duplicate name', async () => {
-        await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: createdProducts.product1._id,
-        })
+        await WarehousesModule.createWarehouse(testdata.warehouse1)
 
-        const createdWarehouse = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: createdProducts.product1._id,
-        })
+        const createdWarehouse = await WarehousesModule.createWarehouse(
+            testdata.warehouse1
+        )
 
         expect(createdWarehouse[0]).to.equal(409)
         expect(createdWarehouse[1].message).to.equal('Duplicate found.')
     })
-
-    it('Success: create warehouse using duplicate name but different product', async () => {
-        await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: createdProducts.product1._id,
-        })
-
-        const createdWarehouse = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: createdProducts.product2._id,
-        })
-
-        expect(createdWarehouse[0]).to.equal(201)
-    })
 })
 
-describe('Update Warehouse', () => {
+describe('Modules: Update Warehouse', () => {
     const createdWarehouses = {}
     setup()
     beforeEach(async () => {
-        const product = await ProductsModule.createProduct(testdata.product1)
-        const warehouse1 = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: product[1]._id,
-        })
-        const warehouse2 = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse2,
-            product: product[1]._id,
-        })
+        const warehouse1 = await WarehousesModule.createWarehouse(
+            testdata.warehouse1
+        )
+        const warehouse2 = await WarehousesModule.createWarehouse(
+            testdata.warehouse2
+        )
         createdWarehouses.warehouse1 = warehouse1[1]
         createdWarehouses.warehouse2 = warehouse2[1]
     })
@@ -92,15 +65,11 @@ describe('Update Warehouse', () => {
     it('Success: update warehouse using correct data', async () => {
         const createdWarehouse = await WarehousesModule.updateWarehouse(
             createdWarehouses.warehouse1._id,
-            {
-                name: 'Updated Name',
-                quantity: 100,
-            }
+            { name: 'Updated Name' }
         )
 
         expect(createdWarehouse[0]).to.equal(200)
         expect(createdWarehouse[1].name).to.equal('Updated Name')
-        expect(createdWarehouse[1].quantity).to.equal(100)
     })
 
     it('Fail: update warehouse using invalid data', async () => {
@@ -131,15 +100,13 @@ describe('Update Warehouse', () => {
     })
 })
 
-describe('Delete Warehouse By ID', () => {
+describe('Modules: sDelete Warehouse By ID', () => {
     let createdWarehouse = null
     setup()
     beforeEach(async () => {
-        const product1 = await ProductsModule.createProduct(testdata.product1)
-        const warehouse1 = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: product1[1]._id,
-        })
+        const warehouse1 = await WarehousesModule.createWarehouse(
+            testdata.warehouse1
+        )
         createdWarehouse = warehouse1[1]
     })
 
@@ -151,15 +118,13 @@ describe('Delete Warehouse By ID', () => {
     })
 })
 
-describe('Get Warehouse By ID', () => {
+describe('Modules: Get Warehouse By ID', () => {
     let createdWarehouse = null
     setup()
     beforeEach(async () => {
-        const product1 = await ProductsModule.createProduct(testdata.product1)
-        const warehouse1 = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse1,
-            product: product1[1]._id,
-        })
+        const warehouse1 = await WarehousesModule.createWarehouse(
+            testdata.warehouse1
+        )
         createdWarehouse = warehouse1[1]
     })
 
@@ -175,5 +140,54 @@ describe('Get Warehouse By ID', () => {
     it('Fail: get warehouse using incorrect id', async () => {
         const res = await WarehousesModule.getWarehouseById(null)
         expect(res).to.deep.equal([404, { message: 'Warehouse not found.' }])
+    })
+})
+
+describe('Modules: Update Warehouse Product', () => {
+    const created = {}
+
+    setup()
+    beforeEach(async () => {
+        const product1 = (
+            await ProductsModule.createProduct(testdata.product1)
+        )[1]
+        const product2 = (
+            await ProductsModule.createProduct(testdata.product2)
+        )[1]
+        const warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                products: [{ source: product1._id, stock: 0 }],
+            })
+        )[1]
+
+        created.product1 = product1
+        created.product2 = product2
+        created.warehouse = warehouse
+    })
+
+    it('Success: set stock of pre-existing product to 10', async () => {
+        const res = await WarehousesModule.updateWarehouseProduct(
+            created.warehouse._id,
+            created.product1._id,
+            10
+        )
+
+        expect(res[0]).to.equal(200)
+        expect(res[1].products[0].stock).to.equal(10)
+        expect(res[1].products[0].source._id.toString()).to.equal(
+            created.product1._id.toString()
+        )
+    })
+
+    it('Success: add product and set stock to 10', async () => {
+        const res = await WarehousesModule.updateWarehouseProduct(
+            created.warehouse._id,
+            created.product2._id,
+            10
+        )
+        expect(res[0]).to.equal(200)
+        expect(res[1].products.length).to.equal(2)
+        expect(res[1].products[1].stock).to.equal(10)
     })
 })

@@ -29,10 +29,7 @@ describe('Controller: List sales orders', () => {
             await CustomersModule.createCustomer(testdata.customer1)
         )[1]
         const warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
 
         await SalesOrdersModule.createSalesOrder({
@@ -129,10 +126,7 @@ describe('Controller: Get sales order', () => {
             await CustomersModule.createCustomer(testdata.customer1)
         )[1]
         const warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
 
         salesOrder = (
@@ -209,10 +203,7 @@ describe('Controller: Create sales order', () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
         warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
     })
 
@@ -255,7 +246,7 @@ describe('Controller: Create sales order', () => {
             await WarehousesModule.getWarehouseById(warehouse)
         )[1]
 
-        expect(updatedWarehouse.quantity).to.equal(-40)
+        expect(updatedWarehouse.products[0].stock).to.equal(-50)
     })
 
     it('Fail: run as admin with incorrect data', async () => {
@@ -313,10 +304,7 @@ describe('Controller: Update sales order', () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
         customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
         warehouse = (
-            await WarehousesModule.createWarehouse({
-                ...testdata.warehouse1,
-                product: product._id,
-            })
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
         )[1]
 
         salesOrder = (
@@ -379,7 +367,7 @@ describe('Controller: Update sales order', () => {
             await WarehousesModule.getWarehouseById(warehouse)
         )[1]
 
-        expect(updatedWarehouse.quantity).to.equal(-490)
+        expect(updatedWarehouse.products[0].stock).to.equal(500)
     })
 
     it('Fail: run as admin with incorrect data', async () => {

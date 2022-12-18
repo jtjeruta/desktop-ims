@@ -142,41 +142,35 @@ describe('Controller: Create product', () => {
         await UsersModule.createUser(testdata.employee1)
     })
 
-    it('Success: run as admin with correct data', (done) => {
-        login({
+    it('Success: run as admin with correct data', async () => {
+        const { token } = await login({
             email: testdata.admin1.email,
             password: testdata.admin1.password,
-        }).then(({ token }) => {
-            request(app)
-                .post('/api/v1/products')
-                .send(testdata.product1)
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(201)
-                    expect(
-                        Object.keys(res.body.product)
-                    ).to.deep.equalInAnyOrder([
-                        'name',
-                        'price',
-                        'published',
-                        'sku',
-                        'storeQty',
-                        'subCategory',
-                        'variants',
-                        'warehouses',
-                        'aveUnitCost',
-                        'company',
-                        'category',
-                        'createdAt',
-                        'id',
-                        'modifiedAt',
-                    ])
-                    expect(res.body.product.aveUnitCost).to.be.null
-                    expect(res.body.product.published).to.be.false
-                    done()
-                })
-                .catch((err) => done(err))
         })
+
+        const res = await request(app)
+            .post('/api/v1/products')
+            .send(testdata.product1)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(201)
+        expect(Object.keys(res.body.product)).to.deep.equalInAnyOrder([
+            'name',
+            'price',
+            'published',
+            'sku',
+            'stock',
+            'subCategory',
+            'variants',
+            'aveUnitCost',
+            'company',
+            'category',
+            'createdAt',
+            'id',
+            'modifiedAt',
+        ])
+        expect(res.body.product.aveUnitCost).to.be.null
+        expect(res.body.product.published).to.be.false
     })
 
     it('Success: default variant is created for product', async () => {
@@ -207,7 +201,7 @@ describe('Controller: Create product', () => {
                     expect(res.statusCode).to.equal(400)
                     expect(
                         Object.keys(res.body.errors)
-                    ).to.deep.equalInAnyOrder(['name', 'price', 'storeQty'])
+                    ).to.deep.equalInAnyOrder(['name', 'price', 'stock'])
                     done()
                 })
                 .catch((err) => done(err))
@@ -390,21 +384,18 @@ describe('Controller: Transfer stock', () => {
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
         await UsersModule.createUser(testdata.employee1)
+
         const product1 = await ProductsModule.createProduct(testdata.product1)
         const product2 = await ProductsModule.createProduct(testdata.product2)
         const warehouse1 = await WarehousesModule.createWarehouse({
             ...testdata.warehouse1,
-            product: product1[1]._id,
+            products: [{ source: product1[1]._id, stock: 10 }],
         })
-        const warehouse2 = await WarehousesModule.createWarehouse({
-            ...testdata.warehouse2,
-            product: product1[1]._id,
-        })
-        const updatedProduct1 = await ProductsModule.updateProduct(
-            product1[1]._id,
-            { warehouses: [warehouse1[1]._id, warehouse2._id] }
+        const warehouse2 = await WarehousesModule.createWarehouse(
+            testdata.warehouse2
         )
-        created.product1 = updatedProduct1[1]
+
+        created.product1 = product1[1]
         created.product2 = product2[1]
         created.warehouse1 = warehouse1[1]
         created.warehouse2 = warehouse2[1]
@@ -417,7 +408,7 @@ describe('Controller: Transfer stock', () => {
         })
 
         const res = await request(app)
-            .put(`/api/v1/products/${created.product1.id}/transfer-stock`)
+            .put(`/api/v1/products/${created.product1._id}/transfer-stock`)
             .send({
                 transferFrom: created.warehouse1._id,
                 transferTo: 'store',
@@ -426,14 +417,17 @@ describe('Controller: Transfer stock', () => {
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(200)
-        expect(res.body.product.storeQty).to.equal(10)
-        expect(Object.keys(res.body.product)).to.include('id')
+        expect(res.body.product.stock).to.equal(10)
 
         const warehouseRes = await WarehousesModule.getWarehouseById(
             created.warehouse1._id
         )
 
-        expect(warehouseRes[1].quantity).to.equal(0)
+        expect(warehouseRes[1].products[0].source._id.toString()).to.equal(
+            created.product1._id.toString()
+        )
+
+        expect(warehouseRes[1].products[0].stock).to.equal(0)
     })
 
     it('Success: transfer warehouse stock to another warehouse', async () => {
@@ -447,24 +441,24 @@ describe('Controller: Transfer stock', () => {
             .send({
                 transferFrom: created.warehouse1._id,
                 transferTo: created.warehouse2._id,
-                amount: 5,
+                amount: 8,
             })
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(200)
-        expect(res.body.product.storeQty).to.equal(0)
+        expect(res.body.product.stock).to.equal(0)
 
         const warehouse1Res = await WarehousesModule.getWarehouseById(
             created.warehouse1._id
         )
 
-        expect(warehouse1Res[1].quantity).to.equal(5)
+        expect(warehouse1Res[1].products[0].stock).to.equal(2)
 
         const warehouse2Res = await WarehousesModule.getWarehouseById(
             created.warehouse2._id
         )
 
-        expect(warehouse2Res[1].quantity).to.equal(25)
+        expect(warehouse2Res[1].products[0].stock).to.equal(8)
     })
 
     it('Fail: transfer warehouse stock to non existing warehouse', async () => {
@@ -552,7 +546,7 @@ describe('Controller: Transfer stock', () => {
         })
 
         const res = await request(app)
-            .put(`/api/v1/products/wrong-product-id/transfer-stock`)
+            .put(`/api/v1/products/${created.product1._id}/transfer-stock`)
             .send({
                 transferFrom: created.warehouse1._id,
                 transferTo: created.warehouse2._id,

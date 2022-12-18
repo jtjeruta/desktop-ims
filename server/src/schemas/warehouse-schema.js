@@ -7,18 +7,22 @@ const WarehouseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true,
-    },
+    products: [
+        {
+            source: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+                required: true,
+            },
+            stock: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
 })
 
-WarehouseSchema.index({ name: 1, product: 1 }, { unique: true })
+WarehouseSchema.index({ name: 1 }, { unique: true })
 
 const WarehouseModel = mongoose.model('Warehouse', WarehouseSchema)
 

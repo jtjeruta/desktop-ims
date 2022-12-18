@@ -33,7 +33,7 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    storeQty: {
+    stock: {
         type: Number,
         required: true,
     },
@@ -41,12 +41,6 @@ const ProductSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Variant',
-        },
-    ],
-    warehouses: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
         },
     ],
 })

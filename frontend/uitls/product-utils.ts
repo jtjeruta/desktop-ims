@@ -29,7 +29,7 @@ export const customerCanBuyProduct = (
     const variant = product?.variants.find((v) => v.id === variantId)
     const warehouse = product?.warehouses.find((w) => w.id === warehouseId)
     const quantity = (amountOfUnits ?? 1) * (variant?.quantity ?? 1)
-    const stock = warehouse?.quantity ?? product?.storeQty ?? 0
+    const stock = warehouse?.quantity ?? product?.stock ?? 0
     return { valid: stock >= quantity, remainingQuantity: stock - quantity }
 }
 
@@ -57,7 +57,7 @@ export const updateProductOrWarehouseQuantity = (
                         return { ...p, warehouses }
                     }
 
-                    return { ...p, storeQty: newQuantity }
+                    return { ...p, stock: newQuantity }
                 }
 
                 return p
@@ -103,7 +103,7 @@ export const undoProductOrWarehouseStockChanges = (
 
                     return {
                         ...product,
-                        storeQty: product.storeQty + quantityToAdd,
+                        stock: product.stock + quantityToAdd,
                     }
                 }
 

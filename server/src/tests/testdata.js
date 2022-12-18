@@ -35,7 +35,7 @@ module.exports.product1 = {
     published: true,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
-    storeQty: 0,
+    stock: 0,
 }
 
 module.exports.product2 = {
@@ -48,7 +48,7 @@ module.exports.product2 = {
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
-    storeQty: 10,
+    stock: 10,
 }
 
 module.exports.product3 = {
@@ -61,7 +61,7 @@ module.exports.product3 = {
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
-    storeQty: 100,
+    stock: 100,
 }
 
 module.exports.variant1 = {
@@ -76,12 +76,10 @@ module.exports.variant2 = {
 
 module.exports.warehouse1 = {
     name: 'Warehouse 1',
-    quantity: 10,
 }
 
 module.exports.warehouse2 = {
     name: 'Warehouse 2',
-    quantity: 20,
 }
 
 module.exports.vendor1 = {

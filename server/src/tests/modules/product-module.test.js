@@ -92,7 +92,7 @@ describe('Module: Get Product by id', () => {
     it('Fail: given wrong id', async () => {
         const foundProduct = await ProductsModule.getProductById(null)
         expect(foundProduct[0]).to.equal(404)
-        expect(foundProduct[1]).to.deep.equal({ message: 'Not found.' })
+        expect(foundProduct[1]).to.deep.equal({ message: 'Product not found.' })
     })
 })
 

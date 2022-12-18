@@ -23,9 +23,7 @@ module.exports.createProduct = async (data) => {
 
 module.exports.listProducts = async () => {
     try {
-        const products = await ProductModel.find({})
-            .populate('variants')
-            .populate('warehouses')
+        const products = await ProductModel.find({}).populate('variants')
         return [200, products]
     } catch (error) {
         console.error('Failed to list products')
@@ -37,11 +35,10 @@ module.exports.getProductById = async (id, session = null) => {
     try {
         const product = await ProductModel.findById(id)
             .populate('variants')
-            .populate('warehouses')
             .session(session)
 
         if (!product) {
-            return [404, { message: 'Not found.' }]
+            return [404, { message: 'Product not found.' }]
         }
 
         return [200, product]

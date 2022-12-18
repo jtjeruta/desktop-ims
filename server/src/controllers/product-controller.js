@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const ProductsModule = require('../modules/products-module')
 const VariantsModule = require('../modules/variants-module')
 const WarehousesModule = require('../modules/warehouses-module')
@@ -13,7 +14,7 @@ module.exports.createProduct = async (req, res) => {
         subCategory: req.body.subCategory,
         aveUnitCost: null,
         published: false,
-        storeQty: req.body.storeQty,
+        stock: req.body.stock,
         modifiedBy: req.con._id,
     }
     const createProductRes = await ProductsModule.createProduct(productDoc)
@@ -107,7 +108,11 @@ module.exports.deleteProduct = async (req, res) => {
 }
 
 module.exports.transferStock = async (req, res) => {
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
     if (req.body.transferFrom === req.body.transferTo) {
+        await session.endSession()
         return res.status(400).json({
             message: 'Source is same as destination.',
             errors: {
@@ -118,34 +123,56 @@ module.exports.transferStock = async (req, res) => {
         })
     }
 
-    if (req.body.amount <= 0) {
+    if ((req.body.amount ?? 0) <= 0) {
+        await session.endSession()
         return res.status(400).json({
             message: 'Transfer amount must be greater than 0.',
             errors: { amount: { message: 'Must be greater than 0.' } },
         })
     }
 
-    const [transferFrom, transferTo] = await Promise.all([
+    const getTransferRes = await Promise.all([
         req.body.transferFrom === 'store'
-            ? ProductsModule.getProductById(req.params.productId)
-            : WarehousesModule.getWarehouseById(req.body.transferFrom),
+            ? ProductsModule.getProductById(req.params.productId, session)
+            : WarehousesModule.getWarehouseById(req.body.transferFrom, session),
         req.body.transferTo === 'store'
-            ? ProductsModule.getProductById(req.params.productId)
-            : WarehousesModule.getWarehouseById(req.body.transferTo),
+            ? ProductsModule.getProductById(req.params.productId, session)
+            : WarehousesModule.getWarehouseById(req.body.transferTo, session),
     ])
 
-    if (transferFrom[0] !== 200) {
-        return res.status(transferFrom[0]).json(transferFrom[1])
+    const failedGetTransferRes = getTransferRes.find(
+        (result) => result[0] !== 200
+    )
+
+    if (failedGetTransferRes) {
+        await session.endSession()
+        return res.status(failedGetTransferRes[0]).json(failedGetTransferRes[1])
     }
 
-    if (transferTo[0] !== 200) {
-        return res.status(transferTo[0]).json(transferTo[1])
+    const transferFrom =
+        req.body.transferFrom === 'store'
+            ? getTransferRes[0][1]
+            : getTransferRes[0][1].products?.find(
+                  (product) =>
+                      product.source._id.toString() === req.params.productId
+              )
+
+    const transferTo =
+        req.body.transferTo === 'store'
+            ? getTransferRes[1][1]
+            : getTransferRes[1][1].products?.find(
+                  (product) =>
+                      product.source._id.toString() === req.params.productId
+              )
+
+    // transferFrom is nullish if warehouse -> warehouse and product id is bad
+    if (!transferFrom) {
+        await session.endSession()
+        return res.status(404).json({ message: 'Product not found.' })
     }
 
-    if (
-        req.body.transferFrom === 'store' &&
-        transferFrom[1].storeQty < req.body.amount
-    ) {
+    if (transferFrom.stock < req.body.amount) {
+        await session.endSession()
         return res.status(400).json({
             message: 'Transfer amount is greater than stored quantity.',
             errors: {
@@ -154,50 +181,56 @@ module.exports.transferStock = async (req, res) => {
         })
     }
 
-    if (
-        req.body.transferFrom !== 'store' &&
-        transferFrom[1].quantity < req.body.amount
-    ) {
-        return res.status(400).json({
-            message: 'Transfer amount is greater than stored quantity.',
-            errors: {
-                amount: { message: 'Must be less than stored quantity.' },
-            },
-        })
-    }
+    const newTransferFromStock = (transferFrom.stock ?? 0) - req.body.amount
+    const newTransferToStock = (transferTo?.stock ?? 0) + req.body.amount
 
-    const [updateFrom, updateTo] = await Promise.all([
+    const updateStockRes = await Promise.all([
         req.body.transferFrom === 'store'
-            ? ProductsModule.updateProduct(req.params.productId, {
-                  storeQty: (transferFrom[1].storeQty || 0) - req.body.amount,
-              })
-            : WarehousesModule.updateWarehouse(transferFrom[1]._id, {
-                  quantity: transferFrom[1].quantity - req.body.amount,
-              }),
+            ? ProductsModule.updateProduct(
+                  req.params.productId,
+                  { stock: newTransferFromStock },
+                  session
+              )
+            : WarehousesModule.updateWarehouseProduct(
+                  req.body.transferFrom,
+                  req.params.productId,
+                  newTransferFromStock,
+                  session
+              ),
         req.body.transferTo === 'store'
-            ? ProductsModule.updateProduct(req.params.productId, {
-                  storeQty: (transferTo[1].storeQty || 0) + req.body.amount,
-              })
-            : WarehousesModule.updateWarehouse(transferTo[1]._id, {
-                  quantity: transferTo[1].quantity + req.body.amount,
-              }),
+            ? ProductsModule.updateProduct(
+                  req.params.productId,
+                  { stock: newTransferToStock },
+                  session
+              )
+            : WarehousesModule.updateWarehouseProduct(
+                  req.body.transferTo,
+                  req.params.productId,
+                  newTransferToStock,
+                  session
+              ),
     ])
 
-    if (updateFrom[0] !== 200) {
-        return res.status(updateFrom[0]).json(updateFrom[1])
-    }
+    const failedUpdateStockRes = updateStockRes.find(
+        (result) => result[0] !== 200
+    )
 
-    if (updateTo[0] !== 200) {
-        return res.status(updateTo[0]).json(updateTo[1])
+    if (failedUpdateStockRes) {
+        await session.endSession()
+        return res.status(failedUpdateStockRes[0]).json(failedUpdateStockRes[1])
     }
 
     const updatedProduct = await ProductsModule.getProductById(
-        req.params.productId
+        req.params.productId,
+        session
     )
 
     if (updatedProduct[0] !== 200) {
+        await session.endSession()
         return res.status(updatedProduct[0]).json(updatedProduct[1])
     }
 
+    await session.commitTransaction()
+    await session.endSession()
     return res.status(200).json({ product: ProductView(updatedProduct[1]) })
 }

@@ -41,7 +41,7 @@ const InventoryPageContent = () => {
                 product.published ? 'available' : 'not available',
                 formatDate(product.createdAt),
                 getProductWarehouseTotal(product),
-                product.storeQty,
+                product.stock,
             ].some((item) => regex.test(`${item}`))
         }
     )
@@ -166,9 +166,9 @@ const InventoryPageContent = () => {
                             title: 'STR qty',
                             format: (row) => {
                                 const product = row as Product
-                                return product.storeQty || 0
+                                return product.stock || 0
                             },
-                            sort: (product) => product.storeQty || 0,
+                            sort: (product) => product.stock || 0,
                         },
                         {
                             title: 'Status',

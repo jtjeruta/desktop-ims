@@ -31,7 +31,7 @@ const AddEditProductForm: FC<Props> = (props) => {
             category: values.category as string,
             subCategory: values.subCategory as string,
             price: +values.price,
-            storeQty: +values.storeQty,
+            stock: +values.stock,
         }
 
         const response = await (ProductContext.product
@@ -71,7 +71,7 @@ const AddEditProductForm: FC<Props> = (props) => {
         methods.setValue('category', ProductContext.product?.category)
         methods.setValue('subCategory', ProductContext.product?.subCategory)
         methods.setValue('price', +(ProductContext.product?.price || 0))
-        methods.setValue('storeQty', +(ProductContext.product?.storeQty || 0))
+        methods.setValue('stock', +(ProductContext.product?.stock || 0))
     }, [ProductContext.product, methods])
 
     return (
@@ -115,7 +115,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                         />
                     ) : (
                         <TextField
-                            name="storeQty"
+                            name="stock"
                             type="number"
                             label="Store Quantity"
                             placeholder="100"

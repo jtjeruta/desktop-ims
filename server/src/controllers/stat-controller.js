@@ -76,7 +76,7 @@ module.exports.listProductReports = async (req, res) => {
             0
         )
 
-        const totalStock = warehouseStock + product.storeQty
+        const totalStock = warehouseStock + product.stock
 
         const variants = product.variants.map((variant) => {
             let totalPur = 0

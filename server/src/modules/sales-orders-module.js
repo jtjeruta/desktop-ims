@@ -55,7 +55,6 @@ module.exports.getSalesOrderById = async (id, session = null) => {
         const salesOrder = await SalesOrderModel.findById(id)
             .populate('customer')
             .populate('products.product')
-            .populate('products.product.warehouses')
             .populate('products.warehouse')
             .session(session)
 
@@ -72,6 +71,7 @@ module.exports.listSalesOrders = async (query = {}, session = null) => {
         const salesOrders = await SalesOrderModel.find(query)
             .populate('customer')
             .populate('products.product')
+            .populate('products.warehouse')
             .session(session)
         return [200, salesOrders]
     } catch (error) {
@@ -101,13 +101,16 @@ module.exports.applyProductStockChanges = async (
                 break
             }
 
-            const { quantity } = warehouseRes[1]
-            response = await WarehousesModule.updateWarehouse(
-                product.warehouse._id,
-                {
-                    quantity:
-                        type === 'add' ? quantity + total : quantity - total,
-                },
+            const warehouseProduct = warehouseRes[1].products?.find((wp) =>
+                wp.source._id.equals(product.product._id)
+            )
+            const currentStock = warehouseProduct?.stock ?? 0
+            const newStock =
+                type === 'add' ? currentStock + total : currentStock - total
+            response = await WarehousesModule.updateWarehouseProduct(
+                warehouseRes[1]._id,
+                product.product._id,
+                newStock,
                 session
             )
         } else {
@@ -121,13 +124,12 @@ module.exports.applyProductStockChanges = async (
                 break
             }
 
-            const { storeQty } = productRes[1]
+            const { stock } = productRes[1]
+            const newStock = type === 'add' ? stock + total : stock - total
+
             response = await ProductsModule.updateProduct(
                 product.product._id,
-                {
-                    storeQty:
-                        type === 'add' ? storeQty + total : storeQty - total,
-                },
+                { stock: newStock },
                 session
             )
         }
