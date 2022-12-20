@@ -58,4 +58,8 @@ export const routes: Route[] = [
         pathname: '/reporting',
         access: 'admin',
     },
+    {
+        pathname: '/warehouses',
+        access: 'admin',
+    },
 ]

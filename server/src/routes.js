@@ -56,12 +56,18 @@ router.delete(
 )
 
 // warehouses
+router.get('/api/v1/warehouses', isAdmin, WarehouseController.listWarehouses)
 router.get(
     '/api/v1/warehouses/:warehouseId',
     isAdmin,
     WarehouseController.getWarehouse
 )
 router.post('/api/v1/warehouses', isAdmin, WarehouseController.createWarehouse)
+router.put(
+    '/api/v1/warehouses/:warehouseId',
+    isAdmin,
+    WarehouseController.updateWarehouse
+)
 router.delete(
     '/api/v1/warehouses/:warehouseId',
     isAdmin,

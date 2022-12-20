@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
+import { HiSwitchHorizontal } from 'react-icons/hi'
 
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import Dialog from '../Dialog/Dialog'
@@ -8,6 +9,8 @@ import TextField from '../TextField/TextField'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Select from '../Select/Select'
+import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
+import Button from '../Button/Button'
 
 const transferStockSchema = yup
     .object({
@@ -22,17 +25,20 @@ const transferStockSchema = yup
     })
     .required()
 
-const TransferStockDialog: FC = () => {
+type Props = {
+    showProductSelect?: boolean
+}
+
+const TransferStockDialog: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const WarehouseContext = useWarehouseContext()
     const methods = useForm({ resolver: yupResolver(transferStockSchema) })
 
-    let warehouses = (ProductContext.product?.warehouses || []).map(
-        (warehouse) => ({
-            text: warehouse.name,
-            value: warehouse.id,
-        })
-    )
+    let warehouses = (WarehouseContext.warehouses || []).map((warehouse) => ({
+        text: warehouse.name,
+        value: warehouse.id,
+    }))
 
     warehouses = [...warehouses, { text: 'Store', value: 'store' }]
 
@@ -47,10 +53,30 @@ const TransferStockDialog: FC = () => {
     }
 
     useEffect(() => {
-        methods.setValue('transferFrom', ProductContext.selectedWarehouse?.id)
+        const subscription = methods.watch((data, { name }) => {
+            if (name !== 'product') return
+            const foundProduct = ProductContext.products?.find(
+                (p) => p.id === data[name]
+            )
+            ProductContext.setProduct(foundProduct ?? null)
+        })
+        return () => subscription.unsubscribe()
+    }, [ProductContext.products])
+
+    useEffect(() => {
+        methods.setValue('transferFrom', WarehouseContext.selectedWarehouse?.id)
         methods.setValue('transferTo', 'store')
         methods.setValue('amount', 1)
-    }, [methods, ProductContext])
+        methods.setValue('units', transferOptions[0].value)
+
+        if (!ProductContext.product) {
+            methods.setValue('product', ProductContext.products?.[0].id)
+        }
+    }, [
+        ProductContext.product,
+        WarehouseContext.selectedWarehouse,
+        ProductContext.products,
+    ])
 
     const onSubmit = async (data: FieldValues) => {
         if (!ProductContext.product) return
@@ -69,24 +95,30 @@ const TransferStockDialog: FC = () => {
         if (response[0]) {
             AppContext.closeDialog()
             methods.reset()
-            AppContext.addNotification({
-                title: 'Stock transfered!',
-            })
-        } else if (response[1].errors) {
-            const { errors } = response[1]
-
-            ;(Object.keys(errors) as Array<keyof typeof errors>).map((key) => {
-                methods.setError(key, {
-                    type: 'custom',
-                    message: errors[key]?.message,
-                })
-            })
+            AppContext.addNotification({ title: 'Stock transfered!' })
+            WarehouseContext.setWarehouses(null)
+            WarehouseContext.listWarehouses()
         } else if (response[1].message) {
             methods.setError('amount', {
                 type: 'custom',
                 message: response[1].message,
             })
+        } else if (response[1]) {
+            const { errors } = response[1]
+            ;(Object.keys(errors) as Array<keyof typeof errors>).map((key) => {
+                methods.setError(key as string, {
+                    type: 'custom',
+                    message: errors[key]?.message,
+                })
+            })
         }
+    }
+
+    const switchTransferFromAndTo = () => {
+        const transferFrom = methods.getValues('transferFrom')
+        const transferTo = methods.getValues('transferTo')
+        methods.setValue('transferFrom', transferTo)
+        methods.setValue('transferTo', transferFrom)
     }
 
     return (
@@ -97,18 +129,47 @@ const TransferStockDialog: FC = () => {
                 <FormProvider {...methods}>
                     <form>
                         <div className="flex flex-col gap-2">
-                            <Select
-                                label="Transfer from"
-                                name="transferFrom"
-                                required
-                                options={warehouses}
-                            />
-                            <Select
-                                label="Transfer to"
-                                name="transferTo"
-                                required
-                                options={warehouses}
-                            />
+                            {props.showProductSelect && (
+                                <Select
+                                    label="Product"
+                                    name="product"
+                                    options={
+                                        ProductContext.products?.map(
+                                            (product) => ({
+                                                text: product.name,
+                                                value: product.id,
+                                            })
+                                        ) ?? []
+                                    }
+                                    required
+                                />
+                            )}
+                            <div className="flex gap-2">
+                                <Select
+                                    label="Transfer from"
+                                    name="transferFrom"
+                                    required
+                                    options={warehouses}
+                                    className="grow"
+                                />
+                                <div className="flex items-center">
+                                    <Button
+                                        type="button"
+                                        style="outline"
+                                        color="secondary"
+                                        onClick={switchTransferFromAndTo}
+                                    >
+                                        <HiSwitchHorizontal />
+                                    </Button>
+                                </div>
+                                <Select
+                                    label="Transfer to"
+                                    name="transferTo"
+                                    required
+                                    options={warehouses}
+                                    className="grow"
+                                />
+                            </div>
                             <div className="flex gap-2">
                                 <TextField
                                     label="Quantity"
@@ -123,6 +184,7 @@ const TransferStockDialog: FC = () => {
                                     name="units"
                                     options={transferOptions}
                                     className="basis-0 grow"
+                                    required
                                 />
                             </div>
                         </div>

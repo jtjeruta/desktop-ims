@@ -65,6 +65,13 @@ const Sidebar = () => {
             icon: FaStore,
             onClick: () => router.push('/vendors'),
         },
+        {
+            text: 'Warehouses',
+            active: router.asPath === '/warehouses',
+            roles: ['admin'],
+            icon: FaStore,
+            onClick: () => router.push('/warehouses'),
+        },
     ]
 
     const settingsPages: PageType[] = [

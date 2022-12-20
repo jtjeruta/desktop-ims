@@ -1,6 +1,17 @@
 const WarehousesModule = require('../modules/warehouses-module')
 const { WarehouseView } = require('../views/warehouse-view')
 
+module.exports.listWarehouses = async (req, res) => {
+    const warehousesRes = await WarehousesModule.listWarehouses()
+
+    if (warehousesRes[0] !== 200)
+        return res.status(warehousesRes[0]).json(warehousesRes[1])
+
+    return res
+        .status(200)
+        .json({ warehouses: warehousesRes[1].map(WarehouseView) })
+}
+
 module.exports.getWarehouse = async (req, res) => {
     const warehouseRes = await WarehousesModule.getWarehouseById(
         req.params.warehouseId
@@ -19,6 +30,23 @@ module.exports.createWarehouse = async (req, res) => {
 
     const warehouseRes = await WarehousesModule.createWarehouse(doc)
     if (warehouseRes[0] !== 201)
+        return res.status(warehouseRes[0]).json(warehouseRes[1])
+
+    return res.status(201).json({ warehouse: WarehouseView(warehouseRes[1]) })
+}
+
+module.exports.updateWarehouse = async (req, res) => {
+    const { warehouseId } = req.params
+    const doc = {
+        name: req.body.name,
+    }
+
+    const warehouseRes = await WarehousesModule.updateWarehouse(
+        warehouseId,
+        doc
+    )
+
+    if (warehouseRes[0] !== 200)
         return res.status(warehouseRes[0]).json(warehouseRes[1])
 
     return res.status(201).json({ warehouse: WarehouseView(warehouseRes[1]) })

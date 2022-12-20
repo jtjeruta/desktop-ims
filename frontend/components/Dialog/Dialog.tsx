@@ -95,7 +95,7 @@ const Dialog: FC<Props> = (props) => {
                                 <Button
                                     color="secondary"
                                     onClick={handleClose}
-                                    loading={props.loading}
+                                    disabled={props.loading}
                                 >
                                     Cancel
                                 </Button>

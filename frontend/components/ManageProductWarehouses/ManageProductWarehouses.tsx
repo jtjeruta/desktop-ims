@@ -1,24 +1,41 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Button from '../Button/Button'
 import Table from '../Table/Table'
 import Card from '../Card/Card'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import AddWarehouseDialog from '../AddWarehouseDialog/AddWarehouseDialog'
-import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
-import { Warehouse } from '../../contexts/ProductContext/types'
+import { Warehouse } from '../../contexts/WarehouseContext/types'
 import OptionsButton from '../OptionsButton/OptionsButton'
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { BiTransfer } from 'react-icons/bi'
 import TransferStockDialog from '../TransferStockDialog/TransferStockDialog'
+import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
+import {
+    getProductWarehouses,
+    ProductWarehouse,
+} from '../../uitls/product-utils'
 
 const ManageProductWarehouses = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const WarehouseContext = useWarehouseContext()
+    const isLoading =
+        ProductContext.product == null || WarehouseContext.warehouses == null
+    const [warehouses, setWarehouses] = useState<ProductWarehouse[]>([])
+
+    useEffect(() => {
+        if (isLoading) return
+        setWarehouses(
+            getProductWarehouses(
+                WarehouseContext.warehouses,
+                ProductContext.product
+            )
+        )
+    }, [ProductContext.product, WarehouseContext.warehouses])
 
     const handleDelete = useCallback(
         (warehouse: Warehouse) => () => {
-            ProductContext.setSelectedWarehouse(warehouse)
+            WarehouseContext.setSelectedWarehouse(warehouse)
             AppContext.openDialog('delete-warehouse-dialog')
         },
         [AppContext, ProductContext]
@@ -26,7 +43,7 @@ const ManageProductWarehouses = () => {
 
     const handleTransferStock = useCallback(
         (warehouse: Warehouse) => () => {
-            ProductContext.setSelectedWarehouse(warehouse)
+            WarehouseContext.setSelectedWarehouse(warehouse)
             AppContext.openDialog('transfer-stock-dialog')
         },
         [AppContext, ProductContext]
@@ -39,8 +56,8 @@ const ManageProductWarehouses = () => {
                     <div className="flex flex-col h-full">
                         <div className="grow">
                             <Table
-                                loading={!ProductContext.product}
-                                rows={ProductContext.product?.warehouses || []}
+                                loading={isLoading}
+                                rows={warehouses}
                                 columns={[
                                     {
                                         title: 'Stock Location',
@@ -48,7 +65,7 @@ const ManageProductWarehouses = () => {
                                     },
                                     {
                                         title: 'Stock Qty',
-                                        key: 'quantity',
+                                        key: 'stock',
                                     },
                                     {
                                         title: 'Actions',
@@ -88,7 +105,7 @@ const ManageProductWarehouses = () => {
                                 disabled={!ProductContext.product}
                                 onClick={() => {
                                     AppContext.openDialog(
-                                        'add-warehouse-dialog'
+                                        'transfer-stock-dialog'
                                     )
                                 }}
                             >
@@ -98,21 +115,7 @@ const ManageProductWarehouses = () => {
                     </div>
                 </Card>
             </div>
-            <AddWarehouseDialog />
             <TransferStockDialog />
-            <ConfirmDialog
-                text={`Delete warehouse ${ProductContext.selectedWarehouse?.name}?`}
-                dialogKey="delete-warehouse-dialog"
-                onConfirm={async () => {
-                    if (ProductContext.selectedWarehouse) {
-                        await ProductContext.deleteWarehouse(
-                            ProductContext.selectedWarehouse?.id
-                        )
-                        AppContext.closeDialog()
-                    }
-                }}
-                loading={AppContext.isLoading('delete-warehouse')}
-            />
         </>
     )
 }

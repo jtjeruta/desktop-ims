@@ -16,10 +16,12 @@ import Switch from '../../components/Switch/Switch'
 import { formatDate } from '../../uitls/date-utils'
 import { getProductWarehouseTotal } from '../../uitls/product-utils'
 import { escapeRegExp, formatCurrency } from '../../uitls'
+import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const WarehouseContext = useWarehouseContext()
     const router = useRouter()
     const [statuses, setStatuses] = useState<
         { id: string; published: boolean }[]
@@ -40,7 +42,7 @@ const InventoryPageContent = () => {
                 product.subCategory,
                 product.published ? 'available' : 'not available',
                 formatDate(product.createdAt),
-                getProductWarehouseTotal(product),
+                getProductWarehouseTotal(WarehouseContext.warehouses, product),
                 product.stock,
             ].some((item) => regex.test(`${item}`))
         }
@@ -157,10 +159,16 @@ const InventoryPageContent = () => {
                             title: 'WHS qty',
                             format: (row) => {
                                 const product = row as Product
-                                return getProductWarehouseTotal(product)
+                                return getProductWarehouseTotal(
+                                    WarehouseContext.warehouses,
+                                    product
+                                )
                             },
                             sort: (product) =>
-                                getProductWarehouseTotal(product as Product),
+                                getProductWarehouseTotal(
+                                    WarehouseContext.warehouses,
+                                    product as Product
+                                ),
                         },
                         {
                             title: 'STR qty',

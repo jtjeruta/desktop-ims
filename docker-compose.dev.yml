@@ -36,10 +36,12 @@ services:
             - ./data:/data
         networks:
             - desktop-ims
+        ports:
+            - 27017:27017
         logging:
             driver: none
         environment:
-            MONGODB_REPLICA_SET_MODE: primary
+            MONGODB_REPLICA_SET_MODE: 'primary'
             ALLOW_EMPTY_PASSWORD: 'yes'
 
 networks:

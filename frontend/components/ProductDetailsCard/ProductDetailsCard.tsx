@@ -1,18 +1,21 @@
 import clsx from 'clsx'
 import { FC } from 'react'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
+import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
+import { getProductWarehouseTotal } from '../../uitls/product-utils'
 import Card from '../Card/Card'
 
 const ProductDetailsCard: FC = () => {
     const ProductContext = useProductContext()
+    const WarehouseContext = useWarehouseContext()
 
     const details = {
         SKU: <code>{ProductContext.product?.sku}</code>,
         'Ave. Unit Cost': ProductContext.product?.aveUnitCost ?? 'N/A',
         'Total items in Store': ProductContext.product?.stock || 0,
-        'Total items in Warehouse': ProductContext.product?.warehouses.reduce(
-            (acc, warehouse) => acc + warehouse.quantity,
-            0
+        'Total items in Warehouse': getProductWarehouseTotal(
+            WarehouseContext.warehouses,
+            ProductContext.product
         ),
     }
 

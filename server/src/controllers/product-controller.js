@@ -114,10 +114,9 @@ module.exports.transferStock = async (req, res) => {
     if (req.body.transferFrom === req.body.transferTo) {
         await session.endSession()
         return res.status(400).json({
-            message: 'Source is same as destination.',
             errors: {
                 transferTo: {
-                    message: 'Must not be the same as "Transfer From".',
+                    message: 'Source is same as destination.',
                 },
             },
         })
@@ -126,12 +125,11 @@ module.exports.transferStock = async (req, res) => {
     if ((req.body.amount ?? 0) <= 0) {
         await session.endSession()
         return res.status(400).json({
-            message: 'Transfer amount must be greater than 0.',
             errors: { amount: { message: 'Must be greater than 0.' } },
         })
     }
 
-    const getTransferRes = await Promise.all([
+    const [getTransferFromRes, getTransferToRes] = await Promise.all([
         req.body.transferFrom === 'store'
             ? ProductsModule.getProductById(req.params.productId, session)
             : WarehousesModule.getWarehouseById(req.body.transferFrom, session),
@@ -140,27 +138,32 @@ module.exports.transferStock = async (req, res) => {
             : WarehousesModule.getWarehouseById(req.body.transferTo, session),
     ])
 
-    const failedGetTransferRes = getTransferRes.find(
-        (result) => result[0] !== 200
-    )
-
-    if (failedGetTransferRes) {
+    if (getTransferFromRes[0] !== 200) {
         await session.endSession()
-        return res.status(failedGetTransferRes[0]).json(failedGetTransferRes[1])
+        return res.status(getTransferFromRes[0]).json({
+            errors: { transferFrom: { message: 'Source not found.' } },
+        })
+    }
+
+    if (getTransferToRes[0] !== 200) {
+        await session.endSession()
+        return res.status(getTransferToRes[0]).json({
+            errors: { transferTo: { message: 'Destination not found.' } },
+        })
     }
 
     const transferFrom =
         req.body.transferFrom === 'store'
-            ? getTransferRes[0][1]
-            : getTransferRes[0][1].products?.find(
+            ? getTransferFromRes[1]
+            : getTransferFromRes[1].products?.find(
                   (product) =>
                       product.source._id.toString() === req.params.productId
               )
 
     const transferTo =
         req.body.transferTo === 'store'
-            ? getTransferRes[1][1]
-            : getTransferRes[1][1].products?.find(
+            ? getTransferToRes[1]
+            : getTransferToRes[1].products?.find(
                   (product) =>
                       product.source._id.toString() === req.params.productId
               )
@@ -168,7 +171,9 @@ module.exports.transferStock = async (req, res) => {
     // transferFrom is nullish if warehouse -> warehouse and product id is bad
     if (!transferFrom) {
         await session.endSession()
-        return res.status(404).json({ message: 'Product not found.' })
+        return res.status(404).json({
+            errors: { transferFrom: { message: 'Source not found.' } },
+        })
     }
 
     if (transferFrom.stock < req.body.amount) {

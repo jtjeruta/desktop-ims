@@ -13,16 +13,9 @@ export type Product = {
     published: boolean
     stock: number
     variants: Variant[]
-    warehouses: Warehouse[]
 }
 
 export type Variant = {
-    id: string
-    name: string
-    quantity: number
-}
-
-export type Warehouse = {
     id: string
     name: string
     quantity: number
@@ -62,10 +55,10 @@ export type TransferStockDoc = {
     amount: number
 }
 
-export type TransferStockErrors = Record<
-    keyof TransferStockDoc,
-    { message: string }
->
+export type TransferStockErrors = {
+    message?: string
+    errors: Record<keyof TransferStockDoc, { message: string }>
+}
 
 export type CreateUpdateProductErrors = Record<
     keyof Product,
@@ -73,7 +66,6 @@ export type CreateUpdateProductErrors = Record<
 >
 
 export type CreateVariantErrors = Record<keyof Variant, { message: string }>
-export type CreateWarehouseErrors = Record<keyof Warehouse, { message: string }>
 
 export type CreateProduct = (
     product: CreateProductDoc
@@ -106,14 +98,6 @@ export type DeleteVariant = (
     variantId: string
 ) => Promise<[true] | [false, string]>
 
-export type CreateWarehouse = (
-    productId: string,
-    data: CreateWarehouseDoc
-) => Promise<
-    | [true, Warehouse]
-    | [false, { message: string; errors?: CreateWarehouseErrors }]
->
-
 export type DeleteWarehouse = (
     warehouseId: string
 ) => Promise<[true] | [false, string]>
@@ -121,25 +105,18 @@ export type DeleteWarehouse = (
 export type TransferStock = (
     productId: string,
     doc: TransferStockDoc
-) => Promise<
-    | [true, Product]
-    | [false, { message: string; errors?: CreateWarehouseErrors }]
->
+) => Promise<[true, Product] | [false, TransferStockErrors]>
 
 export type Context = {
     createProduct: CreateProduct
     createVariant: CreateVariant
-    createWarehouse: CreateWarehouse
     deleteVariant: DeleteVariant
-    deleteWarehouse: DeleteWarehouse
     getProduct: GetProduct
     listProducts: ListProducts
     product: Product | null
     products: Product[] | null
-    selectedWarehouse: Warehouse | null
     setProduct: (product: Product | null) => void
     setProducts: React.Dispatch<React.SetStateAction<Product[] | null>>
-    setSelectedWarehouse: (warehouse: Warehouse | null) => void
     setVariantToDelete: (variant: Variant | null) => void
     transferStock: TransferStock
     updateProduct: UpdateProduct

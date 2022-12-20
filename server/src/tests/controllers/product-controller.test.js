@@ -477,7 +477,9 @@ describe('Controller: Transfer stock', () => {
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(404)
-        expect(res.body.message).to.equal('Warehouse not found.')
+        expect(res.body.errors.transferTo.message).to.equal(
+            'Destination not found.'
+        )
     })
 
     it('Fail: transfer warehouse stock to wrong product', async () => {
@@ -496,7 +498,9 @@ describe('Controller: Transfer stock', () => {
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(404)
-        expect(res.body.message).to.equal('Not found.')
+        expect(res.body.errors.transferTo.message).to.equal(
+            'Destination not found.'
+        )
     })
 
     it('Fail: transfer warehouse stock to same warehouse', async () => {
@@ -515,7 +519,9 @@ describe('Controller: Transfer stock', () => {
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(400)
-        expect(res.body.message).to.equal('Source is same as destination.')
+        expect(res.body.errors.transferTo.message).to.equal(
+            'Source is same as destination.'
+        )
     })
 
     it('Fail: transfer 0 amount of stock', async () => {
@@ -534,8 +540,8 @@ describe('Controller: Transfer stock', () => {
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(400)
-        expect(res.body.message).to.equal(
-            'Transfer amount must be greater than 0.'
+        expect(res.body.errors.amount.message).to.equal(
+            'Must be greater than 0.'
         )
     })
 

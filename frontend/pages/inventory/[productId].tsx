@@ -13,30 +13,38 @@ import { useAppContext } from '../../contexts/AppContext/AppContext'
 import ManageProductVariants from '../../components/ManageProductVariants/ManageProductVariants'
 import ManageProductWarehouses from '../../components/ManageProductWarehouses/ManageProductWarehouses'
 import Alert from '../../components/Alert/Alert'
+import {
+    useWarehouseContext,
+    WarehouseContextProvider,
+} from '../../contexts/WarehouseContext/WarehouseContext'
 
 const ProductPageContent = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const WarehouseContext = useWarehouseContext()
     const router = useRouter()
     const [published, setPublished] = useState<boolean>(false)
 
     useEffect(() => {
         async function init() {
-            if (router.query.productId && ProductContext.product === null) {
-                const response = await ProductContext.getProduct(
-                    router.query.productId as string
-                )
+            if (router.query.productId) {
+                const [productRes, warehouseRes] = await Promise.all([
+                    ProductContext.getProduct(router.query.productId as string),
+                    WarehouseContext.listWarehouses(),
+                ])
 
-                if (response[0]) {
-                    setPublished(response[1].published)
-                } else if (response[1].status === 404) {
-                    router.replace('/404')
+                if (!productRes[0] && productRes[1].status === 404) {
+                    return router.replace('/404')
+                } else if (!productRes[0] || !warehouseRes[0]) {
+                    return
                 }
+
+                setPublished(productRes[1].published)
             }
         }
 
         init()
-    }, [router, ProductContext])
+    }, [router])
 
     const handleToggleSwitch = useCallback(async () => {
         if (!ProductContext.product) return
@@ -100,7 +108,9 @@ const ProductPageContent = () => {
 
 const ProductPage = () => (
     <ProductContextProvider>
-        <ProductPageContent />
+        <WarehouseContextProvider>
+            <ProductPageContent />
+        </WarehouseContextProvider>
     </ProductContextProvider>
 )
 

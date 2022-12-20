@@ -1,46 +1,38 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import Dialog from '../Dialog/Dialog'
 import TextField from '../TextField/TextField'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { useProductContext } from '../../contexts/ProductContext/ProductContext'
+import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 
 const addWarehouseSchema = yup
-    .object({
-        name: yup.string().required(),
-        quantity: yup
-            .number()
-            .required()
-            .min(0, 'Must be 0 or greater')
-            .integer(),
-    })
+    .object({ name: yup.string().required() })
     .required()
 
-const AddWarehouseDialog: FC = () => {
+const AddEditWarehouseDialog: FC = () => {
     const AppContext = useAppContext()
-    const ProductContext = useProductContext()
+    const WarehouseContext = useWarehouseContext()
     const methods = useForm({ resolver: yupResolver(addWarehouseSchema) })
 
     const onSubmit = async (data: FieldValues) => {
-        if (!ProductContext.product) return
+        const selectedId = WarehouseContext.selectedWarehouse?.id
 
         const doc = {
-            name: data.name,
-            quantity: data.quantity,
+            name: data.name as string,
+            products: [],
         }
 
-        const response = await ProductContext.createWarehouse(
-            ProductContext.product.id,
-            doc
-        )
+        const response = await (selectedId
+            ? WarehouseContext.updateWarehouse(selectedId, doc)
+            : WarehouseContext.createWarehouse(doc))
 
         if (response[0]) {
             AppContext.closeDialog()
             methods.reset()
             AppContext.addNotification({
-                title: 'Warehouse added!',
+                title: `Warehouse ${selectedId ? 'updated' : 'added'}!`,
             })
         } else if (response[1].errors) {
             const { errors } = response[1]
@@ -59,10 +51,19 @@ const AddWarehouseDialog: FC = () => {
         }
     }
 
+    useEffect(() => {
+        methods.setValue(
+            'name',
+            WarehouseContext.selectedWarehouse?.name ?? null
+        )
+    }, [WarehouseContext.selectedWarehouse])
+
     return (
         <Dialog
-            title="Add Warehouse"
-            open={AppContext.dialogIsOpen('add-warehouse-dialog')}
+            title={`${
+                WarehouseContext.selectedWarehouse ? 'Edit' : 'Add'
+            } Warehouse`}
+            open={AppContext.dialogIsOpen('add-edit-warehouse-dialog')}
             content={
                 <FormProvider {...methods}>
                     <form>
@@ -73,21 +74,17 @@ const AddWarehouseDialog: FC = () => {
                                 required
                                 autoFocus
                             />
-                            <TextField
-                                label="Quantity"
-                                name="quantity"
-                                type="number"
-                                min={0}
-                                required
-                            />
                         </div>
                     </form>
                 </FormProvider>
             }
             onSave={methods.handleSubmit(onSubmit)}
-            loading={AppContext.isLoading('add-warehouse')}
+            loading={
+                AppContext.isLoading('add-warehouse') ||
+                AppContext.isLoading('edit-warehouse')
+            }
         />
     )
 }
 
-export default AddWarehouseDialog
+export default AddEditWarehouseDialog

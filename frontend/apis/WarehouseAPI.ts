@@ -1,10 +1,31 @@
 import { AxiosResponse } from 'axios'
-import { CreateWarehouseDoc, Warehouse } from '../contexts/ProductContext/types'
+import {
+    AddEditWarehouseDoc,
+    Warehouse,
+} from '../contexts/WarehouseContext/types'
 import Axios from './AxiosAPI'
 
-export const createWarehouse = (productId: string, data: CreateWarehouseDoc) =>
+export const listWarehouses = () =>
     Axios()
-        .post(`/api/v1/products/${productId}/warehouses`, data)
+        .get(`/api/v1/warehouses`)
+        .then((response): [true, Warehouse[]] => [
+            true,
+            response.data.warehouses,
+        ])
+        .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const createWarehouse = (data: AddEditWarehouseDoc) =>
+    Axios()
+        .post(`/api/v1/warehouses`, data)
+        .then((response): [true, Warehouse] => [true, response.data.warehouse])
+        .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const updateWarehouse = (
+    warehouseId: string,
+    data: AddEditWarehouseDoc
+) =>
+    Axios()
+        .put(`/api/v1/warehouses/${warehouseId}`, data)
         .then((response): [true, Warehouse] => [true, response.data.warehouse])
         .catch((err): [false, AxiosResponse] => [false, err.response])
 
