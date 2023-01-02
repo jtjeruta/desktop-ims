@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "docker-compose -f docker-compose.dev.yml up --remove-orphans --attach frontend --attach server",
+        "start": "docker-compose -f docker-compose.dev.yml up --remove-orphans",
         "start:build": "docker-compose -f docker-compose.dev.yml up --build --remove-orphans",
         "test:server": "docker exec -it desktop-ims-server sh -c \"./start-test.sh\"",
         "lint:frontend": "docker exec -it desktop-ims-frontend npm run lint",
