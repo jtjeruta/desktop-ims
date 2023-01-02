@@ -42,18 +42,6 @@ services:
             MONGODB_REPLICA_SET_MODE: primary
             ALLOW_EMPTY_PASSWORD: 'yes'
 
-    db_gui:
-        container_name: 'desktop-ims-db-gui'
-        image: ugleiton/mongo-gui
-        ports:
-            - '3001:4321'
-        environment:
-            - MONGO_URL=mongodb://desktop-ims-db
-        networks:
-            - desktop-ims
-        depends_on:
-            - db
-
 networks:
     desktop-ims:
         name: desktop-ims
