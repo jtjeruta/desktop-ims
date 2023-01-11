@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
-import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -12,6 +11,7 @@ import {
 import { Vendor } from '../../contexts/VendorContext/types'
 import AddEditVendorDialog from '../../components/AddEditVendorDialog/AddEditVendorDialog'
 import { escapeRegExp } from '../../uitls'
+import SearchBar from '../../components/SearchBar/SearchBar'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
@@ -41,19 +41,20 @@ const VendorsPageContent = () => {
 
     return (
         <UserLayout>
-            <PageHeader
-                breadcrumbs={[{ text: 'Vendors' }]}
-                searchbar={{ onSearch: (search) => setSearch(search) }}
-                buttons={[
-                    {
-                        text: 'Add Vendor',
-                        onClick: () => {
-                            VendorContext.setSelectedVendor(null)
-                            AppContext.openDialog('add-edit-vendor-dialog')
-                        },
-                    },
-                ]}
-            />
+            <div className="flex justify-end mb-6 gap-3">
+                <SearchBar
+                    onSearch={(search) => setSearch(search)}
+                    inputClass="!text-base h-full !bg-white"
+                />
+                <Button
+                    onClick={() => {
+                        VendorContext.setSelectedVendor(null)
+                        AppContext.openDialog('add-edit-vendor-dialog')
+                    }}
+                >
+                    Add Vendor
+                </Button>
+            </div>
 
             <Card bodyClsx="!px-0 !py-0">
                 <Table

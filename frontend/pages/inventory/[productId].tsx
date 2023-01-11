@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import PageHeader from '../../components/PageHeader/PageHeader'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import AddEditProductForm from '../../components/AddEditProductForm/AddEditProductForm'
 import ProductDetailsCard from '../../components/ProductDetailsCard/ProductDetailsCard'
@@ -17,6 +16,7 @@ import {
     useWarehouseContext,
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
+import Switch from '../../components/Switch/Switch'
 
 const ProductPageContent = () => {
     const AppContext = useAppContext()
@@ -59,23 +59,24 @@ const ProductPageContent = () => {
 
     return (
         <UserLayout>
-            <PageHeader
-                breadcrumbs={[
-                    { text: 'Inventory', url: '/inventory' },
-                    {
-                        text: router.query.productId as string,
-                    },
-                ]}
-                switches={[
-                    {
-                        toggled: published,
-                        toggledText: 'Available',
-                        unToggledText: 'Not available',
-                        onClick: handleToggleSwitch,
-                        loading: AppContext.isLoading('update-product'),
-                    },
-                ]}
-            />
+            <div className="flex justify-between align-end mb-6 gap-3">
+                <h1>
+                    {AppContext.isLoading('get-product') ? (
+                        <span className="w-full h-12" />
+                    ) : ProductContext.product ? (
+                        `#${ProductContext.product.id}`
+                    ) : (
+                        'New Product'
+                    )}
+                </h1>
+                <Switch
+                    toggled={published}
+                    toggledText="Available"
+                    unToggledText="Not available"
+                    onClick={handleToggleSwitch}
+                    loading={AppContext.isLoading('update-product')}
+                />
+            </div>
             {ProductContext.product != null &&
                 !ProductContext.product.published && (
                     <Alert

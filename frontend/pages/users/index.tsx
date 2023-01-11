@@ -1,9 +1,9 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
-import PageHeader from '../../components/PageHeader/PageHeader'
+import SearchBar from '../../components/SearchBar/SearchBar'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -18,6 +18,7 @@ const PageContent: FC = () => {
     const AppContext = useAppContext()
     const AuthContext = useAuthContext()
     const UserContext = useUserContext()
+    const [search, setSearch] = useState<string>('')
 
     useEffect(() => {
         UserContext.users === null && UserContext.listUsers()
@@ -25,22 +26,28 @@ const PageContent: FC = () => {
 
     return (
         <UserLayout>
-            <PageHeader
-                breadcrumbs={[{ text: 'Manage Users' }]}
-                buttons={[
-                    {
-                        text: 'Add User',
-                        onClick: () => {
-                            UserContext.setUserToEdit(null)
-                            AppContext.openDialog('add-edit-user-dialog')
-                        },
-                    },
-                ]}
-            />
+            <div className="flex justify-end mb-6 gap-3">
+                <SearchBar
+                    onSearch={(text) => setSearch(text)}
+                    inputClass="!text-base h-full !bg-white"
+                />
+                <Button
+                    onClick={() => {
+                        UserContext.setUserToEdit(null)
+                        AppContext.openDialog('add-edit-user-dialog')
+                    }}
+                >
+                    Add User
+                </Button>
+            </div>
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
-                    rows={UserContext.users || []}
+                    rows={(UserContext.users ?? []).filter((user) =>
+                        [user.firstName, user.lastName, user.email].some(
+                            (attr) => new RegExp(search, 'igm').test(attr)
+                        )
+                    )}
                     loading={AppContext.isLoading('list-users')}
                     columns={[
                         {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
-import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -17,6 +16,7 @@ import {
     ProductContextProvider,
     useProductContext,
 } from '../../contexts/ProductContext/ProductContext'
+import SearchBar from '../../components/SearchBar/SearchBar'
 
 const WarehousesPageContent = () => {
     const AppContext = useAppContext()
@@ -51,19 +51,20 @@ const WarehousesPageContent = () => {
 
     return (
         <UserLayout>
-            <PageHeader
-                breadcrumbs={[{ text: 'Warehouses' }]}
-                searchbar={{ onSearch: (search) => setSearch(search) }}
-                buttons={[
-                    {
-                        text: 'Add Warehouse',
-                        onClick: () => {
-                            WarehouseContext.setSelectedWarehouse(null)
-                            AppContext.openDialog('add-edit-warehouse-dialog')
-                        },
-                    },
-                ]}
-            />
+            <div className="flex justify-end mb-6 gap-3">
+                <SearchBar
+                    onSearch={(search) => setSearch(search)}
+                    inputClass="!text-base h-full !bg-white"
+                />
+                <Button
+                    onClick={() => {
+                        WarehouseContext.setSelectedWarehouse(null)
+                        AppContext.openDialog('add-edit-warehouse-dialog')
+                    }}
+                >
+                    Add Warehouse
+                </Button>
+            </div>
 
             <Card bodyClsx="!px-0 !py-0">
                 <Table

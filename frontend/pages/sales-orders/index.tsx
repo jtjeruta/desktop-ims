@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
-import PageHeader from '../../components/PageHeader/PageHeader'
+import SearchBar from '../../components/SearchBar/SearchBar'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -41,16 +41,15 @@ const SalesOrdersPageContent = () => {
 
     return (
         <UserLayout>
-            <PageHeader
-                breadcrumbs={[{ text: `Sales Orders` }]}
-                searchbar={{ onSearch: (search) => setSearch(search) }}
-                buttons={[
-                    {
-                        text: 'Add Order',
-                        onClick: () => router.push('/sales-orders/new'),
-                    },
-                ]}
-            />
+            <div className="flex justify-end mb-6 gap-3">
+                <SearchBar
+                    onSearch={(search) => setSearch(search)}
+                    inputClass="!text-base h-full !bg-white"
+                />
+                <Button onClick={() => router.push('/sales-orders/new')}>
+                    Add Vendor
+                </Button>
+            </div>
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table

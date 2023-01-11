@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import PageHeader from '../../components/PageHeader/PageHeader'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import {
     PurchaseOrderContextProvider,
@@ -120,14 +119,17 @@ const PurchaseOrderPageContent = () => {
     return (
         <>
             <UserLayout>
-                <PageHeader
-                    breadcrumbs={[
-                        { text: 'Purchase Orders', url: '/purchase-orders' },
-                        {
-                            text: router.query.orderId as string,
-                        },
-                    ]}
-                />
+                <div className="mb-6">
+                    <h1>
+                        {AppContext.isLoading('get-order') ? (
+                            <span className="w-full h-12" />
+                        ) : PurOrdContext.selectedOrder ? (
+                            `#${PurOrdContext.selectedOrder.id}`
+                        ) : (
+                            'New Order'
+                        )}
+                    </h1>
+                </div>
 
                 <div className="flex flex-col md:flex-row gap-3 mb-3">
                     <div className="w-full md:max-w-sm">

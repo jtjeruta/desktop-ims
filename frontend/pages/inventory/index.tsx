@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
-import PageHeader from '../../components/PageHeader/PageHeader'
 import Table from '../../components/Table/Table'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -17,6 +16,7 @@ import { formatDate } from '../../uitls/date-utils'
 import { getProductWarehouseTotal } from '../../uitls/product-utils'
 import { escapeRegExp, formatCurrency } from '../../uitls'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
+import SearchBar from '../../components/SearchBar/SearchBar'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -93,17 +93,17 @@ const InventoryPageContent = () => {
 
     return (
         <UserLayout>
-            <PageHeader
-                breadcrumbs={[{ text: 'Inventory' }]}
-                searchbar={{ onSearch: (search) => setSearch(search) }}
-                buttons={[
-                    {
-                        text: 'Add Product',
-                        onClick: () =>
-                            AppContext.openDialog('add-product-dialog'),
-                    },
-                ]}
-            />
+            <div className="flex justify-end mb-6 gap-3">
+                <SearchBar
+                    onSearch={(search) => setSearch(search)}
+                    inputClass="!text-base h-full !bg-white"
+                />
+                <Button
+                    onClick={() => AppContext.openDialog('add-product-dialog')}
+                >
+                    Add Product
+                </Button>
+            </div>
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
