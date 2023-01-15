@@ -28,10 +28,13 @@ const ManageProductVariants = () => {
                                     {
                                         title: 'Unit',
                                         key: 'name',
+                                        sort: (variant) => variant.name,
                                     },
                                     {
                                         title: 'Qty',
                                         key: 'quantity',
+                                        bodyClsx: 'text-center',
+                                        sort: (variant) => variant.quantity,
                                     },
                                     {
                                         title: 'Actions',

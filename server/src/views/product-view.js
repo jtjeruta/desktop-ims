@@ -15,7 +15,6 @@ module.exports.ProductView = (productDocument) => {
         subCategory: productDocument.subCategory,
         price: productDocument.price,
         aveUnitCost: productDocument.aveUnitCost,
-        markup: productDocument.markup,
         createdAt: productDocument.createdAt,
         modifiedAt: productDocument.modifiedAt,
         published: productDocument.published,

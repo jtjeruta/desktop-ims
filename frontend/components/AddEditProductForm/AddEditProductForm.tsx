@@ -94,7 +94,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                         <TextField
                             name="price"
                             type="number"
-                            label="Price"
+                            label="Selling Price"
                             placeholder="100.00"
                             required
                             disabled={isDisabled}
@@ -107,7 +107,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                         <TextField
                             name="price"
                             type="number"
-                            label="Price"
+                            label="Selling Price"
                             placeholder="100.00"
                             min={0}
                             disabled={isDisabled}

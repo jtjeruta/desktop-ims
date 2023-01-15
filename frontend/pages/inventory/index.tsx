@@ -133,11 +133,6 @@ const InventoryPageContent = () => {
                             sort: (product) => product.price,
                         },
                         {
-                            title: 'Markup',
-                            key: 'markup',
-                            sort: (product) => product.markup,
-                        },
-                        {
                             title: 'Company',
                             key: 'company',
                             sort: (product) => product.company,
@@ -169,6 +164,7 @@ const InventoryPageContent = () => {
                                     WarehouseContext.warehouses,
                                     product as Product
                                 ),
+                            bodyClsx: 'text-center',
                         },
                         {
                             title: 'STR qty',
@@ -177,9 +173,10 @@ const InventoryPageContent = () => {
                                 return product.stock || 0
                             },
                             sort: (product) => product.stock || 0,
+                            bodyClsx: 'text-center',
                         },
                         {
-                            title: 'Status',
+                            title: 'Available',
                             format: (row) => {
                                 const product = row as Product
                                 const status = statuses.find(
@@ -194,6 +191,10 @@ const InventoryPageContent = () => {
                                         )}
                                     />
                                 )
+                            },
+                            sort: (row) => {
+                                const product = row as Product
+                                return product.published ? -1 : 1
                             },
                         },
                         {

@@ -62,10 +62,14 @@ const ManageProductWarehouses = () => {
                                     {
                                         title: 'Stock Location',
                                         key: 'name',
+                                        sort: (warehouse) => warehouse.name,
                                     },
                                     {
                                         title: 'Stock Qty',
                                         key: 'stock',
+                                        headerClsx: 'text-center',
+                                        bodyClsx: 'text-center',
+                                        sort: (warehouse) => warehouse.stock,
                                     },
                                     {
                                         title: 'Actions',

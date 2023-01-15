@@ -11,7 +11,6 @@ const ProductDetailsCard: FC = () => {
 
     const details = {
         SKU: <code>{ProductContext.product?.sku}</code>,
-        'Ave. Unit Cost': ProductContext.product?.aveUnitCost ?? 'N/A',
         'Total items in Store': ProductContext.product?.stock || 0,
         'Total items in Warehouse': getProductWarehouseTotal(
             WarehouseContext.warehouses,
