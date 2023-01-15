@@ -78,6 +78,14 @@
   npm run start:dev
 ```
 
+## Connecting to Database with Compass
+
+Using compass to connect wont work without a `directConnection` parameter
+
+```
+mongodb://localhost:27017/?directConnection=true
+```
+
 ## Deployment
 
 Pushing to the production branch triggers deployment:
