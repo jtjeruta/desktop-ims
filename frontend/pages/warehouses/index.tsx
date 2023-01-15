@@ -69,7 +69,7 @@ const WarehousesPageContent = () => {
                 </Button>
             </div>
 
-            <Card bodyClsx="!px-0 !py-0">
+            <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
                     rows={filteredWarehouses}
                     loading={AppContext.isLoading('list-warehouses')}
@@ -81,6 +81,7 @@ const WarehousesPageContent = () => {
                                 return warehouse.name
                             },
                             sort: (warehouse) => warehouse.name,
+                            bodyClsx: 'align-top',
                         },
                         {
                             title: 'Products',
@@ -114,7 +115,7 @@ const WarehousesPageContent = () => {
                                                 )
                                                 .map((whp) => (
                                                     <div
-                                                        className="border rounded border-blue-400 p-2"
+                                                        className="border rounded border-blue-400 p-2 truncate"
                                                         key={whp.source.id}
                                                     >
                                                         <span>
@@ -152,7 +153,7 @@ const WarehousesPageContent = () => {
                                         >
                                             {searchedProducts.map((whp) => (
                                                 <div
-                                                    className="border rounded border-blue-400 p-2"
+                                                    className="flex justify-between border rounded border-blue-400 p-2"
                                                     key={whp.source.id}
                                                 >
                                                     <span>
@@ -176,10 +177,11 @@ const WarehousesPageContent = () => {
                                     </div>
                                 )
                             },
+                            bodyClsx: 'max-w-xs',
                         },
                         {
                             title: ' ',
-                            bodyClsx: 'w-0',
+                            bodyClsx: 'w-0 align-top',
                             format: (row) => {
                                 const warehouse = row as Warehouse
                                 return (
