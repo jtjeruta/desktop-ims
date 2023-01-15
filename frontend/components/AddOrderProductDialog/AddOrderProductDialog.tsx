@@ -12,8 +12,10 @@ import Select from '../Select/Select'
 import { usePurchaseOrderContext } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import {
     customerCanBuyProduct,
+    getProductWarehouses,
     updateProductOrWarehouseQuantity,
 } from '../../uitls/product-utils'
+import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 
 const addOrderProductSchema = yup
     .object({
@@ -32,7 +34,12 @@ const AddOrderProductDialog: FC<Props> = (props) => {
     const ProductContext = useProductContext()
     const PurOrdContext = usePurchaseOrderContext()
     const SalesOrderContext = useSalesOrderContext()
+    const WarehouseContext = useWarehouseContext()
     const methods = useForm({ resolver: yupResolver(addOrderProductSchema) })
+    const productWarehouses = getProductWarehouses(
+        WarehouseContext.warehouses,
+        ProductContext.product
+    )
 
     const onSubmit = async (data: FieldValues) => {
         const product = (ProductContext.products || []).find(
@@ -43,7 +50,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             return methods.setError('product', { message: 'Product not found' })
         }
 
-        const warehouse = product.warehouses.find(
+        const warehouse = WarehouseContext.warehouses?.find(
             (warehouse) => warehouse.id === data.warehouse
         )
 
@@ -76,6 +83,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
         } else if (props.type === 'sales') {
             const { valid, remainingQuantity } = customerCanBuyProduct(
                 ProductContext.products ?? [],
+                WarehouseContext.warehouses ?? [],
                 product.id,
                 variant.id,
                 warehouse?.id ?? '',
@@ -92,7 +100,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             }
 
             updateProductOrWarehouseQuantity(
-                ProductContext,
+                WarehouseContext,
                 product.id,
                 warehouse?.id,
                 remainingQuantity
@@ -149,6 +157,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             ) {
                 const { valid } = customerCanBuyProduct(
                     ProductContext.products || [],
+                    WarehouseContext.warehouses ?? [],
                     data.product,
                     data.variant,
                     data.warehouse,
@@ -229,13 +238,12 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                             value: 'store',
                                             text: 'Store',
                                         },
-                                        ...(
-                                            ProductContext.product
-                                                ?.warehouses || []
-                                        ).map((warehouse) => ({
-                                            value: warehouse.id,
-                                            text: warehouse.name,
-                                        })),
+                                        ...productWarehouses.map(
+                                            (warehouse) => ({
+                                                value: warehouse.id,
+                                                text: warehouse.name,
+                                            })
+                                        ),
                                     ]}
                                     className="grow"
                                 />

@@ -3,6 +3,7 @@ import * as SalesOrdersAPI from '../../apis/SalesOrderAPI'
 import { useAppContext } from '../AppContext/AppContext'
 import * as Types from './types'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SalesOrderContext = React.createContext<Types.Context | any>({})
 
 const SalesOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({

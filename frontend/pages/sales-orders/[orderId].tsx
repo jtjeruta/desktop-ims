@@ -23,12 +23,17 @@ import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm
 import SalesOrderCustomerForm from '../../components/SalesOrderCustomerForm/SalesOrderCustomerForm'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
 import { undoProductOrWarehouseStockChanges } from '../../uitls/product-utils'
+import {
+    useWarehouseContext,
+    WarehouseContextProvider,
+} from '../../contexts/WarehouseContext/WarehouseContext'
 
 const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
     const SalesOrderContext = useSalesOrderContext()
     const ProductContext = useProductContext()
     const CustomerContext = useCustomerContext()
+    const WarehouseContext = useWarehouseContext()
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
     const [customersError, setCustomersError] = useState<string>('')
@@ -37,7 +42,8 @@ const SalesOrderPageContent = () => {
     const submitButtonDisabled =
         AppContext.isLoading('get-sales-order') ||
         SalesOrderContext.draftOrder.products.length <= 0 ||
-        CustomerContext.customers === null
+        CustomerContext.customers === null ||
+        WarehouseContext.warehouses === null
 
     const submitButtonLoading =
         AppContext.isLoading('add-sales-order') ||
@@ -110,19 +116,13 @@ const SalesOrderPageContent = () => {
                 }
             }
 
-            // fetch products
-            if (ProductContext.products === null) {
-                await ProductContext.listProducts()
-            }
-
-            // fetch customers
-            if (CustomerContext.customers === null) {
-                await CustomerContext.listCustomers()
-            }
+            ProductContext.listProducts()
+            CustomerContext.listCustomers()
+            WarehouseContext.listWarehouses()
         }
 
         init()
-    }, [router, SalesOrderContext, ProductContext, CustomerContext, isEditPage])
+    }, [router, isEditPage])
 
     return (
         <>
@@ -203,6 +203,7 @@ const SalesOrderPageContent = () => {
                     undoProductOrWarehouseStockChanges(
                         ProductContext,
                         SalesOrderContext,
+                        WarehouseContext,
                         selectedProduct
                     )
 
@@ -230,11 +231,13 @@ const SalesOrderPageContent = () => {
 
 const SalesOrderPage = () => (
     <ProductContextProvider>
-        <CustomerContextProvider>
-            <SalesOrderContextProvider>
-                <SalesOrderPageContent />
-            </SalesOrderContextProvider>
-        </CustomerContextProvider>
+        <WarehouseContextProvider>
+            <CustomerContextProvider>
+                <SalesOrderContextProvider>
+                    <SalesOrderPageContent />
+                </SalesOrderContextProvider>
+            </CustomerContextProvider>
+        </WarehouseContextProvider>
     </ProductContextProvider>
 )
 
