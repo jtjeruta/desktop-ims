@@ -8,12 +8,6 @@ import {
     Warehouse,
 } from '../contexts/WarehouseContext/types'
 
-// TODO: add tests
-export const getProductMarkup = (product: Product | null) =>
-    product && product.aveUnitCost
-        ? ((product.price - product.aveUnitCost) / product.aveUnitCost) * 100
-        : null
-
 export const getProductWarehouseTotal = (
     warehouses: Warehouse[] | null,
     product: Product | null

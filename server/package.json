@@ -7,7 +7,8 @@
         "lint": "eslint ./src/**/*.js",
         "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
         "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000",
-        "migrate": "migrate -d mongodb://desktop-ims-db/ims"
+        "migrate-dev": "migrate --md ./migrations-dev -d mongodb://desktop-ims-db/ims",
+        "migrate-prd": "migrate --md ./migrations-prd -d mongodb://desktop-ims-db/ims"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -28,6 +29,7 @@
         "validator": "^13.7.0"
     },
     "devDependencies": {
+        "@faker-js/faker": "^7.6.0",
         "chai": "^4.3.6",
         "eslint": "^8.17.0",
         "eslint-config-prettier": "^8.5.0",

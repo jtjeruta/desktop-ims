@@ -15,6 +15,7 @@ module.exports.createWarehouse = async (data) => {
         const createdWarehouse = await warehouse.save()
         return [201, createdWarehouse]
     } catch (error) {
+        console.error(error)
         console.error('Failed to create warehouse')
         return getMongoError(error)
     }
@@ -113,6 +114,16 @@ module.exports.deleteWarehouseById = async (id) => {
         return [200]
     } catch (error) {
         console.error('Failed to delete warehouse by id')
+        return getMongoError(error)
+    }
+}
+
+module.exports.deleteWarehouses = async (query = {}) => {
+    try {
+        await WarehouseModel.deleteMany(query)
+        return [200]
+    } catch (error) {
+        console.error('Failed to delete warehouses')
         return getMongoError(error)
     }
 }

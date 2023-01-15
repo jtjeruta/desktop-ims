@@ -21,10 +21,6 @@ const ProductSchema = new mongoose.Schema({
         required: true,
         min: [0, 'path price can not be less than 0.'],
     },
-    aveUnitCost: {
-        type: Number,
-        min: [0, 'path aveUnitCost can not be less than 0.'],
-    },
     published: {
         type: Boolean,
         required: true,

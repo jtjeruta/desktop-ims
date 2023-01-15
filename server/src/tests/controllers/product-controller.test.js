@@ -162,14 +162,12 @@ describe('Controller: Create product', () => {
             'stock',
             'subCategory',
             'variants',
-            'aveUnitCost',
             'company',
             'category',
             'createdAt',
             'id',
             'modifiedAt',
         ])
-        expect(res.body.product.aveUnitCost).to.be.null
         expect(res.body.product.published).to.be.false
     })
 
@@ -296,9 +294,6 @@ describe('Controller: Update product', () => {
                     )
                     expect(res.body.product.price).to.equal(
                         testdata.product3.price
-                    )
-                    expect(res.body.product.aveUnitCost).to.equal(
-                        createdProducts.product1.aveUnitCost
                     )
                     expect(res.body.product.published).to.equal(
                         testdata.product3.published

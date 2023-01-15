@@ -20,9 +20,6 @@ describe('Module: Create Product', () => {
             testdata.product1.subCategory
         )
         expect(createdProduct[1].price).to.equal(testdata.product1.price)
-        expect(createdProduct[1].aveUnitCost).to.equal(
-            testdata.product1.aveUnitCost
-        )
         expect(createdProduct[1].published).to.equal(
             testdata.product1.published
         )
@@ -32,7 +29,6 @@ describe('Module: Create Product', () => {
     it('Fail: create product using invalid data', async () => {
         const createdProduct = await ProductsModule.createProduct({
             price: -1,
-            aveUnitCost: -2,
         })
         expect(createdProduct[0]).to.equal(400)
         expect(createdProduct[1].errors.name.message).to.equal(
@@ -40,9 +36,6 @@ describe('Module: Create Product', () => {
         )
         expect(createdProduct[1].errors.price.message).to.equal(
             'path price can not be less than 0.'
-        )
-        expect(createdProduct[1].errors.aveUnitCost.message).to.equal(
-            'path aveUnitCost can not be less than 0.'
         )
         expect(createdProduct[1].errors.published.message).to.equal(
             'Path `published` is required.'
@@ -116,9 +109,6 @@ describe('Module: Update Product', () => {
             testdata.product2.subCategory
         )
         expect(updatedProduct[1].price).to.equal(testdata.product2.price)
-        expect(updatedProduct[1].aveUnitCost).to.equal(
-            testdata.product2.aveUnitCost
-        )
         expect(updatedProduct[1].published).to.equal(
             testdata.product2.published
         )
@@ -133,18 +123,12 @@ describe('Module: Update Product', () => {
         )
         const updatedProduct = await ProductsModule.updateProduct(
             createdProduct[1]._id,
-            {
-                price: -1,
-                aveUnitCost: -1,
-            }
+            { price: -1 }
         )
 
         expect(updatedProduct[0]).to.equal(400)
         expect(updatedProduct[1].errors.price.message).to.equal(
             'path price can not be less than 0.'
-        )
-        expect(updatedProduct[1].errors.aveUnitCost.message).to.equal(
-            'path aveUnitCost can not be less than 0.'
         )
     })
 

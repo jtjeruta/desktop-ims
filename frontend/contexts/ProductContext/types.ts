@@ -7,7 +7,6 @@ export type Product = {
     category: string
     subCategory: string
     price: number
-    aveUnitCost: number
     createdAt: number
     sku: string
     published: boolean

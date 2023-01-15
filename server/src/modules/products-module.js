@@ -70,3 +70,13 @@ module.exports.updateProduct = async (id, data, session = null) => {
 module.exports.generateSKU = () => {
     return crypto.randomBytes(4).toString('hex').toUpperCase()
 }
+
+module.exports.deleteProducts = async (query = {}) => {
+    try {
+        await ProductModel.deleteMany(query)
+        return [200]
+    } catch (err) {
+        console.error('Failed to delete products')
+        return getMongoError(err)
+    }
+}

@@ -12,7 +12,6 @@ module.exports.createProduct = async (req, res) => {
         company: req.body.company,
         category: req.body.category,
         subCategory: req.body.subCategory,
-        aveUnitCost: null,
         published: false,
         stock: req.body.stock,
         modifiedBy: req.con._id,

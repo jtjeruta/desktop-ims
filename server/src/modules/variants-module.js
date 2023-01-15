@@ -15,6 +15,7 @@ module.exports.createVariant = async (data) => {
         const createdVariant = await variant.save()
         return [201, createdVariant]
     } catch (error) {
+        console.error(error)
         console.error('Failed to create variant')
         return getMongoError(error)
     }
@@ -39,5 +40,15 @@ module.exports.deleteVariantById = async (id) => {
     } catch (error) {
         console.error('Failed to delete variant by id')
         return getMongoError(error)
+    }
+}
+
+module.exports.deleteVariants = async (query = {}) => {
+    try {
+        await VariantModel.deleteMany(query)
+        return [200]
+    } catch (err) {
+        console.error('Failed to delete variants')
+        return getMongoError(err)
     }
 }

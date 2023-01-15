@@ -34,7 +34,6 @@ const InventoryPageContent = () => {
             return [
                 product.name,
                 product.company,
-                product.aveUnitCost,
                 product.category,
                 product.price,
                 `#${product.sku}`,
