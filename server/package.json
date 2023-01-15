@@ -7,7 +7,7 @@
         "lint": "eslint ./src/**/*.js",
         "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
         "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000",
-        "migrate": "migrate"
+        "migrate": "migrate -d mongodb://desktop-ims-db/ims"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -20,7 +20,7 @@
         "express-simulate-latency": "^0.0.2",
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^8.5.1",
-        "migrate": "^1.8.0",
+        "migrate-mongoose": "^4.0.0",
         "moment": "^2.29.3",
         "mongoose": "^6.6.5",
         "morgan": "~1.9.1",

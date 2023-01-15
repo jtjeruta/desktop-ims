@@ -3,7 +3,7 @@ const { createUser, deleteUser } = require('../src/modules/users-module')
 
 dbConnect()
 
-module.exports.up = async () => {
+async function up() {
     const reponses = await Promise.all([
         createUser({
             email: 'admin@gmail.com',
@@ -26,7 +26,7 @@ module.exports.up = async () => {
     }
 }
 
-module.exports.down = async () => {
+async function down() {
     const responses = await Promise.all([
         deleteUser({ email: 'admin@gmail.com' }),
         deleteUser({ email: 'employee@gmail.com' }),
@@ -36,3 +36,5 @@ module.exports.down = async () => {
         throw 'Failed to create user'
     }
 }
+
+module.exports = { up, down }
