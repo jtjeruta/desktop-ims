@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import clsx from 'clsx'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import Table from '../../components/Table/Table'
@@ -17,12 +19,12 @@ import {
     useProductContext,
 } from '../../contexts/ProductContext/ProductContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import clsx from 'clsx'
 
 const WarehousesPageContent = () => {
     const AppContext = useAppContext()
     const WarehouseContext = useWarehouseContext()
     const ProductContext = useProductContext()
+    const router = useRouter()
     const [search, setSearch] = useState<string>('')
     const [openedWarehouse, setOpenedWarehouse] = useState<string | null>(null)
     const maxProductsToShow = 3
@@ -78,7 +80,21 @@ const WarehousesPageContent = () => {
                             title: 'Name',
                             format: (row) => {
                                 const warehouse = row as Warehouse
-                                return warehouse.name
+                                return (
+                                    <div
+                                        className="hover:text-teal-600 cursor-pointer"
+                                        onClick={() => {
+                                            WarehouseContext.setSelectedWarehouse(
+                                                warehouse
+                                            )
+                                            AppContext.openDialog(
+                                                'add-edit-warehouse-dialog'
+                                            )
+                                        }}
+                                    >
+                                        {warehouse.name}
+                                    </div>
+                                )
                             },
                             sort: (warehouse) => warehouse.name,
                             bodyClsx: 'align-top',
@@ -115,8 +131,13 @@ const WarehousesPageContent = () => {
                                                 )
                                                 .map((whp) => (
                                                     <div
-                                                        className="border rounded border-blue-400 p-2 truncate"
+                                                        className="border rounded border-blue-400 p-2 truncate cursor-pointer hover:bg-gray-50"
                                                         key={whp.source.id}
+                                                        onClick={() =>
+                                                            router.push(
+                                                                `/inventory/${whp.source.id}`
+                                                            )
+                                                        }
                                                     >
                                                         <span>
                                                             {whp.source.name}

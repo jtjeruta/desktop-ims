@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import Table from '../../components/Table/Table'
@@ -119,8 +120,17 @@ const InventoryPageContent = () => {
                         },
                         {
                             title: 'Name',
-                            key: 'name',
-                            bodyClsx: 'w-full font-bold',
+                            bodyClsx: 'w-full',
+                            format: (row) => {
+                                const product = row as Product
+                                return (
+                                    <Link href={`/inventory/${product.id}`}>
+                                        <span className="hover:text-teal-600 cursor-pointer">
+                                            {product.name}
+                                        </span>
+                                    </Link>
+                                )
+                            },
                             sort: (product) => product.name,
                         },
                         {
@@ -142,7 +152,6 @@ const InventoryPageContent = () => {
                                 const product = row as Product
                                 return `#${product.sku}`
                             },
-                            bodyClsx: 'font-bold',
                         },
                         {
                             title: 'Category',

@@ -20,6 +20,11 @@ const PageContent: FC = () => {
     const UserContext = useUserContext()
     const [search, setSearch] = useState<string>('')
 
+    const handleEditUser = (user: User) => () => {
+        UserContext.setUserToEdit(user)
+        AppContext.openDialog('add-edit-user-dialog')
+    }
+
     useEffect(() => {
         UserContext.users === null && UserContext.listUsers()
     }, [UserContext])
@@ -55,20 +60,37 @@ const PageContent: FC = () => {
                             format: (row) => {
                                 const user = row as User
                                 return (
-                                    <>
-                                        <div className="font-medium text-gray-900 whitespace-nowrap">
-                                            {user.firstName} {user.lastName}
-                                        </div>
-                                        <div>{user.email}</div>
-                                    </>
+                                    <div
+                                        className="hover:text-teal-600 cursor-pointer"
+                                        onClick={handleEditUser(user)}
+                                    >
+                                        {user.firstName} {user.lastName}
+                                    </div>
                                 )
                             },
+                            sort: (user) =>
+                                [user.firstName, user.lastName].join(' '),
+                        },
+                        {
+                            title: 'Email',
                             bodyClsx: 'w-full',
+                            format: (row) => {
+                                const user = row as User
+                                return (
+                                    <div
+                                        className="hover:text-teal-600 cursor-pointer"
+                                        onClick={handleEditUser(user)}
+                                    >
+                                        {user.email}
+                                    </div>
+                                )
+                            },
+                            sort: (user) => user.email,
                         },
                         {
                             title: 'Role',
                             key: 'role',
-                            bodyClsx: 'w-full',
+                            sort: (user) => user.role,
                         },
                         {
                             title: ' ',
@@ -78,12 +100,7 @@ const PageContent: FC = () => {
                                     <div className="flex gap-10">
                                         <Button
                                             style="link"
-                                            onClick={() => {
-                                                UserContext.setUserToEdit(user)
-                                                AppContext.openDialog(
-                                                    'add-edit-user-dialog'
-                                                )
-                                            }}
+                                            onClick={handleEditUser(user)}
                                         >
                                             Edit
                                         </Button>
