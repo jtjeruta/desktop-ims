@@ -27,6 +27,7 @@ import {
     useWarehouseContext,
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
+import OrderSummarySkeleton from '../../components/OrderSummary/OrderSummaySkeleton'
 
 const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -110,7 +111,10 @@ const SalesOrderPageContent = () => {
                 }
 
                 if (response[0]) {
-                    SalesOrderContext.setDraftOrder(response[1])
+                    SalesOrderContext.setDraftOrder((prev) => ({
+                        ...prev,
+                        ...response[1],
+                    }))
                     response[1].customer &&
                         CustomerContext.setDraftCustomer(response[1].customer)
                 }
@@ -169,29 +173,32 @@ const SalesOrderPageContent = () => {
                             }))
                         }}
                     />
-                    <OrderSummary
-                        total={SalesOrderContext.draftOrder?.total}
-                        disabled={submitButtonDisabled}
-                        loading={submitButtonLoading}
-                        onSubmit={onSubmit}
-                        buttonText={
-                            isEditPage ? 'Update Order' : 'Create Order'
-                        }
-                        onChange={(
-                            orderDate: number,
-                            invoiceNumber: string
-                        ) => {
-                            SalesOrderContext.setDraftOrder((prev) => ({
-                                ...prev,
-                                orderDate,
-                                invoiceNumber,
-                            }))
-                        }}
-                        orderDate={SalesOrderContext.draftOrder.orderDate}
-                        invoiceNumber={
-                            SalesOrderContext.draftOrder.invoiceNumber
-                        }
-                    />
+                    {submitButtonDisabled ? (
+                        <OrderSummarySkeleton />
+                    ) : (
+                        <OrderSummary
+                            total={SalesOrderContext.draftOrder?.total}
+                            loading={submitButtonLoading}
+                            onSubmit={onSubmit}
+                            buttonText={
+                                isEditPage ? 'Update Order' : 'Create Order'
+                            }
+                            onChange={(
+                                orderDate: number,
+                                invoiceNumber: string
+                            ) => {
+                                SalesOrderContext.setDraftOrder((prev) => ({
+                                    ...prev,
+                                    orderDate,
+                                    invoiceNumber,
+                                }))
+                            }}
+                            orderDate={SalesOrderContext.draftOrder.orderDate}
+                            invoiceNumber={
+                                SalesOrderContext.draftOrder.invoiceNumber
+                            }
+                        />
+                    )}
                 </div>
             </UserLayout>
 

@@ -22,6 +22,7 @@ import {
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 import AddEditVendorFormForPurchaseOrder from '../../components/AddEditVendorFormForPurchaseOrder/AddEditVendorFormForPurchaseOrder'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
+import OrderSummarySkeleton from '../../components/OrderSummary/OrderSummaySkeleton'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -161,27 +162,32 @@ const PurchaseOrderPageContent = () => {
                             }))
                         }}
                     />
-                    <OrderSummary
-                        total={PurOrdContext.draftOrder.total}
-                        onSubmit={onSubmit}
-                        disabled={submitButtonDisabled}
-                        loading={submitButtonLoading}
-                        buttonText={
-                            isEditPage ? 'Update Order' : 'Create Order'
-                        }
-                        onChange={(
-                            orderDate: number,
-                            invoiceNumber: string
-                        ) => {
-                            PurOrdContext.setDraftOrder((prev) => ({
-                                ...prev,
-                                orderDate,
-                                invoiceNumber,
-                            }))
-                        }}
-                        orderDate={PurOrdContext.draftOrder.orderDate}
-                        invoiceNumber={PurOrdContext.draftOrder.invoiceNumber}
-                    />
+                    {submitButtonDisabled ? (
+                        <OrderSummarySkeleton />
+                    ) : (
+                        <OrderSummary
+                            total={PurOrdContext.draftOrder.total}
+                            onSubmit={onSubmit}
+                            loading={submitButtonLoading}
+                            buttonText={
+                                isEditPage ? 'Update Order' : 'Create Order'
+                            }
+                            onChange={(
+                                orderDate: number,
+                                invoiceNumber: string
+                            ) => {
+                                PurOrdContext.setDraftOrder((prev) => ({
+                                    ...prev,
+                                    orderDate,
+                                    invoiceNumber,
+                                }))
+                            }}
+                            orderDate={PurOrdContext.draftOrder.orderDate}
+                            invoiceNumber={
+                                PurOrdContext.draftOrder.invoiceNumber
+                            }
+                        />
+                    )}
                 </div>
             </UserLayout>
 

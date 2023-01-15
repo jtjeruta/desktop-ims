@@ -20,20 +20,6 @@ type Props = {
 const OrderSummary: FC<Props> = (props) => {
     const methods = useForm()
 
-    // set defaults
-    useEffect(() => {
-        if (props.orderDate && props.orderDate !== methods.getValues('date')) {
-            methods.setValue(
-                'date',
-                moment(props.orderDate * 1000).format('YYYY-MM-DD')
-            )
-        }
-
-        if (props.invoiceNumber != methods.getValues('invoiceNumber')) {
-            methods.setValue('invoiceNumber', props.invoiceNumber)
-        }
-    }, [methods, props])
-
     // set on change
     useEffect(() => {
         const subscription = methods.watch((data) => {
@@ -42,6 +28,20 @@ const OrderSummary: FC<Props> = (props) => {
         })
         return () => subscription.unsubscribe()
     }, [methods, props])
+
+    // set defaults
+    useEffect(() => {
+        const currentDate =
+            props.orderDate && props.orderDate !== methods.getValues('date')
+                ? props.orderDate * 1000
+                : moment().unix() * 1000
+
+        methods.setValue('date', moment(currentDate).format('YYYY-MM-DD'))
+
+        if (props.invoiceNumber != methods.getValues('invoiceNumber')) {
+            methods.setValue('invoiceNumber', props.invoiceNumber)
+        }
+    }, [methods])
 
     return (
         <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">
