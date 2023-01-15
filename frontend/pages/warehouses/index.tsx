@@ -17,12 +17,15 @@ import {
     useProductContext,
 } from '../../contexts/ProductContext/ProductContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import clsx from 'clsx'
 
 const WarehousesPageContent = () => {
     const AppContext = useAppContext()
     const WarehouseContext = useWarehouseContext()
     const ProductContext = useProductContext()
     const [search, setSearch] = useState<string>('')
+    const [openedWarehouse, setOpenedWarehouse] = useState<string | null>(null)
+    const maxProductsToShow = 3
 
     const filteredWarehouses = (WarehouseContext.warehouses || []).filter(
         (warehouse) => {
@@ -83,11 +86,71 @@ const WarehousesPageContent = () => {
                             title: 'Products',
                             format: (row) => {
                                 const warehouse = row as Warehouse
+                                const filteredProducts =
+                                    warehouse.products.filter(
+                                        (wp) => wp.stock > 0
+                                    )
+
+                                const searchedProducts =
+                                    filteredProducts.filter((product) =>
+                                        new RegExp(search, 'igm').test(
+                                            product.source.name
+                                        )
+                                    )
+
+                                const isOpen = warehouse.id === openedWarehouse
                                 return (
-                                    <div className="flex flex-wrap gap-1">
-                                        {warehouse.products
-                                            .filter((wp) => wp.stock > 0)
-                                            .map((whp) => (
+                                    <div className="flex flex-col gap-1">
+                                        <div
+                                            className={clsx([
+                                                'flex gap-1 transition-all max-h-12 overflow-hidden duration-500',
+                                                isOpen && '!max-h-0',
+                                            ])}
+                                        >
+                                            {searchedProducts
+                                                .filter(
+                                                    (_, i) =>
+                                                        i < maxProductsToShow
+                                                )
+                                                .map((whp) => (
+                                                    <div
+                                                        className="border rounded border-blue-400 p-2"
+                                                        key={whp.source.id}
+                                                    >
+                                                        <span>
+                                                            {whp.source.name}
+                                                        </span>
+                                                        <span className="ml-2 bg-blue-400 rounded px-2 text-white">
+                                                            {whp.stock}
+                                                        </span>
+                                                    </div>
+                                                ))}
+
+                                            {filteredProducts.length >
+                                                maxProductsToShow && (
+                                                <Button
+                                                    className="border rounded border-blue-400 p-2"
+                                                    onClick={() =>
+                                                        setOpenedWarehouse(
+                                                            warehouse.id
+                                                        )
+                                                    }
+                                                >
+                                                    <span>
+                                                        {filteredProducts.length -
+                                                            maxProductsToShow}{' '}
+                                                        more...
+                                                    </span>
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div
+                                            className={clsx([
+                                                'flex gap-1 flex-col transition-all overflow-hidden max-h-0 duration-500',
+                                                isOpen && '!max-h-screen',
+                                            ])}
+                                        >
+                                            {searchedProducts.map((whp) => (
                                                 <div
                                                     className="border rounded border-blue-400 p-2"
                                                     key={whp.source.id}
@@ -100,6 +163,16 @@ const WarehousesPageContent = () => {
                                                     </span>
                                                 </div>
                                             ))}
+                                            <Button
+                                                style="outline"
+                                                color="secondary"
+                                                onClick={() =>
+                                                    setOpenedWarehouse(null)
+                                                }
+                                            >
+                                                Show less...
+                                            </Button>
+                                        </div>
                                     </div>
                                 )
                             },
