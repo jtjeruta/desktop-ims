@@ -1,7 +1,8 @@
 import { FC } from 'react'
 import { FaTrash } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import { Product, Warehouse } from '../../contexts/ProductContext/types'
+import { Product } from '../../contexts/ProductContext/types'
+import { Warehouse } from '../../contexts/WarehouseContext/types'
 import { formatCurrency } from '../../uitls'
 import Button from '../Button/Button'
 import Card from '../Card/Card'
@@ -55,7 +56,7 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 bodyClsx: 'text-right',
                             },
                             {
-                                title: 'Remove From',
+                                title: 'Location',
                                 format: (row) => row.warehouse?.name ?? 'Store',
                                 headerClsx: 'w-full',
                             },
