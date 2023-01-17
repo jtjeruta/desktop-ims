@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 type Props = {
     title?: string
-    children: JSX.Element
+    children: React.ReactNode
     cardClsx?: string
     titleClsx?: string
     bodyClsx?: string

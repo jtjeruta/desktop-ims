@@ -18,6 +18,7 @@ import { getProductWarehouseTotal } from '../../uitls/product-utils'
 import { escapeRegExp, formatCurrency } from '../../uitls'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import Pagination from '../../components/Pagination/Pagination'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -105,126 +106,129 @@ const InventoryPageContent = () => {
                 </Button>
             </div>
 
-            <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
-                <Table
-                    rows={filteredProducts}
-                    loading={AppContext.isLoading('list-products')}
-                    columns={[
-                        {
-                            title: 'Created',
-                            format: (row) => {
-                                const product = row as Product
-                                return formatDate(product.createdAt)
+            <Card bodyClsx="!px-0 !py-0">
+                <div className="overflow-x-auto">
+                    <Table
+                        rows={filteredProducts}
+                        loading={AppContext.isLoading('list-products')}
+                        columns={[
+                            {
+                                title: 'Created',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return formatDate(product.createdAt)
+                                },
+                                sort: (product) => product.createdAt,
                             },
-                            sort: (product) => product.createdAt,
-                        },
-                        {
-                            title: 'Name',
-                            bodyClsx: 'w-full',
-                            format: (row) => {
-                                const product = row as Product
-                                return (
-                                    <Link href={`/inventory/${product.id}`}>
-                                        <span className="hover:text-teal-600 cursor-pointer">
-                                            {product.name}
-                                        </span>
-                                    </Link>
-                                )
+                            {
+                                title: 'Name',
+                                bodyClsx: 'w-full',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return (
+                                        <Link href={`/inventory/${product.id}`}>
+                                            <span className="hover:text-teal-600 cursor-pointer">
+                                                {product.name}
+                                            </span>
+                                        </Link>
+                                    )
+                                },
+                                sort: (product) => product.name,
                             },
-                            sort: (product) => product.name,
-                        },
-                        {
-                            title: 'Price',
-                            format: (row) => {
-                                const product = row as Product
-                                return formatCurrency(product.price)
+                            {
+                                title: 'Price',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return formatCurrency(product.price)
+                                },
+                                sort: (product) => product.price,
                             },
-                            sort: (product) => product.price,
-                        },
-                        {
-                            title: 'Company',
-                            key: 'company',
-                            sort: (product) => product.company,
-                        },
-                        {
-                            title: 'SKU',
-                            format: (row) => {
-                                const product = row as Product
-                                return `#${product.sku}`
+                            {
+                                title: 'Company',
+                                key: 'company',
+                                sort: (product) => product.company,
                             },
-                        },
-                        {
-                            title: 'Category',
-                            key: 'category',
-                            sort: (product) => product.category,
-                        },
-                        {
-                            title: 'WHS qty',
-                            format: (row) => {
-                                const product = row as Product
-                                return getProductWarehouseTotal(
-                                    WarehouseContext.warehouses,
-                                    product
-                                )
+                            {
+                                title: 'SKU',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return `#${product.sku}`
+                                },
                             },
-                            sort: (product) =>
-                                getProductWarehouseTotal(
-                                    WarehouseContext.warehouses,
-                                    product as Product
-                                ),
-                            bodyClsx: 'text-center',
-                        },
-                        {
-                            title: 'STR qty',
-                            format: (row) => {
-                                const product = row as Product
-                                return product.stock || 0
+                            {
+                                title: 'Category',
+                                key: 'category',
+                                sort: (product) => product.category,
                             },
-                            sort: (product) => product.stock || 0,
-                            bodyClsx: 'text-center',
-                        },
-                        {
-                            title: 'Available',
-                            format: (row) => {
-                                const product = row as Product
-                                const status = statuses.find(
-                                    (status) => status.id === product.id
-                                )
-                                return (
-                                    <Switch
-                                        toggled={!!status?.published}
-                                        onClick={handleToggleStatus(
-                                            product.id,
-                                            !status?.published
-                                        )}
-                                    />
-                                )
+                            {
+                                title: 'WHS qty',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return getProductWarehouseTotal(
+                                        WarehouseContext.warehouses,
+                                        product
+                                    )
+                                },
+                                sort: (product) =>
+                                    getProductWarehouseTotal(
+                                        WarehouseContext.warehouses,
+                                        product as Product
+                                    ),
+                                bodyClsx: 'text-center',
                             },
-                            sort: (row) => {
-                                const product = row as Product
-                                return product.published ? -1 : 1
+                            {
+                                title: 'STR qty',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return product.stock || 0
+                                },
+                                sort: (product) => product.stock || 0,
+                                bodyClsx: 'text-center',
                             },
-                        },
-                        {
-                            title: ' ',
-                            format: (row) => {
-                                const product = row as Product
-                                return (
-                                    <Button
-                                        style="link"
-                                        onClick={() =>
-                                            router.push(
-                                                `/inventory/${product.id}`
-                                            )
-                                        }
-                                    >
-                                        View
-                                    </Button>
-                                )
+                            {
+                                title: 'Available',
+                                format: (row) => {
+                                    const product = row as Product
+                                    const status = statuses.find(
+                                        (status) => status.id === product.id
+                                    )
+                                    return (
+                                        <Switch
+                                            toggled={!!status?.published}
+                                            onClick={handleToggleStatus(
+                                                product.id,
+                                                !status?.published
+                                            )}
+                                        />
+                                    )
+                                },
+                                sort: (row) => {
+                                    const product = row as Product
+                                    return product.published ? -1 : 1
+                                },
                             },
-                        },
-                    ]}
-                />
+                            {
+                                title: ' ',
+                                format: (row) => {
+                                    const product = row as Product
+                                    return (
+                                        <Button
+                                            style="link"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/inventory/${product.id}`
+                                                )
+                                            }
+                                        >
+                                            View
+                                        </Button>
+                                    )
+                                },
+                            },
+                        ]}
+                    />
+                </div>
+                <Pagination totalRecords={100} className="p-3" />
             </Card>
             <AddProductDialog />
         </UserLayout>
