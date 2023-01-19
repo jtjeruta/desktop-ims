@@ -44,7 +44,10 @@ const SalesOrdersPageContent = () => {
         <UserLayout>
             <div className="flex justify-end mb-6 gap-3">
                 <SearchBar
-                    onSearch={(search) => setSearch(search)}
+                    onSearch={(search) => {
+                        setSearch(search)
+                        setPage(0)
+                    }}
                     inputClass="!text-base h-full !bg-white"
                 />
                 <Button onClick={() => router.push('/sales-orders/new')}>

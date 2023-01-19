@@ -34,7 +34,10 @@ const PageContent: FC = () => {
         <UserLayout>
             <div className="flex justify-end mb-6 gap-3">
                 <SearchBar
-                    onSearch={(text) => setSearch(text)}
+                    onSearch={(search) => {
+                        setSearch(search)
+                        setPage(0)
+                    }}
                     inputClass="!text-base h-full !bg-white"
                 />
                 <Button

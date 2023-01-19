@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
@@ -9,11 +10,11 @@ import {
     StatContextProvider,
     useStatContext,
 } from '../../contexts/StatsContext/StatsContext'
-import { useEffect } from 'react'
 import SearchBar from '../../components/SearchBar/SearchBar'
 
 const ReportingContent = () => {
     const StatContext = useStatContext()
+    const [page, setPage] = useState<number>(0)
     const singleStatCounters: SingleStatCounterType[] = [
         {
             title: 'Total Sales',
@@ -41,7 +42,10 @@ const ReportingContent = () => {
         <UserLayout>
             <div className="flex justify-end mb-6 gap-3">
                 <SearchBar
-                    onSearch={StatContext.setSearch}
+                    onSearch={(searchText) => {
+                        StatContext.setSearch(searchText)
+                        setPage(0)
+                    }}
                     inputClass="!text-base h-full !bg-white"
                 />
                 <DateRangePicker
@@ -61,7 +65,7 @@ const ReportingContent = () => {
                         <SingleStatCounter key={stat.title} {...stat} />
                     ))}
                 </div>
-                <ReportingTable />
+                <ReportingTable page={page} setPage={setPage} />
             </div>
         </UserLayout>
     )

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect } from 'react'
 import Link from 'next/link'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useStatContext } from '../../contexts/StatsContext/StatsContext'
@@ -7,10 +7,13 @@ import { escapeRegExp } from '../../uitls'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
 
-const ReportingTable = () => {
+type Props = {
+    page: number
+    setPage: Dispatch<SetStateAction<number>>
+}
+const ReportingTable: FC<Props> = (props) => {
     const AppContext = useAppContext()
     const StatContext = useStatContext()
-    const [page, setPage] = useState<number>(0)
 
     const filteredReports = (StatContext.productReports || []).filter(
         (report) => {
@@ -37,8 +40,8 @@ const ReportingTable = () => {
         <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
             <Table
                 defaultSort={0}
-                page={page}
-                handlePageChange={(newPage) => setPage(newPage)}
+                page={props.page}
+                handlePageChange={props.setPage}
                 rows={filteredReports}
                 loading={AppContext.isLoading('list-product-reports')}
                 columns={[
