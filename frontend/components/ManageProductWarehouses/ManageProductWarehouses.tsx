@@ -22,6 +22,7 @@ const ManageProductWarehouses = () => {
     const isLoading =
         ProductContext.product == null || WarehouseContext.warehouses == null
     const [warehouses, setWarehouses] = useState<ProductWarehouse[]>([])
+    const [page, setPage] = useState<number>(0)
 
     useEffect(() => {
         if (isLoading) return
@@ -56,6 +57,8 @@ const ManageProductWarehouses = () => {
                     <div className="flex flex-col h-full">
                         <div className="grow">
                             <Table
+                                page={page}
+                                handlePageChange={(newPage) => setPage(newPage)}
                                 loading={isLoading}
                                 rows={warehouses}
                                 columns={[

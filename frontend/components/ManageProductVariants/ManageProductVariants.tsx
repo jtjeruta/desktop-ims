@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Button from '../Button/Button'
@@ -11,6 +12,7 @@ import { Variant } from '../../contexts/ProductContext/types'
 const ManageProductVariants = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
+    const [page, setPage] = useState<number>(0)
 
     const variantCanBeDeleted =
         (ProductContext.product?.variants || []).length > 1
@@ -22,6 +24,8 @@ const ManageProductVariants = () => {
                     <div className="flex flex-col h-full">
                         <div className="grow">
                             <Table
+                                page={page}
+                                handlePageChange={(newPage) => setPage(newPage)}
                                 loading={!ProductContext.product}
                                 rows={ProductContext.product?.variants || []}
                                 columns={[

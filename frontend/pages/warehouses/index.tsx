@@ -28,6 +28,7 @@ const WarehousesPageContent = () => {
     const [search, setSearch] = useState<string>('')
     const [openedWarehouse, setOpenedWarehouse] = useState<string | null>(null)
     const maxProductsToShow = 3
+    const [page, setPage] = useState<number>(0)
 
     const filteredWarehouses = (WarehouseContext.warehouses || []).filter(
         (warehouse) => {
@@ -73,6 +74,8 @@ const WarehousesPageContent = () => {
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
+                    page={page}
+                    handlePageChange={(newPage) => setPage(newPage)}
                     rows={filteredWarehouses}
                     loading={AppContext.isLoading('list-warehouses')}
                     columns={[

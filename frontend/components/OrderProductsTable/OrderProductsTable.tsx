@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { Product } from '../../contexts/ProductContext/types'
@@ -23,12 +23,15 @@ type Props = {
 
 const OrderProductsTable: FC<Props> = (props) => {
     const AppContext = useAppContext()
+    const [page, setPage] = useState<number>(0)
 
     return (
         <Card cardClsx="grow" bodyClsx="!px-0 !py-0 h-full">
             <div className="flex flex-col h-full">
                 <div className="grow overflow-x-auto">
                     <Table
+                        page={page}
+                        handlePageChange={(newPage) => setPage(newPage)}
                         rows={props.products || []}
                         columns={[
                             {

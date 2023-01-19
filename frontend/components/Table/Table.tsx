@@ -140,14 +140,16 @@ const Table: FC<Props> = (props) => {
                     </tbody>
                 </table>
             </div>
-            {!props.loading && sortedRows.length > props.page && (
-                <TablePagination
-                    totalRecords={sortedRows.length}
-                    className="p-3"
-                    page={props.page}
-                    handlePageChange={props.handlePageChange}
-                />
-            )}
+            {!props.loading &&
+                sortedRows.length > props.page &&
+                sortedRows.length > ITEMS_PER_TABLE && (
+                    <TablePagination
+                        totalRecords={sortedRows.length}
+                        className="p-3"
+                        page={props.page}
+                        handlePageChange={props.handlePageChange}
+                    />
+                )}
         </>
     )
 }

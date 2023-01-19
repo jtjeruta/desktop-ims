@@ -17,6 +17,7 @@ const VendorsPageContent = () => {
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
     const [search, setSearch] = useState<string>('')
+    const [page, setPage] = useState<number>(0)
 
     const filteredVendors = (VendorContext.vendors || []).filter((vendor) => {
         const regex = new RegExp(escapeRegExp(search), 'igm')
@@ -58,6 +59,8 @@ const VendorsPageContent = () => {
 
             <Card bodyClsx="!px-0 !py-0">
                 <Table
+                    page={page}
+                    handlePageChange={(newPage) => setPage(newPage)}
                     rows={filteredVendors}
                     loading={AppContext.isLoading('list-vendors')}
                     columns={[

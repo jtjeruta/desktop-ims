@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useEffect } from 'react'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useStatContext } from '../../contexts/StatsContext/StatsContext'
 import { ProductReport } from '../../contexts/StatsContext/types'
@@ -10,6 +10,7 @@ import Table from '../Table/Table'
 const ReportingTable = () => {
     const AppContext = useAppContext()
     const StatContext = useStatContext()
+    const [page, setPage] = useState<number>(0)
 
     const filteredReports = (StatContext.productReports || []).filter(
         (report) => {
@@ -35,6 +36,9 @@ const ReportingTable = () => {
     return (
         <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
             <Table
+                defaultSort={0}
+                page={page}
+                handlePageChange={(newPage) => setPage(newPage)}
                 rows={filteredReports}
                 loading={AppContext.isLoading('list-product-reports')}
                 columns={[

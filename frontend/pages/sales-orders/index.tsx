@@ -19,6 +19,7 @@ const SalesOrdersPageContent = () => {
     const SalesOrderContext = useSalesOrderContext()
     const router = useRouter()
     const [search, setSearch] = useState<string>('')
+    const [page, setPage] = useState<number>(0)
 
     const filteredOrders = (SalesOrderContext.orders || []).filter((order) => {
         const regex = new RegExp(escapeRegExp(search), 'igm')
@@ -53,6 +54,8 @@ const SalesOrdersPageContent = () => {
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
+                    page={page}
+                    handlePageChange={(newPage) => setPage(newPage)}
                     rows={filteredOrders}
                     loading={AppContext.isLoading('list-sales-orders')}
                     columns={[

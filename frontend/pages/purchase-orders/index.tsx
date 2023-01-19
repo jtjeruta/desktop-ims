@@ -19,6 +19,7 @@ const PurchaseOrdersPageContent = () => {
     const PurOrdContext = usePurchaseOrderContext()
     const router = useRouter()
     const [search, setSearch] = useState<string>('')
+    const [page, setPage] = useState<number>(0)
 
     const filteredOrders = (PurOrdContext.orders || []).filter((order) => {
         const regex = new RegExp(escapeRegExp(search), 'igm')
@@ -53,6 +54,8 @@ const PurchaseOrdersPageContent = () => {
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
+                    page={page}
+                    handlePageChange={(newPage) => setPage(newPage)}
                     rows={filteredOrders}
                     loading={AppContext.isLoading('list-purchase-orders')}
                     columns={[

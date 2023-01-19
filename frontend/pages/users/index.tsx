@@ -19,6 +19,7 @@ const PageContent: FC = () => {
     const AuthContext = useAuthContext()
     const UserContext = useUserContext()
     const [search, setSearch] = useState<string>('')
+    const [page, setPage] = useState<number>(0)
 
     const handleEditUser = (user: User) => () => {
         UserContext.setUserToEdit(user)
@@ -48,6 +49,8 @@ const PageContent: FC = () => {
 
             <Card bodyClsx="!px-0 !py-0 overflow-x-auto">
                 <Table
+                    page={page}
+                    handlePageChange={(newPage) => setPage(newPage)}
                     rows={(UserContext.users ?? []).filter((user) =>
                         [user.firstName, user.lastName, user.email].some(
                             (attr) => new RegExp(search, 'igm').test(attr)
