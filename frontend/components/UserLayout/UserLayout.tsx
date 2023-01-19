@@ -8,9 +8,9 @@ type Props = {
 
 const UserLayout: FC<Props> = (props) => {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col overflow-y-hidden h-screen">
             <Navbar />
-            <div className="grow flex">
+            <div className="grow flex overflow-y-auto">
                 <Sidebar />
                 <div className="grow p-2 md:p-6 bg-gray-100 overflow-x-auto">
                     {props.children}
