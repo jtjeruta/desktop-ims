@@ -1,7 +1,9 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
 import { compare } from '../../uitls'
+import TablePagination from './TablePagination'
+import { ITEMS_PER_TABLE } from '../../constants'
 
 type SortFunction = (a: Row, b: Row) => number
 
@@ -25,6 +27,9 @@ type Props = {
     rows: Row[]
     columns: Column[]
     loading?: boolean
+    page: number
+    handlePageChange: (page: number) => void
+    defaultSort?: number // refers to the column number
 }
 
 const Table: FC<Props> = (props) => {
@@ -51,68 +56,99 @@ const Table: FC<Props> = (props) => {
         })
     }
 
-    return (
-        <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase">
-                <tr>
-                    {props.columns.map((col) => (
-                        <th
-                            key={col.title}
-                            className={clsx(
-                                'pl-6 py-3 text-xs font-medium leading-4 tracking-wider whitespace-nowrap',
-                                'text-left text-gray-500 uppercase border-b border-gray-200',
-                                col.headerClsx,
-                                col.sort && 'cursor-pointer'
-                            )}
-                            onClick={handleSort(col)}
-                        >
-                            <div className="flex justify-between gap-2">
-                                <span>{col.title}</span>
-                                <span style={{ transform: 'translateY(2px)' }}>
-                                    {!col.sort ? null : sort.col !==
-                                      col.title ? (
-                                        <FaSort className="text-gray-300" />
-                                    ) : sort.ascending ? (
-                                        <FaSortDown />
-                                    ) : (
-                                        <FaSortUp />
-                                    )}
-                                </span>
-                            </div>
-                        </th>
-                    ))}
-                </tr>
-            </thead>
+    const sortedRows = props.rows.sort(sort.sort)
+    const filteredRows = sortedRows.filter(
+        (row, index) =>
+            index >= props.page * ITEMS_PER_TABLE + 1 &&
+            index <= (props.page + 1) * ITEMS_PER_TABLE
+    )
 
-            <tbody className="bg-white">
-                {props.loading ? (
-                    <>
-                        <TableRow columns={props.columns} loading />
-                        <TableRow columns={props.columns} loading />
-                        <TableRow columns={props.columns} loading />
-                    </>
-                ) : props.rows.length ? (
-                    props.rows
-                        .sort(sort.sort)
-                        .map((row) => (
-                            <TableRow
-                                key={row.id}
-                                row={row}
-                                columns={props.columns}
-                            />
-                        ))
-                ) : (
-                    <tr className="bg-white border-b">
-                        <td
-                            className="px-6 py-3 border-b border-gray-200 whitespace-nowrap"
-                            colSpan={props.columns.length}
-                        >
-                            No results found.
-                        </td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
+    useEffect(() => {
+        if (
+            props.defaultSort !== undefined &&
+            sort.col === '' &&
+            props.columns[props.defaultSort]
+        ) {
+            handleSort(props.columns[props.defaultSort])()
+        }
+    }, [props, handleSort])
+
+    return (
+        <>
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left text-gray-500">
+                    <thead className="text-xs text-gray-700 uppercase">
+                        <tr>
+                            {props.columns.map((col) => (
+                                <th
+                                    key={col.title}
+                                    className={clsx(
+                                        'pl-6 py-3 text-xs font-medium leading-4 tracking-wider whitespace-nowrap',
+                                        'text-left text-gray-500 uppercase border-b border-gray-200',
+                                        col.headerClsx,
+                                        col.sort && 'cursor-pointer'
+                                    )}
+                                    onClick={handleSort(col)}
+                                >
+                                    <div className="flex justify-between gap-2">
+                                        <span>{col.title}</span>
+                                        <span
+                                            style={{
+                                                transform: 'translateY(2px)',
+                                            }}
+                                        >
+                                            {!col.sort ? null : sort.col !==
+                                              col.title ? (
+                                                <FaSort className="text-gray-300" />
+                                            ) : sort.ascending ? (
+                                                <FaSortDown />
+                                            ) : (
+                                                <FaSortUp />
+                                            )}
+                                        </span>
+                                    </div>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+
+                    <tbody className="bg-white">
+                        {props.loading ? (
+                            <>
+                                <TableRow columns={props.columns} loading />
+                                <TableRow columns={props.columns} loading />
+                                <TableRow columns={props.columns} loading />
+                            </>
+                        ) : filteredRows.length > 0 ? (
+                            filteredRows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    row={row}
+                                    columns={props.columns}
+                                />
+                            ))
+                        ) : (
+                            <tr className="bg-white border-b">
+                                <td
+                                    className="px-6 py-3 border-b border-gray-200 whitespace-nowrap"
+                                    colSpan={props.columns.length}
+                                >
+                                    No results found.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            {!props.loading && sortedRows.length > props.page && (
+                <TablePagination
+                    totalRecords={sortedRows.length}
+                    className="p-3"
+                    page={props.page}
+                    handlePageChange={props.handlePageChange}
+                />
+            )}
+        </>
     )
 }
 

@@ -1,5 +1,4 @@
 import clsx from 'clsx'
-import { useRouter } from 'next/router'
 import { FC } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import ReactPaginate from 'react-paginate'
@@ -45,16 +44,16 @@ const Root = styled.div`
 
 type Props = {
     totalRecords: number
+    page?: number
+    handlePageChange: (page: number) => void
     className?: string
 }
 
-const Pagination: FC<Props> = (props) => {
-    const router = useRouter()
-    const page = +(router.query.page ?? 1)
-
-    function handleChange(newPage: number) {
-        router.push({ query: `page=${newPage + 1}` })
-    }
+const TablePagination: FC<Props> = (props) => {
+    const page = props.page ?? 0
+    const minItems = page * ITEMS_PER_TABLE + 1
+    const maxItems = Math.min((page + 1) * ITEMS_PER_TABLE, props.totalRecords)
+    const pageCount = Math.ceil(props.totalRecords / ITEMS_PER_TABLE)
 
     return (
         <Root
@@ -66,11 +65,9 @@ const Pagination: FC<Props> = (props) => {
             <div>
                 <p className="text-sm text-gray-700 flex gap-1">
                     <span>Showing</span>
-                    <span className="font-medium">{page}</span>
+                    <span className="font-medium">{minItems}</span>
                     <span>to</span>
-                    <span className="font-medium">
-                        {page * ITEMS_PER_TABLE}
-                    </span>
+                    <span className="font-medium">{maxItems}</span>
                     <span>of</span>
                     <span className="font-medium">{props.totalRecords}</span>
                     <span>results</span>
@@ -80,13 +77,15 @@ const Pagination: FC<Props> = (props) => {
                 breakLabel="..."
                 nextLabel={<FaChevronRight />}
                 previousLabel={<FaChevronLeft />}
-                onPageChange={({ selected }) => handleChange(selected)}
+                onPageChange={({ selected }) =>
+                    props.handlePageChange(selected)
+                }
                 pageRangeDisplayed={5}
-                pageCount={props.totalRecords / ITEMS_PER_TABLE}
+                pageCount={pageCount}
                 initialPage={page}
             />
         </Root>
     )
 }
 
-export default Pagination
+export default TablePagination
