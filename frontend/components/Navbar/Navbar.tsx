@@ -11,7 +11,7 @@ const Navbar = () => {
 
     return (
         <nav className="bg-white border-b border-gray-300 shadow">
-            <div className="justify-between px-6 md:items-center md:flex">
+            <div className="justify-between px-2 md:px-6 md:items-center md:flex">
                 <div>
                     <div className="flex items-center justify-between py-3 md:py-5 md:block">
                         <Link href="/">

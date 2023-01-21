@@ -18,12 +18,15 @@ import { getProductWarehouseTotal } from '../../uitls/product-utils'
 import { escapeRegExp, formatCurrency } from '../../uitls'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import { FaPlus } from 'react-icons/fa'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
     const ProductContext = useProductContext()
     const WarehouseContext = useWarehouseContext()
     const router = useRouter()
+    const md = useMediaQuery('md')
     const [statuses, setStatuses] = useState<
         { id: string; published: boolean }[]
     >([])
@@ -104,7 +107,7 @@ const InventoryPageContent = () => {
                 <Button
                     onClick={() => AppContext.openDialog('add-product-dialog')}
                 >
-                    Add Product
+                    {md ? 'Add product' : <FaPlus />}
                 </Button>
             </div>
 

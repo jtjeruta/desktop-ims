@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react'
+import { FaPlus } from 'react-icons/fa'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
@@ -13,11 +14,13 @@ import {
     UserContextProvider,
     useUserContext,
 } from '../../contexts/UserContext/UserContext'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
 
 const PageContent: FC = () => {
     const AppContext = useAppContext()
     const AuthContext = useAuthContext()
     const UserContext = useUserContext()
+    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
 
@@ -46,7 +49,7 @@ const PageContent: FC = () => {
                         AppContext.openDialog('add-edit-user-dialog')
                     }}
                 >
-                    Add User
+                    {md ? 'Add User' : <FaPlus />}
                 </Button>
             </div>
 

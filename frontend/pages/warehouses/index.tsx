@@ -19,15 +19,18 @@ import {
     useProductContext,
 } from '../../contexts/ProductContext/ProductContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { FaPlus } from 'react-icons/fa'
 
 const WarehousesPageContent = () => {
     const AppContext = useAppContext()
     const WarehouseContext = useWarehouseContext()
     const ProductContext = useProductContext()
     const router = useRouter()
+    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [openedWarehouse, setOpenedWarehouse] = useState<string | null>(null)
-    const maxProductsToShow = 3
+    const maxProductsToShow = md ? 3 : 1
     const [page, setPage] = useState<number>(0)
 
     const filteredWarehouses = (WarehouseContext.warehouses || []).filter(
@@ -71,7 +74,7 @@ const WarehousesPageContent = () => {
                         AppContext.openDialog('add-edit-warehouse-dialog')
                     }}
                 >
-                    Add Warehouse
+                    {!md ? <FaPlus /> : 'Add Warehouse'}
                 </Button>
             </div>
 
@@ -137,7 +140,7 @@ const WarehousesPageContent = () => {
                                                 )
                                                 .map((whp) => (
                                                     <div
-                                                        className="border rounded border-blue-400 p-2 truncate cursor-pointer hover:bg-gray-50"
+                                                        className="flex overflow-hidden border rounded border-blue-400 p-2 cursor-pointer hover:bg-gray-50"
                                                         key={whp.source.id}
                                                         onClick={() =>
                                                             router.push(
@@ -145,10 +148,10 @@ const WarehousesPageContent = () => {
                                                             )
                                                         }
                                                     >
-                                                        <span>
+                                                        <span className="truncate">
                                                             {whp.source.name}
                                                         </span>
-                                                        <span className="ml-2 bg-blue-400 rounded px-2 text-white">
+                                                        <span className="grow ml-2 bg-blue-400 rounded px-2 text-white">
                                                             {whp.stock}
                                                         </span>
                                                     </div>
@@ -157,7 +160,7 @@ const WarehousesPageContent = () => {
                                             {filteredProducts.length >
                                                 maxProductsToShow && (
                                                 <Button
-                                                    className="border rounded border-blue-400 p-2"
+                                                    className="grow border rounded border-blue-400 p-2"
                                                     onClick={() =>
                                                         setOpenedWarehouse(
                                                             warehouse.id

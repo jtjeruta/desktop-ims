@@ -12,10 +12,13 @@ import { Vendor } from '../../contexts/VendorContext/types'
 import AddEditVendorDialog from '../../components/AddEditVendorDialog/AddEditVendorDialog'
 import { escapeRegExp } from '../../uitls'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { FaPlus } from 'react-icons/fa'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
+    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
 
@@ -56,7 +59,7 @@ const VendorsPageContent = () => {
                         AppContext.openDialog('add-edit-vendor-dialog')
                     }}
                 >
-                    Add Vendor
+                    {md ? 'Add Vendor' : <FaPlus />}
                 </Button>
             </div>
 
