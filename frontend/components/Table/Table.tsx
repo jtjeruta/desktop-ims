@@ -59,8 +59,8 @@ const Table: FC<Props> = (props) => {
     const sortedRows = props.rows.sort(sort.sort)
     const filteredRows = sortedRows.filter(
         (row, index) =>
-            index >= props.page * ITEMS_PER_TABLE + 1 &&
-            index <= (props.page + 1) * ITEMS_PER_TABLE
+            index + 1 >= props.page * ITEMS_PER_TABLE + 1 &&
+            index + 1 <= (props.page + 1) * ITEMS_PER_TABLE
     )
 
     useEffect(() => {

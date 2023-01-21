@@ -16,6 +16,7 @@ import {
     updateProductOrWarehouseQuantity,
 } from '../../uitls/product-utils'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
+import SelectPicker from '../Select/SelectPicker'
 
 const addOrderProductSchema = yup
     .object({
@@ -123,24 +124,18 @@ const AddOrderProductDialog: FC<Props> = (props) => {
             )
             methods.setValue('warehouse', 'store')
             methods.setValue('variant', foundProduct?.variants[0].id)
+            methods.clearErrors('product')
             ProductContext.setProduct(foundProduct || null)
         },
         [ProductContext]
     )
 
-    // set defaults
-    useEffect(() => {
-        if (
-            !ProductContext.product &&
-            (ProductContext.products || []).length > 0
-        ) {
-            const defaultProduct = ProductContext.products?.[0]?.id
-            setSelectedProduct(defaultProduct || '')
-        }
-
-        methods.setValue('quantity', 1)
-        methods.setValue('itemPrice', ProductContext.product?.price ?? 1)
-    }, [methods, ProductContext, setSelectedProduct])
+    const productOptions = (ProductContext.products || [])
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((product) => ({
+            label: product.name,
+            value: product.id,
+        }))
 
     // set on change
     useEffect(() => {
@@ -177,6 +172,20 @@ const AddOrderProductDialog: FC<Props> = (props) => {
         return () => subscription.unsubscribe()
     }, [methods, setSelectedProduct, ProductContext.products, props.type])
 
+    // set defaults
+    useEffect(() => {
+        if (
+            !ProductContext.product &&
+            (ProductContext.products || []).length > 0
+        ) {
+            const defaultProduct = ProductContext.products?.[0]?.id
+            methods.setValue('product', defaultProduct)
+        }
+
+        methods.setValue('quantity', 1)
+        methods.setValue('itemPrice', ProductContext.product?.price ?? 1)
+    }, [methods, ProductContext])
+
     return (
         <Dialog
             title={`Add Product`}
@@ -185,16 +194,26 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                 <FormProvider {...methods}>
                     <form>
                         <div className="flex flex-col gap-1">
-                            <Select
+                            <SelectPicker
                                 label="Product"
                                 name="product"
                                 required
-                                options={(ProductContext.products || []).map(
-                                    (product) => ({
-                                        value: product.id,
-                                        text: product.name,
-                                    })
-                                )}
+                                options={productOptions}
+                                defaultValue={
+                                    ProductContext.product
+                                        ? {
+                                              label: ProductContext.product
+                                                  .name,
+                                              value: ProductContext.product.id,
+                                          }
+                                        : undefined
+                                }
+                                onChange={(product) =>
+                                    methods.setValue('product', product?.value)
+                                }
+                                error={
+                                    methods.formState.errors.product?.message
+                                }
                             />
                             <div className="flex gap-3">
                                 <span className="grow basis-0">
