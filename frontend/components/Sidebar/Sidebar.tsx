@@ -28,7 +28,7 @@ const Sidebar = () => {
             text: 'Reporting',
             active: router.asPath === '/reporting',
             roles: ['admin'],
-            onClick: () => router.push('/reporting'),
+            onClick: () => sideBarRedirect('/reporting'),
             icon: RiDashboardLine,
         },
         {
@@ -38,7 +38,7 @@ const Sidebar = () => {
             ),
             roles: ['admin'],
             icon: FaBoxes,
-            onClick: () => router.push('/inventory'),
+            onClick: () => sideBarRedirect('/inventory'),
         },
         {
             text: 'Sales Orders',
@@ -47,7 +47,7 @@ const Sidebar = () => {
             ),
             roles: ['admin', 'employee'],
             icon: MdPointOfSale,
-            onClick: () => router.push('/sales-orders'),
+            onClick: () => sideBarRedirect('/sales-orders'),
         },
         {
             text: 'Purchase Orders',
@@ -56,23 +56,28 @@ const Sidebar = () => {
             ),
             roles: ['admin'],
             icon: FaTags,
-            onClick: () => router.push('/purchase-orders'),
+            onClick: () => sideBarRedirect('/purchase-orders'),
         },
         {
             text: 'Vendors',
             active: router.asPath === '/vendors',
             roles: ['admin'],
             icon: FaStore,
-            onClick: () => router.push('/vendors'),
+            onClick: () => sideBarRedirect('/vendors'),
         },
         {
             text: 'Warehouses',
             active: router.asPath === '/warehouses',
             roles: ['admin'],
             icon: FaStore,
-            onClick: () => router.push('/warehouses'),
+            onClick: () => sideBarRedirect('/warehouses'),
         },
     ]
+
+    function sideBarRedirect(path: string) {
+        AppContext.setSidebarOpen(false)
+        router.push(path)
+    }
 
     const settingsPages: PageType[] = [
         // {
@@ -80,14 +85,14 @@ const Sidebar = () => {
         //     active: router.asPath === '/logs',
         //     roles: ['admin'],
         //     icon: FaListAlt,
-        //     onClick: () => router.push('/logs'),
+        //     onClick: () => sideBarRedirect('/logs'),
         // },
         {
             text: 'Users',
             active: router.asPath === '/users',
             roles: ['admin'],
             icon: FaUsers,
-            onClick: () => router.push('/users'),
+            onClick: () => sideBarRedirect('/users'),
         },
     ]
 

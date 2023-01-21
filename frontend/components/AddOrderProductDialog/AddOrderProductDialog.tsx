@@ -228,8 +228,8 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                 <Select
                                     label={
                                         props.type === 'sales'
-                                            ? 'Remove Stock From'
-                                            : 'Add Stock To'
+                                            ? 'Remove From'
+                                            : 'Add To'
                                     }
                                     name="warehouse"
                                     required
@@ -245,7 +245,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                             })
                                         ),
                                     ]}
-                                    className="grow"
+                                    className="grow basis-0"
                                 />
                                 <TextField
                                     label={
@@ -256,6 +256,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                     name="itemPrice"
                                     type="number"
                                     min={0}
+                                    className="grow basis-0"
                                     required
                                 />
                             </div>

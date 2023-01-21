@@ -106,7 +106,7 @@ const PageContent: FC = () => {
                             format: (row) => {
                                 const user = row as User
                                 return (
-                                    <div className="flex gap-10">
+                                    <div className="flex">
                                         <Button
                                             style="link"
                                             onClick={handleEditUser(user)}

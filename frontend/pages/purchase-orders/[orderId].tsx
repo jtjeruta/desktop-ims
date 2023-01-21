@@ -132,7 +132,7 @@ const PurchaseOrderPageContent = () => {
                     </h1>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-3 mb-3">
+                <div className="flex flex-col-reverse md:flex-row gap-3 mb-3">
                     <div className="w-full md:max-w-sm">
                         <Card title="Vendor Details">
                             <AddEditVendorFormForPurchaseOrder
