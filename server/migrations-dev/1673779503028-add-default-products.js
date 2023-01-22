@@ -26,7 +26,9 @@ async function up() {
         stock: faker.random.numeric(3),
     }))
 
-    const productRes = await Promise.all(products.map(createProduct))
+    const productRes = await Promise.all(
+        products.map((product) => createProduct(product))
+    )
 
     if (productRes.some((res) => res[0] !== 201)) {
         throw 'Failed to create products'
@@ -49,7 +51,9 @@ async function up() {
         return [...acc, ...productVariants]
     }, [])
 
-    const variantsRes = await Promise.all(variants.map(createVariant))
+    const variantsRes = await Promise.all(
+        variants.map((variant) => createVariant(variant))
+    )
 
     if (variantsRes.some((res) => res[0] !== 201)) {
         throw 'Failed to create variants'

@@ -26,9 +26,11 @@ async function up() {
         ),
     }))
 
-    const reponses = await Promise.all(warehouses.map(createWarehouse))
+    const reponses = await Promise.all(
+        warehouses.map((warehouse) => createWarehouse(warehouse))
+    )
     if (reponses.some((res) => res[0] !== 201)) {
-        throw 'Failed to create product'
+        throw 'Failed to create warehouse'
     }
 }
 

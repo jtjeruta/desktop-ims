@@ -12,9 +12,12 @@ module.exports.createCustomer = async (data, session = null) => {
     const customer = new CustomerModel(doc)
 
     try {
-        const createdCustomer = await customer.save({ session })
+        const createdCustomer = await (session
+            ? customer.save({ session })
+            : customer.save())
         return [201, createdCustomer]
     } catch (error) {
+        console.error(error)
         console.error('Failed to create customer')
         return getMongoError(error)
     }
@@ -57,6 +60,16 @@ module.exports.getCustomerById = async (id, session) => {
         return [200, customer]
     } catch (error) {
         console.error('Failed to get customer by id')
+        return getMongoError(error)
+    }
+}
+
+module.exports.deleteCustomers = async (query = {}, session) => {
+    try {
+        await CustomerModel.deleteMany(query).session(session)
+        return [200]
+    } catch (error) {
+        console.error('Failed to delete customers')
         return getMongoError(error)
     }
 }

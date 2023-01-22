@@ -12,7 +12,9 @@ module.exports.createVendor = async (data, session = null) => {
     const vendor = new VendorModel(doc)
 
     try {
-        const createdVendor = await vendor.save({ session })
+        const createdVendor = await (session
+            ? vendor.save({ session })
+            : vendor.save())
         return [201, createdVendor]
     } catch (error) {
         console.error('Failed to create vendor')
@@ -57,6 +59,16 @@ module.exports.getVendorById = async (id, session = null) => {
         return [200, vendor]
     } catch (error) {
         console.error('Failed to get vendor by id')
+        return getMongoError(error)
+    }
+}
+
+module.exports.deleteVendors = async (query = {}, session = null) => {
+    try {
+        await VendorModel.deleteMany(query).session(session)
+        return [200]
+    } catch (error) {
+        console.error('Failed to delete vendors')
         return getMongoError(error)
     }
 }
