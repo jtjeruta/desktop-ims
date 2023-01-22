@@ -18,10 +18,10 @@ async function up() {
 
     const warehouses = Array.from({ length: 10 }, () => ({
         name: faker.company.name(),
-        products: getRandomSubset(products[1], faker.random.numeric()).map(
+        products: getRandomSubset(products[1], faker.random.numeric(2)).map(
             (product) => ({
                 source: product._id,
-                stock: faker.random.numeric(),
+                stock: faker.random.numeric(2),
             })
         ),
     }))
