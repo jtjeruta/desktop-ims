@@ -33,6 +33,11 @@ const VendorsPageContent = () => {
         ].some((item) => regex.test(`${item}`))
     })
 
+    const openVendorDialog = (vendor: Vendor | null) => () => {
+        VendorContext.setSelectedVendor(vendor)
+        AppContext.openDialog('add-edit-vendor-dialog')
+    }
+
     useEffect(() => {
         async function init() {
             if (VendorContext.vendors === null) {
@@ -53,12 +58,7 @@ const VendorsPageContent = () => {
                     }}
                     inputClass="!text-base h-full !bg-white"
                 />
-                <Button
-                    onClick={() => {
-                        VendorContext.setSelectedVendor(null)
-                        AppContext.openDialog('add-edit-vendor-dialog')
-                    }}
-                >
+                <Button onClick={openVendorDialog(null)}>
                     {md ? 'Add Vendor' : <FaPlus />}
                 </Button>
             </div>
@@ -74,7 +74,14 @@ const VendorsPageContent = () => {
                             title: 'Name',
                             format: (row) => {
                                 const vendor = row as Vendor
-                                return vendor.name
+                                return (
+                                    <div
+                                        className="hover:text-teal-600 cursor-pointer"
+                                        onClick={openVendorDialog(vendor)}
+                                    >
+                                        {vendor.name}
+                                    </div>
+                                )
                             },
                             sort: (vendor) => vendor.name,
                         },
@@ -106,7 +113,14 @@ const VendorsPageContent = () => {
                             title: 'Remarks',
                             format: (row) => {
                                 const vendor = row as Vendor
-                                return vendor.remarks
+                                return (
+                                    <div
+                                        className="overflow-hidden truncate max-w-xs"
+                                        title={vendor.remarks}
+                                    >
+                                        {vendor.remarks}
+                                    </div>
+                                )
                             },
                             sort: (vendor) => vendor.remarks,
                         },
@@ -118,14 +132,7 @@ const VendorsPageContent = () => {
                                 return (
                                     <Button
                                         style="link"
-                                        onClick={() => {
-                                            VendorContext.setSelectedVendor(
-                                                vendor
-                                            )
-                                            AppContext.openDialog(
-                                                'add-edit-vendor-dialog'
-                                            )
-                                        }}
+                                        onClick={openVendorDialog(vendor)}
                                     >
                                         Edit
                                     </Button>
