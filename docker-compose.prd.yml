@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+    frontend:
+        container_name: desktop-ims-frontend-prd
+        build:
+            context: ./
+            dockerfile: dockerfile.frontend.prd
+        volumes:
+            - ./frontend:/opt/desktop-ims-frontend-prd/
+        ports:
+            - '3000:3000'
+        networks:
+            - desktop-ims-prd
+
+    server:
+        container_name: desktop-ims-server-prd
+        build:
+            context: ./
+            dockerfile: dockerfile.server.prd
+        environment:
+            NODE_ENV: production
+        volumes:
+            - ./server:/opt/desktop-ims-server/
+        ports:
+            - '4000:4000'
+        networks:
+            - desktop-ims-prd
+        depends_on:
+            - db
+
+    db:
+        container_name: desktop-ims-db-prd
+        image: bitnami/mongodb:5.0
+        volumes:
+            - ./data:/data
+        networks:
+            - desktop-ims-prd
+        ports:
+            - 27017:27017
+        logging:
+            driver: none
+        environment:
+            ALLOW_EMPTY_PASSWORD: 'yes'
+
+networks:
+    desktop-ims-prd:
+        name: desktop-ims-prd
+        external: false

@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios'
-import { Product, Warehouse } from '../ProductContext/types'
+import { Product } from '../ProductContext/types'
 import { Vendor } from '../VendorContext/types'
+import { Warehouse } from '../WarehouseContext/types'
 
 export type PurchaseOrder = {
     id: string

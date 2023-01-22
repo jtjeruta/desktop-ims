@@ -1,3 +1,3 @@
-npm install
-npm run migrate up
+npm install && \
+# npm run migrate-dev up && \
 npm start

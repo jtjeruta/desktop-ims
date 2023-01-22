@@ -2,6 +2,8 @@
     "scripts": {
         "start": "docker-compose -f docker-compose.dev.yml up --remove-orphans",
         "start:build": "docker-compose -f docker-compose.dev.yml up --build --remove-orphans",
+        "prd": "docker-compose -f docker-compose.prd.yml up --remove-orphans",
+        "prd:build": "docker-compose -f docker-compose.prd.yml up --build --remove-orphans",
         "test:server": "docker exec -it desktop-ims-server sh -c \"./start-test.sh\"",
         "lint:frontend": "docker exec -it desktop-ims-frontend npm run lint",
         "lint:server": "docker exec -it desktop-ims-server npm run lint",

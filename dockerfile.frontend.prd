@@ -1,0 +1,6 @@
+FROM node:16-bullseye
+
+COPY frontend /opt/desktop-ims-frontend/
+WORKDIR /opt/desktop-ims-frontend/
+
+CMD [ "bash", "start-prd.sh" ]
