@@ -5,6 +5,9 @@ import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
 import { FaBoxes, FaMoneyBill, FaStore, FaTags, FaUsers } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
+import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
+import { FiLogOut } from 'react-icons/fi'
+import Button from '../Button/Button'
 
 type PageGroupType = {
     title: string
@@ -14,7 +17,6 @@ type PageGroupType = {
 type PageType = {
     text: string
     active: boolean
-    roles: ('admin' | 'employee')[]
     icon?: IconType
     onClick?: () => void
 }
@@ -22,12 +24,12 @@ type PageType = {
 const Sidebar = () => {
     const router = useRouter()
     const AppContext = useAppContext()
+    const AuthContext = useAuthContext()
 
     const mainPages: PageType[] = [
         {
             text: 'Reporting',
             active: router.asPath === '/reporting',
-            roles: ['admin'],
             onClick: () => sideBarRedirect('/reporting'),
             icon: RiDashboardLine,
         },
@@ -36,7 +38,6 @@ const Sidebar = () => {
             active: ['/inventory', '/inventory/[productId]'].includes(
                 router.pathname
             ),
-            roles: ['admin'],
             icon: FaBoxes,
             onClick: () => sideBarRedirect('/inventory'),
         },
@@ -45,7 +46,6 @@ const Sidebar = () => {
             active: ['/sales-orders', '/sales-orders/[orderId]'].includes(
                 router.pathname
             ),
-            roles: ['admin', 'employee'],
             icon: MdPointOfSale,
             onClick: () => sideBarRedirect('/sales-orders'),
         },
@@ -54,28 +54,24 @@ const Sidebar = () => {
             active: ['/purchase-orders', '/purchase-orders/[orderId]'].includes(
                 router.pathname
             ),
-            roles: ['admin'],
             icon: FaTags,
             onClick: () => sideBarRedirect('/purchase-orders'),
         },
         {
             text: 'Vendors',
             active: router.asPath === '/vendors',
-            roles: ['admin'],
             icon: FaStore,
             onClick: () => sideBarRedirect('/vendors'),
         },
         {
             text: 'Warehouses',
             active: router.asPath === '/warehouses',
-            roles: ['admin'],
             icon: FaStore,
             onClick: () => sideBarRedirect('/warehouses'),
         },
         {
             text: 'Expenses',
             active: router.asPath === '/expenses',
-            roles: ['admin'],
             icon: FaMoneyBill,
             onClick: () => sideBarRedirect('/expenses'),
         },
@@ -90,14 +86,12 @@ const Sidebar = () => {
         // {
         //     text: 'Logs',
         //     active: router.asPath === '/logs',
-        //     roles: ['admin'],
         //     icon: FaListAlt,
         //     onClick: () => sideBarRedirect('/logs'),
         // },
         {
             text: 'Users',
             active: router.asPath === '/users',
-            roles: ['admin'],
             icon: FaUsers,
             onClick: () => sideBarRedirect('/users'),
         },
@@ -117,11 +111,15 @@ const Sidebar = () => {
     return (
         <div
             className={clsx(
-                'transition-all border-r border-gray-300',
-                AppContext.sidebarOpen ? 'w-64' : 'w-0 md:w-64'
+                'transition-all border-r border-gray-300 absolute md:static h-full z-10 overflow-x-hidden',
+                AuthContext.user?.role === 'admin'
+                    ? AppContext.sidebarOpen
+                        ? 'w-64'
+                        : 'w-0 md:w-64 md:min-w-fit'
+                    : 'w-0'
             )}
         >
-            <div className="bg-white w-64 p-6 border-r border-gray-300">
+            <div className="bg-white w-64 p-6 border-r border-gray-300 h-full flex flex-col justify-between">
                 <div className="flex flex-col gap-10">
                     {pageGroups.map((pageGroup) => (
                         <div
@@ -150,6 +148,17 @@ const Sidebar = () => {
                         </div>
                     ))}
                 </div>
+
+                <Button
+                    className="md:hidden"
+                    color="secondary"
+                    onClick={AuthContext.logout}
+                >
+                    <div className="flex items-center gap-2">
+                        <FiLogOut fontSize={18} />
+                        <span>Logout</span>
+                    </div>
+                </Button>
             </div>
         </div>
     )
