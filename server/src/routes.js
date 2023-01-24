@@ -149,6 +149,11 @@ router.get(
     isAdmin,
     StatController.listProductReports
 )
+router.get(
+    '/api/v1/stats/total-expenses',
+    isAdmin,
+    StatController.getTotalExpenses
+)
 
 // expenses
 router.get('/api/v1/expenses', isAdmin, ExpenseController.listExpenses)

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useStatContext } from '../../contexts/StatsContext/StatsContext'
 import { ProductReport } from '../../contexts/StatsContext/types'
-import { escapeRegExp } from '../../uitls'
+import { escapeRegExp, formatCurrency } from '../../uitls'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
 
@@ -101,7 +101,7 @@ const ReportingTable: FC<Props> = (props) => {
                         title: 'Ave Sale',
                         format: (row) => {
                             const report = row as ProductReport
-                            return report.aveSales
+                            return formatCurrency(report.aveSales)
                         },
                         sort: (report) => report.aveSales,
                     },
@@ -109,7 +109,7 @@ const ReportingTable: FC<Props> = (props) => {
                         title: 'Ave Pur',
                         format: (row) => {
                             const report = row as ProductReport
-                            return report.avePur
+                            return formatCurrency(report.avePur)
                         },
                         sort: (report) => report.avePur,
                     },
@@ -117,7 +117,7 @@ const ReportingTable: FC<Props> = (props) => {
                         title: 'Total Sales',
                         format: (row) => {
                             const report = row as ProductReport
-                            return report.totalSales
+                            return formatCurrency(report.totalSales)
                         },
                         sort: (report) => report.totalSales,
                     },
@@ -125,7 +125,7 @@ const ReportingTable: FC<Props> = (props) => {
                         title: 'Total Pur',
                         format: (row) => {
                             const report = row as ProductReport
-                            return report.totalPur
+                            return formatCurrency(report.totalPur)
                         },
                         sort: (report) => report.totalPur,
                     },

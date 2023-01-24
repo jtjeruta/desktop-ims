@@ -23,14 +23,11 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [totalProductPurchases, setTotalProductPurchases] = useState<
         number | null
     >(null)
-    const [averageSales, setAverageSales] = useState<number | null>(null)
-    const [averagePurchases, setAveragePurchases] = useState<number | null>(
-        null
-    )
     const [productReports, setProductReports] = useState<
         Types.ProductReport[] | null
     >(null)
     const [search, setSearch] = useState<string>('')
+    const [totalExpenses, setTotalExpenses] = useState<number | null>(null)
 
     const listProductReports = async () => {
         const key = 'list-product-reports'
@@ -101,11 +98,33 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const getTotalExpenses = async () => {
+        const key = 'get-total-expenses'
+
+        AppContext.addLoading(key)
+        const response = await StatsAPI.getTotalExpenses(
+            dateRange.startDate,
+            dateRange.endDate
+        )
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return response
+        }
+
+        setTotalExpenses(response[1])
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
-            averagePurchases,
-            averageSales,
             dateRange,
+            getTotalExpenses,
             getTotalProductPurchases,
             getTotalProductSales,
             listProductReports,
@@ -113,15 +132,15 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
             search,
             setDateRange,
             setSearch,
+            totalExpenses,
             totalProductPurchases,
             totalProductSales,
         }),
         [
-            averageSales,
-            averagePurchases,
             dateRange,
             productReports,
             search,
+            totalExpenses,
             totalProductSales,
             totalProductPurchases,
         ]

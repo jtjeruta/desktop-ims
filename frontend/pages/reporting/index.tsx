@@ -3,7 +3,7 @@ import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
 import UserLayout from '../../components/UserLayout/UserLayout'
-import { FaShoppingCart, FaStore } from 'react-icons/fa'
+import { FaMoneyBill, FaShoppingCart, FaStore } from 'react-icons/fa'
 import ReportingTable from '../../components/ReportingTable/ReportingTable'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
 import {
@@ -30,12 +30,20 @@ const ReportingContent = () => {
             icon: FaStore,
             iconClass: 'text-red-700',
         },
+        {
+            title: 'Total Expenses',
+            total: StatContext.totalExpenses ?? 0,
+            loading: 'get-total-expenses',
+            icon: FaMoneyBill,
+            iconClass: 'text-green-700',
+        },
     ]
 
     useEffect(() => {
         StatContext.getTotalProductSales()
         StatContext.getTotalProductPurchases()
         StatContext.listProductReports()
+        StatContext.getTotalExpenses()
     }, [StatContext.dateRange])
 
     return (

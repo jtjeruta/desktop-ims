@@ -3,6 +3,7 @@ const SalesOrderModule = require('../modules/sales-orders-module')
 const PurchaseOrderModule = require('../modules/purchase-orders-module')
 const ProductModule = require('../modules/products-module')
 const WarehouseModule = require('../modules/warehouses-module')
+const ExpenseModule = require('../modules/expenses-module')
 const { ProductView } = require('../views/product-view')
 const { VariantView } = require('../views/variant-view')
 
@@ -37,6 +38,24 @@ module.exports.getTotalProductPurchases = async (req, res) => {
         0
     )
     return res.status(200).json({ totalPurchases: total })
+}
+
+module.exports.getTotalExpenses = async (req, res) => {
+    const { startDate, endDate } = getDateRangeFromQuery(req.query)
+
+    const expensesRes = await ExpenseModule.listExpenses({
+        date: { $gte: startDate, $lte: endDate },
+    })
+
+    if (expensesRes[0] !== 200) {
+        return res.status(expensesRes[0]).json(expensesRes[1])
+    }
+
+    const total = expensesRes[1].reduce(
+        (acc, expense) => acc + expense.amount,
+        0
+    )
+    return res.status(200).json({ totalExpenses: total })
 }
 
 const getDateRangeFromQuery = (query) => {
