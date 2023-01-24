@@ -133,11 +133,11 @@ const InventoryPageContent = () => {
                             format: (row) => {
                                 const product = row as Product
                                 return (
-                                    <Link href={`/inventory/${product.id}`}>
-                                        <span className="hover:text-teal-600 cursor-pointer">
+                                    <span className="hover:text-teal-600 cursor-pointer">
+                                        <Link href={`/inventory/${product.id}`}>
                                             {product.name}
-                                        </span>
-                                    </Link>
+                                        </Link>
+                                    </span>
                                 )
                             },
                             sort: (product) => product.name,

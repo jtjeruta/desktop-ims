@@ -50,11 +50,13 @@ const ReportingTable: FC<Props> = (props) => {
                         format: (row) => {
                             const report = row as ProductReport
                             return (
-                                <Link href={`/inventory/${report.product.id}`}>
-                                    <span className="hover:text-teal-600 cursor-pointer">
+                                <div className="hover:text-teal-600 cursor-pointer">
+                                    <Link
+                                        href={`/inventory/${report.product.id}`}
+                                    >
                                         {report.product.name}
-                                    </span>
-                                </Link>
+                                    </Link>
+                                </div>
                             )
                         },
                         sort: (report) => report.product.name,
@@ -63,13 +65,7 @@ const ReportingTable: FC<Props> = (props) => {
                         title: 'Unit',
                         format: (row) => {
                             const report = row as ProductReport
-                            return (
-                                <Link href={`/inventory/${report.product.id}`}>
-                                    <span className="hover:text-teal-600 cursor-pointer">
-                                        {report.variant.name}
-                                    </span>
-                                </Link>
-                            )
+                            return report.variant.name
                         },
                         sort: (report) => report.variant.name,
                     },
