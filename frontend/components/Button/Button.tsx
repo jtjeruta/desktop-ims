@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { FaSpinner } from 'react-icons/fa'
 
 type Props = {
-    children?: string | JSX.Element | JSX.Element[]
+    children?: React.ReactNode
     type?: 'submit' | 'button'
     loading?: boolean
     className?: string

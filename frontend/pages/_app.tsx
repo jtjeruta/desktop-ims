@@ -43,7 +43,7 @@ function AppContent({ Component, pageProps }: AppProps) {
                 foundRoute.access
             )
         ) {
-            router.replace('/login')
+            router.replace('/sales-orders')
         } else if (
             AuthContext.user?.role === 'admin' &&
             !['everyone', 'admin', 'authenticated'].includes(foundRoute.access)

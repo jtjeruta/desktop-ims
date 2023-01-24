@@ -57,7 +57,11 @@ router.delete(
 )
 
 // warehouses
-router.get('/api/v1/warehouses', isAdmin, WarehouseController.listWarehouses)
+router.get(
+    '/api/v1/warehouses',
+    isAuthenticated,
+    WarehouseController.listWarehouses
+)
 router.get(
     '/api/v1/warehouses/:warehouseId',
     isAdmin,
@@ -103,33 +107,41 @@ router.post(
 )
 
 // customers
-router.get('/api/v1/customers', isAdmin, CustomerController.listCustomers)
-router.post('/api/v1/customers', isAdmin, CustomerController.createCustomer)
+router.get(
+    '/api/v1/customers',
+    isAuthenticated,
+    CustomerController.listCustomers
+)
+router.post(
+    '/api/v1/customers',
+    isAuthenticated,
+    CustomerController.createCustomer
+)
 router.put(
     '/api/v1/customers/:customerId',
-    isAdmin,
+    isAuthenticated,
     CustomerController.updateCustomer
 )
 
 // sales orders
 router.get(
     '/api/v1/sales-orders',
-    isAdmin,
+    isAuthenticated,
     SalesOrderController.listSalesOrders
 )
 router.get(
     '/api/v1/sales-orders/:salesOrderId',
-    isAdmin,
+    isAuthenticated,
     SalesOrderController.getSalesOrder
 )
 router.put(
     '/api/v1/sales-orders/:salesOrderId',
-    isAdmin,
+    isAuthenticated,
     SalesOrderController.updateSalesOrder
 )
 router.post(
     '/api/v1/sales-orders',
-    isAdmin,
+    isAuthenticated,
     SalesOrderController.createSalesOrder
 )
 

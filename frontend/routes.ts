@@ -48,11 +48,11 @@ export const routes: Route[] = [
     },
     {
         pathname: '/sales-orders',
-        access: 'admin',
+        access: 'authenticated',
     },
     {
         pathname: '/sales-orders/[orderId]',
-        access: 'admin',
+        access: 'authenticated',
     },
     {
         pathname: '/reporting',

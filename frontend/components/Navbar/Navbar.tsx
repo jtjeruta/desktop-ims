@@ -21,11 +21,21 @@ const Navbar = () => {
                         </Link>
                         <div className="md:hidden">
                             <Button
-                                onClick={() =>
-                                    AppContext.setSidebarOpen((prev) => !prev)
-                                }
+                                onClick={() => {
+                                    if (AuthContext.user?.role === 'admin') {
+                                        AppContext.setSidebarOpen(
+                                            (prev) => !prev
+                                        )
+                                    } else {
+                                        AuthContext.logout()
+                                    }
+                                }}
                             >
-                                <FaHamburger />
+                                {AuthContext.user?.role === 'admin' ? (
+                                    <FaHamburger />
+                                ) : (
+                                    <FiLogOut />
+                                )}
                             </Button>
                         </div>
                     </div>
