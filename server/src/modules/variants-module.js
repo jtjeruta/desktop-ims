@@ -15,7 +15,6 @@ module.exports.createVariant = async (data) => {
         const createdVariant = await variant.save()
         return [201, createdVariant]
     } catch (error) {
-        console.error(error)
         console.error('Failed to create variant')
         return getMongoError(error)
     }

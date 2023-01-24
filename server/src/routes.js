@@ -10,6 +10,7 @@ const HealthCheckController = require('./controllers/health-check-controller')
 const CustomerController = require('./controllers/customer-controller')
 const SalesOrderController = require('./controllers/sales-order-controller')
 const StatController = require('./controllers/stat-controller')
+const ExpenseController = require('./controllers/expense-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -148,4 +149,19 @@ router.get(
     isAdmin,
     StatController.listProductReports
 )
+
+// expenses
+router.get('/api/v1/expenses', isAdmin, ExpenseController.listExpenses)
+router.post('/api/v1/expenses', isAdmin, ExpenseController.createExpense)
+router.put(
+    '/api/v1/expenses/:expenseId',
+    isAdmin,
+    ExpenseController.updateExpense
+)
+router.delete(
+    '/api/v1/expenses/:expenseId',
+    isAdmin,
+    ExpenseController.deleteExpense
+)
+
 module.exports = router

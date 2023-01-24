@@ -108,3 +108,17 @@ module.exports.customer2 = {
     address: 'Lot 2 Blk 12, San Francisco Village, Lapuz, Iloilo City',
     email: 'customer2@mail.com',
 }
+
+module.exports.expense1 = {
+    name: 'Expense 1',
+    amount: 100,
+    date: 1674401397,
+    description: 'This is a test.',
+}
+
+module.exports.expense2 = {
+    name: 'Expense 2',
+    amount: 200,
+    date: 1674142197,
+    description: 'This is a test.',
+}

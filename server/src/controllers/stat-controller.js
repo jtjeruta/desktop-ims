@@ -142,7 +142,8 @@ module.exports.listProductReports = async (req, res) => {
 
         return res.status(200).json({ productReports })
     } catch (err) {
-        console.error(err)
-        return res.status(500).json({ message: 'test' })
+        return res
+            .status(500)
+            .json({ message: 'Failed to list product reports' })
     }
 }

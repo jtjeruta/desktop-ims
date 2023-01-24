@@ -15,7 +15,6 @@ module.exports.createWarehouse = async (data) => {
         const createdWarehouse = await warehouse.save()
         return [201, createdWarehouse]
     } catch (error) {
-        console.error(error)
         console.error('Failed to create warehouse')
         return getMongoError(error)
     }

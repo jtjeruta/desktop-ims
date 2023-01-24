@@ -17,7 +17,6 @@ module.exports.createCustomer = async (data, session = null) => {
             : customer.save())
         return [201, createdCustomer]
     } catch (error) {
-        console.error(error)
         console.error('Failed to create customer')
         return getMongoError(error)
     }
