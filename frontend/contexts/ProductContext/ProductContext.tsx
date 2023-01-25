@@ -65,15 +65,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await ProductsAPI.listProducts()
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
-
+        if (!response[0]) return response
         setProducts(response[1])
         return response
     }
@@ -85,14 +77,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await ProductsAPI.getProduct(id)
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
+        if (!response[0]) return response
 
         setProduct(response[1])
         return response

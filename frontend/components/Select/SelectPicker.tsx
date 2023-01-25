@@ -43,6 +43,8 @@ const SelectPicker: FC<Props> = (props) => {
                 options={props.options}
                 onChange={props.onChange}
                 className={clsx(props.error && 'border-red-500 border rounded')}
+                menuPortalTarget={document.body}
+                styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             />
             {props.error ? (
                 <small className="text-red-500">{props.error}</small>

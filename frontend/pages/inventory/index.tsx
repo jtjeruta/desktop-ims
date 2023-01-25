@@ -58,7 +58,7 @@ const InventoryPageContent = () => {
     useEffect(() => {
         async function init() {
             setPage(+(router.query.page ?? 0))
-            const [productsRes] = await Promise.all([
+            const [productsRes, warehouseRes] = await Promise.all([
                 ProductContext.listProducts(),
                 WarehouseContext.listWarehouses(),
             ])
@@ -70,6 +70,10 @@ const InventoryPageContent = () => {
                         published: product.published,
                     }))
                 )
+            }
+
+            if (!productsRes[0] || !warehouseRes[0]) {
+                router.push('/500')
             }
         }
 

@@ -14,10 +14,12 @@ import { escapeRegExp } from '../../uitls'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { FaPlus } from 'react-icons/fa'
+import { useRouter } from 'next/router'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
+    const router = useRouter()
     const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
@@ -40,13 +42,12 @@ const VendorsPageContent = () => {
 
     useEffect(() => {
         async function init() {
-            if (VendorContext.vendors === null) {
-                await VendorContext.listVendors()
-            }
+            const response = await VendorContext.listVendors()
+            if (!response[0]) return router.push('/500')
         }
 
         init()
-    }, [VendorContext])
+    }, [])
 
     return (
         <UserLayout>

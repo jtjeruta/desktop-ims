@@ -94,16 +94,10 @@ const SalesOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await SalesOrdersAPI.listSalesOrders()
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return
-        }
+        if (!response[0]) return response
 
         setOrders(response[1])
+        return response
     }
 
     const getOrder: Types.GetSalesOrder = async (id) => {
@@ -113,9 +107,7 @@ const SalesOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await SalesOrdersAPI.getSalesOrder(id)
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            return response
-        }
+        if (!response[0]) return response
 
         setSelectedOrder(response[1])
         return response

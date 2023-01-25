@@ -35,13 +35,12 @@ const PurchaseOrdersPageContent = () => {
 
     useEffect(() => {
         async function init() {
-            if (PurOrdContext.orders === null) {
-                await PurOrdContext.listOrders()
-            }
+            const response = await PurOrdContext.listOrders()
+            if (!response[0]) return router.push('/500')
         }
 
         init()
-    }, [PurOrdContext])
+    }, [])
 
     return (
         <UserLayout>

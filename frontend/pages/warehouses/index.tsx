@@ -49,10 +49,13 @@ const WarehousesPageContent = () => {
 
     useEffect(() => {
         async function init() {
-            await Promise.all([
+            const responses = await Promise.all([
                 WarehouseContext.listWarehouses(),
                 ProductContext.listProducts(),
             ])
+
+            if (responses.some((response) => !response[0]))
+                return router.push('/500')
         }
 
         init()

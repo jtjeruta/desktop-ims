@@ -82,7 +82,9 @@ export type UpdateSalesOrder = (
     | [true, SalesOrder]
     | [false, { message: string; errors?: CreateUpdateSalesOrderErrors }]
 >
-export type ListSalesOrders = () => Promise<void>
+export type ListSalesOrders = () => Promise<
+    [true, SalesOrder[]] | [false, string]
+>
 export type GetSalesOrder = (
     id: string
 ) => Promise<[true, SalesOrder] | [false, AxiosResponse]>

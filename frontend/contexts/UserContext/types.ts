@@ -33,7 +33,7 @@ export type UpdateUser = (
     [true, User] | [false, { message: string; errors?: CreateUpdateUserErrors }]
 >
 export type RemoveUser = (id: User['id']) => void
-export type ListUsers = () => Promise<void>
+export type ListUsers = () => Promise<[true, User[]] | [false, string]>
 
 export type Context = {
     users: User[] | null

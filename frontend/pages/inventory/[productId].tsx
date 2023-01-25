@@ -36,7 +36,7 @@ const ProductPageContent = () => {
                 if (!productRes[0] && productRes[1].status === 404) {
                     return router.replace('/404')
                 } else if (!productRes[0] || !warehouseRes[0]) {
-                    return
+                    return router.push('/500')
                 }
 
                 setPublished(productRes[1].published)

@@ -35,13 +35,15 @@ const SalesOrdersPageContent = () => {
 
     useEffect(() => {
         async function init() {
-            if (SalesOrderContext.orders === null) {
-                await SalesOrderContext.listOrders()
+            const response = await SalesOrderContext.listOrders()
+
+            if (!response[0]) {
+                return router.push('/500')
             }
         }
 
         init()
-    }, [SalesOrderContext])
+    }, [])
 
     return (
         <UserLayout>

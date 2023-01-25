@@ -78,7 +78,10 @@ const OrderProductsTable: FC<Props> = (props) => {
                                 bodyClsx: 'flex justify-end',
                             },
                         ]}
-                        loading={AppContext.isLoading('get-purchase-order')}
+                        loading={
+                            AppContext.isLoading('get-purchase-order') ||
+                            AppContext.isLoading('get-sales-order')
+                        }
                     />
                 </div>
 

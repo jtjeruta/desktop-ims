@@ -16,6 +16,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { FaPlus } from 'react-icons/fa'
 import { formatDate } from '../../uitls/date-utils'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
+import { useRouter } from 'next/router'
 
 const ExpensesPageContent = () => {
     const AppContext = useAppContext()
@@ -23,6 +24,7 @@ const ExpensesPageContent = () => {
     const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
+    const router = useRouter()
 
     const filteredExpenses = (ExpenseContext.expenses || []).filter(
         (expense) => {
@@ -42,7 +44,9 @@ const ExpensesPageContent = () => {
 
     useEffect(() => {
         async function init() {
-            await Promise.all([ExpenseContext.listExpenses()])
+            const responses = await Promise.all([ExpenseContext.listExpenses()])
+            if (responses.some((response) => !response[0]))
+                return router.push('/500')
         }
 
         init()

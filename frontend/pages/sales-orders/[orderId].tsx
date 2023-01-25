@@ -42,6 +42,9 @@ const SalesOrderPageContent = () => {
 
     const submitButtonDisabled =
         AppContext.isLoading('get-sales-order') ||
+        AppContext.isLoading('list-products') ||
+        AppContext.isLoading('list-customers') ||
+        AppContext.isLoading('list-warehouses') ||
         SalesOrderContext.draftOrder.products.length <= 0 ||
         CustomerContext.customers === null ||
         WarehouseContext.warehouses === null
@@ -110,6 +113,10 @@ const SalesOrderPageContent = () => {
                     return router.replace('/404')
                 }
 
+                if (!response[0]) {
+                    return router.push('/500')
+                }
+
                 if (response[0]) {
                     SalesOrderContext.setDraftOrder((prev) => ({
                         ...prev,
@@ -120,9 +127,15 @@ const SalesOrderPageContent = () => {
                 }
             }
 
-            ProductContext.listProducts()
-            CustomerContext.listCustomers()
-            WarehouseContext.listWarehouses()
+            const responses = await Promise.all([
+                ProductContext.listProducts(),
+                CustomerContext.listCustomers(),
+                WarehouseContext.listWarehouses(),
+            ])
+
+            if (responses.some((response) => !response[0])) {
+                return router.push('/500')
+            }
         }
 
         init()

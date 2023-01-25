@@ -82,7 +82,9 @@ export type UpdatePurchaseOrder = (
     | [true, PurchaseOrder]
     | [false, { message: string; errors?: CreateUpdatePurchaseOrderErrors }]
 >
-export type ListPurchaseOrders = () => Promise<void>
+export type ListPurchaseOrders = () => Promise<
+    [true, PurchaseOrder[]] | [false, string]
+>
 export type GetPurchaseOrder = (
     id: string
 ) => Promise<[true, PurchaseOrder] | [false, AxiosResponse]>

@@ -97,16 +97,10 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await PurchaseOrdersAPI.listPurchaseOrders()
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return
-        }
+        if (!response[0]) return response
 
         setOrders(response[1])
+        return response
     }
 
     const getOrder: Types.GetPurchaseOrder = async (id) => {

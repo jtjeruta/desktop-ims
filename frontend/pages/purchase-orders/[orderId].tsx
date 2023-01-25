@@ -23,12 +23,17 @@ import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm
 import AddEditVendorFormForPurchaseOrder from '../../components/AddEditVendorFormForPurchaseOrder/AddEditVendorFormForPurchaseOrder'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
 import OrderSummarySkeleton from '../../components/OrderSummary/OrderSummaySkeleton'
+import {
+    useWarehouseContext,
+    WarehouseContextProvider,
+} from '../../contexts/WarehouseContext/WarehouseContext'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
     const PurOrdContext = usePurchaseOrderContext()
     const ProductContext = useProductContext()
     const VendorContext = useVendorContext()
+    const WarehouseContext = useWarehouseContext()
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
     const [vendorsError, setVendorsError] = useState<string>('')
@@ -36,6 +41,9 @@ const PurchaseOrderPageContent = () => {
 
     const submitButtonDisabled =
         AppContext.isLoading('get-purchase-order') ||
+        AppContext.isLoading('list-products') ||
+        AppContext.isLoading('list-warehouses') ||
+        AppContext.isLoading('list-vendors') ||
         PurOrdContext.draftOrder.products.length <= 0 ||
         VendorContext.vendors === null
 
@@ -97,6 +105,8 @@ const PurchaseOrderPageContent = () => {
                     return router.replace('/404')
                 }
 
+                if (!response[0]) return router.push('/500')
+
                 if (response[0]) {
                     PurOrdContext.setDraftOrder(response[1])
                     VendorContext.setDraftVendor(response[1].vendor)
@@ -105,12 +115,19 @@ const PurchaseOrderPageContent = () => {
 
             // fetch products
             if (ProductContext.products === null) {
-                await ProductContext.listProducts()
+                const response = await ProductContext.listProducts()
+                if (!response[0]) return router.push('/500')
             }
 
             // fetch vendors
             if (VendorContext.vendors === null) {
-                await VendorContext.listVendors()
+                const response = await VendorContext.listVendors()
+                if (!response[0]) return router.push('/500')
+            }
+
+            if (WarehouseContext.warehouses === null) {
+                const response = await WarehouseContext.listWarehouses()
+                if (!response[0]) return router.push('/500')
             }
         }
 
@@ -220,9 +237,11 @@ const PurchaseOrderPageContent = () => {
 const PurchaseOrderPage = () => (
     <ProductContextProvider>
         <VendorContextProvider>
-            <PurchaseOrderContextProvider>
-                <PurchaseOrderPageContent />
-            </PurchaseOrderContextProvider>
+            <WarehouseContextProvider>
+                <PurchaseOrderContextProvider>
+                    <PurchaseOrderPageContent />
+                </PurchaseOrderContextProvider>
+            </WarehouseContextProvider>
         </VendorContextProvider>
     </ProductContextProvider>
 )

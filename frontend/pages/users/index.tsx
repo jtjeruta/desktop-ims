@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
@@ -23,6 +24,7 @@ const PageContent: FC = () => {
     const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
+    const router = useRouter()
 
     const handleEditUser = (user: User) => () => {
         UserContext.setUserToEdit(user)
@@ -30,8 +32,13 @@ const PageContent: FC = () => {
     }
 
     useEffect(() => {
-        UserContext.users === null && UserContext.listUsers()
-    }, [UserContext])
+        async function init() {
+            const response = await UserContext.listUsers()
+            if (!response[0]) return router.push('/500')
+        }
+
+        init()
+    }, [])
 
     return (
         <UserLayout>

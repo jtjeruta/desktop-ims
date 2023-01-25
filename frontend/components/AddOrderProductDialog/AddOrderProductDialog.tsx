@@ -37,10 +37,16 @@ const AddOrderProductDialog: FC<Props> = (props) => {
     const SalesOrderContext = useSalesOrderContext()
     const WarehouseContext = useWarehouseContext()
     const methods = useForm({ resolver: yupResolver(addOrderProductSchema) })
-    const productWarehouses = getProductWarehouses(
-        WarehouseContext.warehouses,
-        ProductContext.product
-    )
+    const productWarehouses =
+        props.type === 'sales'
+            ? getProductWarehouses(
+                  WarehouseContext.warehouses,
+                  ProductContext.product
+              )
+            : WarehouseContext.warehouses?.map((warehouse) => ({
+                  id: warehouse.id,
+                  name: warehouse.name,
+              })) ?? []
 
     const onSubmit = async (data: FieldValues) => {
         const product = (ProductContext.products || []).find(
@@ -183,6 +189,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
         }
 
         methods.setValue('quantity', 1)
+        methods.setValue('warehouse', 'store')
         methods.setValue('itemPrice', ProductContext.product?.price ?? 1)
     }, [methods, ProductContext])
 
@@ -244,7 +251,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                 </span>
                             </div>
                             <div className="flex gap-3">
-                                <Select
+                                <SelectPicker
                                     label={
                                         props.type === 'sales'
                                             ? 'Remove From'
@@ -255,15 +262,29 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                     options={[
                                         {
                                             value: 'store',
-                                            text: 'Store',
+                                            label: 'Store',
                                         },
                                         ...productWarehouses.map(
                                             (warehouse) => ({
                                                 value: warehouse.id,
-                                                text: warehouse.name,
+                                                label: warehouse.name,
                                             })
                                         ),
                                     ]}
+                                    defaultValue={{
+                                        label: 'Store',
+                                        value: 'store',
+                                    }}
+                                    onChange={(warehouse) =>
+                                        methods.setValue(
+                                            'warehouse',
+                                            warehouse?.value
+                                        )
+                                    }
+                                    error={
+                                        methods.formState.errors.warehouse
+                                            ?.message
+                                    }
                                     className="grow basis-0"
                                 />
                                 <TextField
