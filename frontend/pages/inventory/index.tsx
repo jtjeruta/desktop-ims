@@ -23,6 +23,7 @@ import {
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { FaPlus } from 'react-icons/fa'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
+import Dropdown from '../../components/Dropdown/Dropdown'
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -35,9 +36,12 @@ const InventoryPageContent = () => {
     >([])
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
+    const [filters, setFilters] = useState<{ showDrafted: boolean }>({
+        showDrafted: false,
+    })
 
-    const filteredProducts = (ProductContext.products || []).filter(
-        (product) => {
+    const filteredProducts = (ProductContext.products || [])
+        .filter((product) => {
             const regex = new RegExp(escapeRegExp(search), 'igm')
             return [
                 product.name,
@@ -46,14 +50,12 @@ const InventoryPageContent = () => {
                 product.price,
                 `#${product.sku}`,
                 product.sku,
-                product.subCategory,
-                product.published ? 'available' : 'not available',
                 formatDate(product.createdAt),
                 getProductWarehouseTotal(WarehouseContext.warehouses, product),
                 product.stock,
             ].some((item) => regex.test(`${item}`))
-        }
-    )
+        })
+        .filter((product) => filters.showDrafted || product.published)
 
     useEffect(() => {
         async function init() {
@@ -115,6 +117,22 @@ const InventoryPageContent = () => {
                     }}
                     inputClass="!text-base h-full !bg-white"
                 />
+                <Dropdown>
+                    <div className="flex gap-3">
+                        <Switch
+                            toggled={filters.showDrafted}
+                            onClick={() =>
+                                setFilters((prev) => ({
+                                    ...prev,
+                                    showDrafted: !prev.showDrafted,
+                                }))
+                            }
+                        />
+                        <span className="w-max">
+                            Show un-available products
+                        </span>
+                    </div>
+                </Dropdown>
                 <Button
                     onClick={() => AppContext.openDialog('add-product-dialog')}
                 >
@@ -227,6 +245,8 @@ const InventoryPageContent = () => {
                                 const product = row as Product
                                 return product.published ? -1 : 1
                             },
+                            bodyClsx: !filters.showDrafted ? 'hidden' : '',
+                            headerClsx: !filters.showDrafted ? 'hidden' : '',
                         },
                         {
                             title: ' ',
