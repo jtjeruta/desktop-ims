@@ -16,7 +16,10 @@ import Switch from '../../components/Switch/Switch'
 import { formatDate } from '../../uitls/date-utils'
 import { getProductWarehouseTotal } from '../../uitls/product-utils'
 import { escapeRegExp, formatCurrency } from '../../uitls'
-import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
+import {
+    useWarehouseContext,
+    WarehouseContextProvider,
+} from '../../contexts/WarehouseContext/WarehouseContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { FaPlus } from 'react-icons/fa'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
@@ -55,10 +58,14 @@ const InventoryPageContent = () => {
     useEffect(() => {
         async function init() {
             setPage(+(router.query.page ?? 0))
-            const response = await ProductContext.listProducts()
-            if (response[0]) {
+            const [productsRes] = await Promise.all([
+                ProductContext.listProducts(),
+                WarehouseContext.listWarehouses(),
+            ])
+
+            if (productsRes[0]) {
                 setStatuses(
-                    response[1].map((product) => ({
+                    productsRes[1].map((product) => ({
                         id: product.id,
                         published: product.published,
                     }))
@@ -116,7 +123,10 @@ const InventoryPageContent = () => {
                     page={page}
                     handlePageChange={(newPage) => setPage(newPage)}
                     rows={filteredProducts}
-                    loading={AppContext.isLoading('list-products')}
+                    loading={
+                        AppContext.isLoading('list-products') ||
+                        AppContext.isLoading('list-warehouses')
+                    }
                     defaultSort={1}
                     columns={[
                         {
@@ -242,7 +252,9 @@ const InventoryPageContent = () => {
 
 const InventoryPage = () => (
     <ProductContextProvider>
-        <InventoryPageContent />
+        <WarehouseContextProvider>
+            <InventoryPageContent />
+        </WarehouseContextProvider>
     </ProductContextProvider>
 )
 
