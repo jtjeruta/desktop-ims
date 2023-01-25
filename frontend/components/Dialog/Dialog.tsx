@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import clsx from 'clsx'
 import { FaTimes } from 'react-icons/fa'
 import Button from '../Button/Button'
@@ -22,9 +22,6 @@ type Props = {
 
 const Dialog: FC<Props> = (props) => {
     const AppContext = useAppContext()
-    const [status, setStatus] = useState<
-        'open' | 'fading-in' | 'closed' | 'fading-out'
-    >('closed')
 
     const handleClose = useCallback(
         () => (props.onClose ? props.onClose() : AppContext.closeDialog()),
@@ -32,18 +29,8 @@ const Dialog: FC<Props> = (props) => {
     )
 
     useEffect(() => {
-        if (props.open && status === 'closed') {
-            setStatus('fading-in')
-            setTimeout(() => setStatus('open'), 200)
-        } else if (!props.open && status === 'open') {
-            setStatus('fading-out')
-            setTimeout(() => setStatus('closed'), 200)
-        }
-    }, [props.open, status])
-
-    useEffect(() => {
         const handleDialogKeyDown = (event: KeyboardEvent) => {
-            if (status === 'closed') return null
+            if (!props.open) return null
             event.key === 'Escape' && handleClose()
             event.key === 'Enter' && props.onSave && props.onSave()
             event.key === 'Enter' &&
@@ -57,21 +44,20 @@ const Dialog: FC<Props> = (props) => {
         return () => {
             window.removeEventListener('keydown', handleDialogKeyDown)
         }
-    }, [status, handleClose, props])
+    }, [props.open, handleClose, props])
 
-    return status === 'closed' ? null : (
+    return (
         <div
             className={clsx(
-                'fixed text-gray-500 flex items-center justify-center p-3',
-                'overflow-auto z-50 bg-black bg-opacity-50 left-0 right-0 top-0 bottom-0',
-                status === 'fading-in' && 'animate-fade-in',
-                status === 'fading-out' && 'animate-fade-out'
+                'fixed text-gray-500 flex items-center justify-center',
+                'overflow-auto z-50 bg-black bg-opacity-50 left-0 right-0 top-0 bottom-0 transition-all',
+                props.open ? 'opacity-100' : 'opacity-0 pointer-events-none'
             )}
             onClick={() => !props.disableOutsideClick && handleClose()}
         >
             <div
                 className={clsx(
-                    'bg-white relative overflow-x-auto shadow-md sm:rounded-lg w-full md:w-1/3',
+                    'bg-white relative overflow-x-auto shadow-md sm:rounded-lg h-full md:h-min w-full md:w-1/3',
                     props.className
                 )}
                 onClick={(e) => e.stopPropagation()}
