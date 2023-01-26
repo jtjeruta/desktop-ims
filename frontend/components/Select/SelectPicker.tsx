@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import Select, { ActionMeta, PropsValue, SingleValue } from 'react-select'
 
 type Props = {
@@ -20,6 +20,12 @@ type Props = {
 }
 
 const SelectPicker: FC<Props> = (props) => {
+    const [body, setBody] = useState<HTMLElement | null>(null)
+
+    useEffect(() => {
+        setBody(document.body)
+    }, [])
+
     return (
         <div
             className={clsx(
@@ -43,7 +49,7 @@ const SelectPicker: FC<Props> = (props) => {
                 options={props.options}
                 onChange={props.onChange}
                 className={clsx(props.error && 'border-red-500 border rounded')}
-                menuPortalTarget={document.body}
+                menuPortalTarget={body}
                 styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             />
             {props.error ? (
