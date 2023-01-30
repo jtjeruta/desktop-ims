@@ -21,9 +21,15 @@ import {
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import { FaPlus } from 'react-icons/fa'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Dropdown from '../../components/Dropdown/Dropdown'
+import Alert from '../../components/Alert/Alert'
+import { FaPlus } from 'react-icons/fa'
+
+type Filters = {
+    showDrafted: boolean
+    lowStockedOnly: boolean
+}
 
 const InventoryPageContent = () => {
     const AppContext = useAppContext()
@@ -36,8 +42,9 @@ const InventoryPageContent = () => {
     >([])
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
-    const [filters, setFilters] = useState<{ showDrafted: boolean }>({
+    const [filters, setFilters] = useState<Filters>({
         showDrafted: false,
+        lowStockedOnly: false,
     })
 
     const filteredProducts = (ProductContext.products || [])
@@ -56,6 +63,32 @@ const InventoryPageContent = () => {
             ].some((item) => regex.test(`${item}`))
         })
         .filter((product) => filters.showDrafted || product.published)
+        .filter((product) => {
+            if (!filters.lowStockedOnly) return true
+            const warehouseTotal = getProductWarehouseTotal(
+                WarehouseContext.warehouses,
+                product
+            )
+            return warehouseTotal + product.stock <= 5
+        })
+
+    const toggleFilter = useCallback((key: keyof Filters) => {
+        setFilters((prev) => ({ ...prev, [key]: !prev[key] }))
+        setPage(0)
+    }, [])
+
+    const options = [
+        {
+            label: 'Show un-available products',
+            toggled: filters.showDrafted,
+            onClick: () => toggleFilter('showDrafted'),
+        },
+        {
+            label: 'Low stocked products only',
+            toggled: filters.lowStockedOnly,
+            onClick: () => toggleFilter('lowStockedOnly'),
+        },
+    ]
 
     useEffect(() => {
         async function init() {
@@ -107,6 +140,15 @@ const InventoryPageContent = () => {
         [ProductContext]
     )
 
+    const lowStockedProducts =
+        ProductContext.products?.filter((product) => {
+            const warehouseTotal = getProductWarehouseTotal(
+                WarehouseContext.warehouses,
+                product
+            )
+            return warehouseTotal + product.stock <= 5
+        }) ?? []
+
     return (
         <UserLayout>
             <div className="flex justify-end mb-6 gap-3">
@@ -118,19 +160,18 @@ const InventoryPageContent = () => {
                     inputClass="!text-base h-full !bg-white"
                 />
                 <Dropdown>
-                    <div className="flex gap-3">
-                        <Switch
-                            toggled={filters.showDrafted}
-                            onClick={() =>
-                                setFilters((prev) => ({
-                                    ...prev,
-                                    showDrafted: !prev.showDrafted,
-                                }))
-                            }
-                        />
-                        <span className="w-max">
-                            Show un-available products
-                        </span>
+                    <div className="flex flex-col gap-3">
+                        {options.map((option) => (
+                            <div key={option.label} className="flex gap-2">
+                                <Switch
+                                    toggled={option.toggled}
+                                    onClick={option.onClick}
+                                />
+                                <span className="block w-max">
+                                    {option.label}
+                                </span>
+                            </div>
+                        ))}
                     </div>
                 </Dropdown>
                 <Button
@@ -139,6 +180,28 @@ const InventoryPageContent = () => {
                     {md ? 'Add product' : <FaPlus />}
                 </Button>
             </div>
+
+            {lowStockedProducts.length > 0 && (
+                <Alert
+                    type="warning"
+                    title={`${lowStockedProducts.length} low stocked products`}
+                    content={
+                        <span className="block">
+                            {lowStockedProducts.map((product) => (
+                                <Link
+                                    key={product.id}
+                                    href={`/inventory/${product.id}`}
+                                >
+                                    <a className="hover:text-teal-600">
+                                        {product.name}
+                                    </a>
+                                </Link>
+                            ))}
+                        </span>
+                    }
+                    className="mb-6"
+                />
+            )}
 
             <Card bodyClsx="!px-0 !py-0">
                 <Table
@@ -203,9 +266,16 @@ const InventoryPageContent = () => {
                             title: 'WHS qty',
                             format: (row) => {
                                 const product = row as Product
-                                return getProductWarehouseTotal(
+                                const stock = getProductWarehouseTotal(
                                     WarehouseContext.warehouses,
                                     product
+                                )
+                                return stock > 5 ? (
+                                    stock
+                                ) : (
+                                    <span className="text-red-500">
+                                        {stock}
+                                    </span>
                                 )
                             },
                             sort: (product) =>
@@ -219,7 +289,14 @@ const InventoryPageContent = () => {
                             title: 'STR qty',
                             format: (row) => {
                                 const product = row as Product
-                                return product.stock || 0
+                                const stock = product.stock || 0
+                                return stock > 5 ? (
+                                    stock
+                                ) : (
+                                    <span className="text-red-500">
+                                        {stock}
+                                    </span>
+                                )
                             },
                             sort: (product) => product.stock || 0,
                             bodyClsx: 'text-center',

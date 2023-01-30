@@ -5,13 +5,14 @@ import { BsInfoCircle } from 'react-icons/bs'
 type Props = {
     title?: string
     content?: string | JSX.Element
-    type: 'info'
+    type: 'info' | 'warning'
     className?: string
 }
 
 const Alert: FC<Props> = (props) => {
     const style = {
         info: 'bg-sky-100 border-sky-500 text-sky-900',
+        warning: 'bg-orange-100 border-orange-500 text-orange-900',
     }
 
     return (
