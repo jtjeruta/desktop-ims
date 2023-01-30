@@ -109,52 +109,56 @@ module.exports.listProductReports = async (req, res) => {
 
             const totalStock = warehouseStock + product.stock
 
-            const variants = product.variants.map((variant) => {
-                let totalPur = 0
-                let purQty = 0
-                let totalSales = 0
-                let salesQty = 0
+            const variants = product.variants
+                .map((variant) => {
+                    let totalPur = 0
+                    let purQty = 0
+                    let totalSales = 0
+                    let salesQty = 0
 
-                purchaseOrdersRes[1].forEach((order) =>
-                    order.products.forEach((orderProduct) => {
-                        if (
-                            orderProduct.variant.name !== variant.name ||
-                            !product._id.equals(orderProduct.product._id)
-                        )
-                            return
-                        totalPur += orderProduct.totalPrice
-                        purQty += orderProduct.quantity
-                    })
+                    purchaseOrdersRes[1].forEach((order) =>
+                        order.products.forEach((orderProduct) => {
+                            if (
+                                orderProduct.variant.name !== variant.name ||
+                                !product._id.equals(orderProduct.product._id)
+                            )
+                                return
+                            totalPur += orderProduct.totalPrice
+                            purQty += orderProduct.quantity
+                        })
+                    )
+
+                    salesOrdersRes[1].forEach((order) =>
+                        order.products.forEach((orderProduct) => {
+                            if (
+                                orderProduct.variant.name !== variant.name ||
+                                !product._id.equals(orderProduct.product._id)
+                            )
+                                return
+                            totalSales += orderProduct.totalPrice
+                            salesQty += orderProduct.quantity
+                        })
+                    )
+
+                    const avePur = purQty > 0 ? totalPur / purQty : 0
+                    const aveSales = salesQty > 0 ? totalSales / salesQty : 0
+
+                    return {
+                        id: variant._id,
+                        product: ProductView(product),
+                        variant: VariantView(variant),
+                        stock: totalStock,
+                        totalPur,
+                        purQty,
+                        totalSales,
+                        salesQty,
+                        avePur,
+                        aveSales,
+                    }
+                })
+                .filter(
+                    (variant) => variant.totalSales > 0 || variant.totalPur > 0
                 )
-
-                salesOrdersRes[1].forEach((order) =>
-                    order.products.forEach((orderProduct) => {
-                        if (
-                            orderProduct.variant.name !== variant.name ||
-                            !product._id.equals(orderProduct.product._id)
-                        )
-                            return
-                        totalSales += orderProduct.totalPrice
-                        salesQty += orderProduct.quantity
-                    })
-                )
-
-                const avePur = purQty > 0 ? totalPur / purQty : 0
-                const aveSales = salesQty > 0 ? totalSales / salesQty : 0
-
-                return {
-                    id: variant._id,
-                    product: ProductView(product),
-                    variant: VariantView(variant),
-                    stock: totalStock,
-                    totalPur,
-                    purQty,
-                    totalSales,
-                    salesQty,
-                    avePur,
-                    aveSales,
-                }
-            })
 
             return [...acc, ...variants]
         }, [])
