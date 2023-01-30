@@ -137,6 +137,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
     )
 
     const productOptions = (ProductContext.products || [])
+        .filter((product) => props.type === 'purchase' || product.published)
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((product) => ({
             label: product.name,
