@@ -48,6 +48,7 @@ const AddEditUserDialog: FC = () => {
                 title: !UserContext.userToEdit
                     ? 'User added!'
                     : 'User updated!',
+                type: 'success',
             })
         } else if (response[1].errors) {
             const { errors } = response[1]

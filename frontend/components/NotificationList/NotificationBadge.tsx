@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import React, { FC, useCallback, useEffect } from 'react'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -21,11 +22,25 @@ const NotificationBadge: FC<Props> = ({ notif }) => {
         timeout = setTimeout(() => closeNotif(), 4000)
     }, [closeNotif])
 
+    const borderColor: Record<Notification['type'], string> = {
+        success: 'border-green-500',
+        danger: 'border-red-500',
+    }
+
+    const textColor: Record<Notification['type'], string> = {
+        success: 'text-green-800',
+        danger: 'text-red-800',
+    }
+
     return (
         <div
-            className="rounded-b px-4 py-3 shadow-md animate-wiggle bg-white"
+            className={clsx(
+                'rounded px-4 py-3 shadow-md animate-wiggle pointer-events-auto z-20',
+                'bg-white w-full md:w-80 border',
+                borderColor[notif.type],
+                textColor[notif.type]
+            )}
             role="alert"
-            style={{ width: 300 }}
         >
             <div className="flex justify-between">
                 <div className="flex gap-2">

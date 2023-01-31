@@ -37,6 +37,7 @@ const AddVariantDialog: FC = () => {
             methods.reset()
             AppContext.addNotification({
                 title: 'Variant added!',
+                type: 'success',
             })
         } else if (response[1].errors) {
             const { errors } = response[1]

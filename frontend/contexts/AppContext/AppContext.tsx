@@ -28,7 +28,7 @@ const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const addNotification: AddNotification = ({ type, title, body }) => {
         setNotifications((prev) => [
             ...prev,
-            { id: uuid(), type: type || 'primary', title, body },
+            { id: uuid(), type: type, title, body },
         ])
     }
 

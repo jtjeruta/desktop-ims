@@ -177,10 +177,12 @@ const ExpensesPageContent = () => {
                     if (!response[0]) {
                         AppContext.addNotification({
                             title: `Something went wrong. Please try again later.`,
+                            type: 'danger',
                         })
                     } else {
                         AppContext.addNotification({
                             title: `Expense deleted successfully.`,
+                            type: 'success',
                         })
                     }
                 }}

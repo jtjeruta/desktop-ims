@@ -95,7 +95,10 @@ const TransferStockDialog: FC<Props> = (props) => {
         if (response[0]) {
             AppContext.closeDialog()
             methods.reset()
-            AppContext.addNotification({ title: 'Stock transfered!' })
+            AppContext.addNotification({
+                title: 'Stock transfered!',
+                type: 'success',
+            })
             WarehouseContext.setWarehouses(null)
             WarehouseContext.listWarehouses()
         } else if (response[1].message) {

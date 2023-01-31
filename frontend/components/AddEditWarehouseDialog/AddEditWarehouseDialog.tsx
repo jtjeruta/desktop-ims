@@ -33,6 +33,7 @@ const AddEditWarehouseDialog: FC = () => {
             methods.reset()
             AppContext.addNotification({
                 title: `Warehouse ${selectedId ? 'updated' : 'added'}!`,
+                type: 'success',
             })
         } else if (response[1].errors) {
             const { errors } = response[1]

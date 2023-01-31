@@ -1,12 +1,12 @@
 export type Notification = {
     id: string
-    type: 'primary' | 'success' | 'danger'
+    type: 'success' | 'danger'
     title: string
     body?: string
 }
 
 export type AddNotifDoc = {
-    type?: 'primary' | 'success' | 'danger'
+    type: 'success' | 'danger'
     title: string
     body?: string
 }

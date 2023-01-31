@@ -44,6 +44,7 @@ const AddEditVendorForm: FC = () => {
                 title: !VendorContext.selectedVendor
                     ? 'Vendor added!'
                     : 'Vendor updated!',
+                type: 'success',
             })
         } else if (response[1].errors) {
             const { errors } = response[1]

@@ -45,6 +45,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                 title: !ProductContext.product
                     ? 'Product added!'
                     : 'Product updated!',
+                type: 'success',
             })
             !ProductContext.product &&
                 router.push(`/inventory/${response[1].id}`)

@@ -42,6 +42,7 @@ const AddEditExpenseDialog: FC = () => {
             methods.reset()
             AppContext.addNotification({
                 title: `Expense ${selectedId ? 'updated' : 'added'}!`,
+                type: 'success',
             })
         } else if (response[1].errors) {
             const { errors } = response[1]
@@ -57,6 +58,7 @@ const AddEditExpenseDialog: FC = () => {
             methods.reset()
             AppContext.addNotification({
                 title: `Something went wrong. Please try again later.`,
+                type: 'danger',
             })
         }
     }
