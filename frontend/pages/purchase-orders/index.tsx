@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { FaPlus } from 'react-icons/fa'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import SearchBar from '../../components/SearchBar/SearchBar'
@@ -12,7 +12,6 @@ import {
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { PurchaseOrder } from '../../contexts/PurchaseOrderContext/types'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { escapeRegExp } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
@@ -20,7 +19,6 @@ const PurchaseOrdersPageContent = () => {
     const AppContext = useAppContext()
     const PurOrdContext = usePurchaseOrderContext()
     const router = useRouter()
-    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
 
@@ -38,13 +36,12 @@ const PurchaseOrdersPageContent = () => {
             const response = await PurOrdContext.listOrders()
             if (!response[0]) return router.push('/500')
         }
-
         init()
     }, [])
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -52,8 +49,11 @@ const PurchaseOrdersPageContent = () => {
                     }}
                     inputClass="!text-base h-full !bg-white"
                 />
-                <Button onClick={() => router.push('/purchase-orders/new')}>
-                    {md ? 'Add Order' : <FaPlus />}
+                <Button
+                    onClick={() => router.push('/purchase-orders/new')}
+                    className="hidden md:block"
+                >
+                    Add Order
                 </Button>
             </div>
 
@@ -111,6 +111,7 @@ const PurchaseOrdersPageContent = () => {
                     ]}
                 />
             </Card>
+            <ActionButton onClick={() => router.push('/purchase-orders/new')} />
         </UserLayout>
     )
 }

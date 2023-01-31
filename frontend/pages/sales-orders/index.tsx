@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { FaPlus } from 'react-icons/fa'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import SearchBar from '../../components/SearchBar/SearchBar'
@@ -12,7 +12,6 @@ import {
     useSalesOrderContext,
 } from '../../contexts/SalesOrderContext/SalesOrderContext'
 import { SalesOrder } from '../../contexts/SalesOrderContext/types'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { escapeRegExp } from '../../uitls'
 import { formatDate } from '../../uitls/date-utils'
 
@@ -20,7 +19,6 @@ const SalesOrdersPageContent = () => {
     const AppContext = useAppContext()
     const SalesOrderContext = useSalesOrderContext()
     const router = useRouter()
-    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
 
@@ -47,7 +45,7 @@ const SalesOrdersPageContent = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -55,8 +53,11 @@ const SalesOrdersPageContent = () => {
                     }}
                     inputClass="!text-base h-full !bg-white"
                 />
-                <Button onClick={() => router.push('/sales-orders/new')}>
-                    {md ? 'Add Order' : <FaPlus />}
+                <Button
+                    className="hidden md:block"
+                    onClick={() => router.push('/sales-orders/new')}
+                >
+                    Add Order
                 </Button>
             </div>
 
@@ -122,6 +123,7 @@ const SalesOrdersPageContent = () => {
                     ]}
                 />
             </Card>
+            <ActionButton onClick={() => router.push('/sales-orders/new')} />
         </UserLayout>
     )
 }

@@ -21,10 +21,9 @@ import {
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import Alert from '../../components/Alert/Alert'
-import { FaPlus } from 'react-icons/fa'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 
 type Filters = {
     showDrafted: boolean
@@ -36,7 +35,6 @@ const InventoryPageContent = () => {
     const ProductContext = useProductContext()
     const WarehouseContext = useWarehouseContext()
     const router = useRouter()
-    const md = useMediaQuery('md')
     const [statuses, setStatuses] = useState<
         { id: string; published: boolean }[]
     >([])
@@ -151,7 +149,7 @@ const InventoryPageContent = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -175,9 +173,10 @@ const InventoryPageContent = () => {
                     </div>
                 </Dropdown>
                 <Button
+                    className="hidden md:block"
                     onClick={() => AppContext.openDialog('add-product-dialog')}
                 >
-                    {md ? 'Add product' : <FaPlus />}
+                    Add Product
                 </Button>
             </div>
 
@@ -199,7 +198,7 @@ const InventoryPageContent = () => {
                             ))}
                         </span>
                     }
-                    className="mb-6"
+                    className="mb-4"
                 />
             )}
 
@@ -347,6 +346,9 @@ const InventoryPageContent = () => {
                 />
             </Card>
             <AddProductDialog />
+            <ActionButton
+                onClick={() => AppContext.openDialog('add-product-dialog')}
+            />
         </UserLayout>
     )
 }

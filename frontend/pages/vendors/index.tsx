@@ -12,15 +12,13 @@ import { Vendor } from '../../contexts/VendorContext/types'
 import AddEditVendorDialog from '../../components/AddEditVendorDialog/AddEditVendorDialog'
 import { escapeRegExp } from '../../uitls'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
-import { FaPlus } from 'react-icons/fa'
 import { useRouter } from 'next/router'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
     const VendorContext = useVendorContext()
     const router = useRouter()
-    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
 
@@ -51,7 +49,7 @@ const VendorsPageContent = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -59,8 +57,11 @@ const VendorsPageContent = () => {
                     }}
                     inputClass="!text-base h-full !bg-white"
                 />
-                <Button onClick={openVendorDialog(null)}>
-                    {md ? 'Add Vendor' : <FaPlus />}
+                <Button
+                    onClick={openVendorDialog(null)}
+                    className="hidden md:block"
+                >
+                    Add Vendor
                 </Button>
             </div>
 
@@ -144,6 +145,7 @@ const VendorsPageContent = () => {
                 />
             </Card>
             <AddEditVendorDialog />
+            <ActionButton onClick={openVendorDialog(null)} />
         </UserLayout>
     )
 }

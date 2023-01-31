@@ -12,16 +12,14 @@ import { Expense } from '../../contexts/ExpenseContext/types'
 import { escapeRegExp, formatCurrency } from '../../uitls'
 import AddEditExpenseDialog from '../../components/AddEditExpenseDialog/AddEditExpenseDialog'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
-import { FaPlus } from 'react-icons/fa'
 import { formatDate } from '../../uitls/date-utils'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 import { useRouter } from 'next/router'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 
 const ExpensesPageContent = () => {
     const AppContext = useAppContext()
     const ExpenseContext = useExpenseContext()
-    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
     const router = useRouter()
@@ -54,7 +52,7 @@ const ExpensesPageContent = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -62,8 +60,11 @@ const ExpensesPageContent = () => {
                     }}
                     inputClass="!text-base h-full !bg-white"
                 />
-                <Button onClick={handleOpenExpenseDialog(null)}>
-                    {!md ? <FaPlus /> : 'Add Expense'}
+                <Button
+                    onClick={handleOpenExpenseDialog(null)}
+                    className="hidden md:block"
+                >
+                    Add Expenses
                 </Button>
             </div>
 
@@ -188,6 +189,7 @@ const ExpensesPageContent = () => {
                 }}
                 loading={AppContext.isLoading('delete-expense')}
             />
+            <ActionButton onClick={handleOpenExpenseDialog(null)} />
         </UserLayout>
     )
 }

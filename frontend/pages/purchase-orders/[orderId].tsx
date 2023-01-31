@@ -137,7 +137,7 @@ const PurchaseOrderPageContent = () => {
     return (
         <>
             <UserLayout>
-                <div className="mb-6">
+                <div className="mb-4">
                     <h1>
                         {AppContext.isLoading('get-order') ? (
                             <span className="w-full h-12" />

@@ -20,7 +20,7 @@ import {
 } from '../../contexts/ProductContext/ProductContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
-import { FaPlus } from 'react-icons/fa'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 
 const WarehousesPageContent = () => {
     const AppContext = useAppContext()
@@ -47,6 +47,11 @@ const WarehousesPageContent = () => {
         }
     )
 
+    const handleAddWarehouse = () => {
+        WarehouseContext.setSelectedWarehouse(null)
+        AppContext.openDialog('add-edit-warehouse-dialog')
+    }
+
     useEffect(() => {
         async function init() {
             const responses = await Promise.all([
@@ -63,7 +68,7 @@ const WarehousesPageContent = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -72,12 +77,10 @@ const WarehousesPageContent = () => {
                     inputClass="!text-base h-full !bg-white"
                 />
                 <Button
-                    onClick={() => {
-                        WarehouseContext.setSelectedWarehouse(null)
-                        AppContext.openDialog('add-edit-warehouse-dialog')
-                    }}
+                    onClick={handleAddWarehouse}
+                    className="hidden md:block"
                 >
-                    {!md ? <FaPlus /> : 'Add Warehouse'}
+                    Add Warehouse
                 </Button>
             </div>
 
@@ -254,6 +257,7 @@ const WarehousesPageContent = () => {
             </Card>
             <AddEditWarehouseDialog />
             <TransferStockDialog showProductSelect />
+            <ActionButton onClick={handleAddWarehouse} />
         </UserLayout>
     )
 }

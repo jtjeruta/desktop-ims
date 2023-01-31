@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
-import { FaPlus } from 'react-icons/fa'
+import { ActionButton } from '../../components/ActionButton/ActionButton'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
@@ -15,18 +15,16 @@ import {
     UserContextProvider,
     useUserContext,
 } from '../../contexts/UserContext/UserContext'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
 
 const PageContent: FC = () => {
     const AppContext = useAppContext()
     const AuthContext = useAuthContext()
     const UserContext = useUserContext()
-    const md = useMediaQuery('md')
     const [search, setSearch] = useState<string>('')
     const [page, setPage] = useState<number>(0)
     const router = useRouter()
 
-    const handleEditUser = (user: User) => () => {
+    const openUserDialog = (user: User | null) => () => {
         UserContext.setUserToEdit(user)
         AppContext.openDialog('add-edit-user-dialog')
     }
@@ -42,7 +40,7 @@ const PageContent: FC = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-end mb-6 gap-3">
+            <div className="flex justify-end mb-4 gap-3">
                 <SearchBar
                     onSearch={(search) => {
                         setSearch(search)
@@ -51,12 +49,10 @@ const PageContent: FC = () => {
                     inputClass="!text-base h-full !bg-white"
                 />
                 <Button
-                    onClick={() => {
-                        UserContext.setUserToEdit(null)
-                        AppContext.openDialog('add-edit-user-dialog')
-                    }}
+                    onClick={openUserDialog(null)}
+                    className="hidden md:block"
                 >
-                    {md ? 'Add User' : <FaPlus />}
+                    Add User
                 </Button>
             </div>
 
@@ -78,7 +74,7 @@ const PageContent: FC = () => {
                                 return (
                                     <div
                                         className="hover:text-teal-600 cursor-pointer"
-                                        onClick={handleEditUser(user)}
+                                        onClick={openUserDialog(user)}
                                     >
                                         {user.firstName} {user.lastName}
                                     </div>
@@ -95,7 +91,7 @@ const PageContent: FC = () => {
                                 return (
                                     <div
                                         className="hover:text-teal-600 cursor-pointer"
-                                        onClick={handleEditUser(user)}
+                                        onClick={openUserDialog(user)}
                                     >
                                         {user.email}
                                     </div>
@@ -116,7 +112,7 @@ const PageContent: FC = () => {
                                     <div className="flex">
                                         <Button
                                             style="link"
-                                            onClick={handleEditUser(user)}
+                                            onClick={openUserDialog(user)}
                                         >
                                             Edit
                                         </Button>
@@ -159,6 +155,7 @@ const PageContent: FC = () => {
                 }}
                 loading={AppContext.isLoading('remove-user')}
             />
+            <ActionButton onClick={openUserDialog(null)} />
         </UserLayout>
     )
 }

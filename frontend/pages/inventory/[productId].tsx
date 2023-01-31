@@ -59,7 +59,7 @@ const ProductPageContent = () => {
 
     return (
         <UserLayout>
-            <div className="flex justify-between align-end mb-6 gap-3">
+            <div className="flex justify-between align-end mb-4 gap-3">
                 <h1>
                     {AppContext.isLoading('get-product') ? (
                         <span className="w-full h-12" />
