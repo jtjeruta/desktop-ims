@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { FaHamburger } from 'react-icons/fa'
 import { FiLogOut } from 'react-icons/fi'
+import { GiHamburgerMenu } from 'react-icons/gi'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import Button from '../Button/Button'
@@ -32,7 +32,7 @@ const Navbar = () => {
                                 }}
                             >
                                 {AuthContext.user?.role === 'admin' ? (
-                                    <FaHamburger />
+                                    <GiHamburgerMenu />
                                 ) : (
                                     <FiLogOut />
                                 )}
