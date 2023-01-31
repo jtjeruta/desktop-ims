@@ -37,7 +37,7 @@ const ExpenseContextProvider: React.FC<{ children: React.ReactNode }> = ({
             return [false, response[1].data]
         }
 
-        setExpenses((prev) => [...(prev || []), response[1]])
+        setExpenses((prev) => [response[1], ...(prev || [])])
         return [true, response[1]]
     }
 
