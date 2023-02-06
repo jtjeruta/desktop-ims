@@ -59,11 +59,7 @@ const Button: FC<Props> = (props) => {
             onClick={props.onClick}
             title={props.disabled ? props.disabledText : ''}
         >
-            {props.loading && (
-                <div style={{ transform: 'translateY(4px)' }}>
-                    <FaSpinner className="animate-spin" />
-                </div>
-            )}
+            {props.loading && <FaSpinner className="animate-spin" />}
             {props.children}
         </button>
     )
