@@ -42,17 +42,13 @@
   mongo --version
 ```
 
-2. Start mongodb
+2. If installed, start mongodb
 
 ```
   mongod
 ```
 
-3. Open new terminal and install frontend dependencies
-
-```
-  cd frontend && npm i
-```
+3. If not installed, get it from the [mongo website](https://www.mongodb.com/)
 
 4. Install husky git hooks
 
@@ -60,22 +56,28 @@
   npx husky install
 ```
 
-5. Start frontend
+5. Open new terminal and install frontend dependencies
+
+```
+  cd frontend && npm install
+```
+
+6. Start frontend
 
 ```
   npm run dev
 ```
 
-6. Open new terminal and install backend dependencies
+7. Open new terminal and install backend dependencies
 
 ```
-  cd backend && npm i
+  cd backend && npm install
 ```
 
-7. Start backend
+8. Start backend
 
 ```
-  npm run start:dev
+  npm start
 ```
 
 ## Connecting to Database with Compass
