@@ -69,7 +69,10 @@ const TransferStockDialog: FC<Props> = (props) => {
         methods.setValue('amount', 1)
         methods.setValue('units', transferOptions[0].value)
 
-        if (!ProductContext.product) {
+        if (
+            !ProductContext.product &&
+            (ProductContext.products?.length ?? 0) > 0
+        ) {
             methods.setValue('product', ProductContext.products?.[0].id)
         }
     }, [
@@ -96,7 +99,7 @@ const TransferStockDialog: FC<Props> = (props) => {
             AppContext.closeDialog()
             methods.reset()
             AppContext.addNotification({
-                title: 'Stock transfered!',
+                title: 'Stock transferred!',
                 type: 'success',
             })
             WarehouseContext.setWarehouses(null)
