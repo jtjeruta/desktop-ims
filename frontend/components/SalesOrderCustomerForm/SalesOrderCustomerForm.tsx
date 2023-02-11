@@ -40,7 +40,11 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
         methods.setValue('phone', CustomerContext.draftCustomer?.phone)
         methods.setValue('email', CustomerContext.draftCustomer?.email)
         methods.setValue('address', CustomerContext.draftCustomer?.address)
-    }, [SalesOrderContext.selectedOrder])
+    }, [
+        SalesOrderContext.selectedOrder,
+        CustomerContext.draftCustomer,
+        methods,
+    ])
 
     useEffect(() => {
         const subscription = methods.watch(async (data, { name }) => {
