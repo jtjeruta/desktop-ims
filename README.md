@@ -48,33 +48,39 @@
   mongod
 ```
 
-3. If not installed, get it from the [mongo website](https://www.mongodb.com/)
+3. install development dependencies
 
-4. Install husky git hooks
+```
+  npm install
+```
+
+4. If not installed, get it from the [mongo website](https://www.mongodb.com/)
+
+5. Install husky git hooks
 
 ```
   npx husky install
 ```
 
-5. Open new terminal and install frontend dependencies
+6. Open new terminal and install frontend dependencies
 
 ```
   cd frontend && npm install
 ```
 
-6. Start frontend
+7. Start frontend
 
 ```
   npm run dev
 ```
 
-7. Open new terminal and install backend dependencies
+8. Open new terminal and install backend dependencies
 
 ```
   cd backend && npm install
 ```
 
-8. Start backend
+9. Start backend
 
 ```
   npm start
