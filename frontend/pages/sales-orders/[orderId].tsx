@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Button from '../../components/Button/Button'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import {
     SalesOrderContextProvider,
@@ -144,16 +145,27 @@ const SalesOrderPageContent = () => {
     return (
         <>
             <UserLayout>
-                <div className="mb-4">
-                    <h1>
-                        {AppContext.isLoading('get-order') ? (
-                            <span className="w-full h-12" />
-                        ) : SalesOrderContext.selectedOrder ? (
-                            `#${SalesOrderContext.selectedOrder.id}`
-                        ) : (
-                            'New Order'
-                        )}
-                    </h1>
+                <div className="flex flex-row">
+                    <div className="basis-1/2 mb-4">
+                        <h1>
+                            {AppContext.isLoading('get-order') ? (
+                                <span className="w-full h-12" />
+                            ) : SalesOrderContext.selectedOrder ? (
+                                `#${SalesOrderContext.selectedOrder.id}`
+                            ) : (
+                                'New Order'
+                            )}
+                        </h1>
+                    </div>
+                    <div className="flex basis-1/2 justify-end mb-4">
+                        <Button 
+                            color="secondary"
+                            className="hidden md:block"
+                            onClick={() => router.push('/sales-orders')}
+                        >
+                            Back
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="flex flex-col-reverse md:flex-row gap-3 mb-3">
