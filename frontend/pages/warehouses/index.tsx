@@ -11,7 +11,7 @@ import {
     useWarehouseContext,
 } from '../../contexts/WarehouseContext/WarehouseContext'
 import { Warehouse } from '../../contexts/WarehouseContext/types'
-import { escapeRegExp } from '../../uitls'
+import { escapeRegExp } from '../../utils'
 import AddEditWarehouseDialog from '../../components/AddEditWarehouseDialog/AddEditWarehouseDialog'
 import TransferStockDialog from '../../components/TransferStockDialog/TransferStockDialog'
 import {

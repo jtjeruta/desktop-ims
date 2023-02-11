@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { IconType } from 'react-icons/lib'
 import styled from 'styled-components'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
-import { formatCurrency } from '../../uitls'
+import { formatCurrency } from '../../utils'
 
 const ReportCard = styled.div`
     flex-grow: 1;

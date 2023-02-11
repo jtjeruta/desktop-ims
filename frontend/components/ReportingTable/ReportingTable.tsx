@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useStatContext } from '../../contexts/StatsContext/StatsContext'
 import { ProductReport } from '../../contexts/StatsContext/types'
-import { escapeRegExp, formatCurrency } from '../../uitls'
+import { escapeRegExp, formatCurrency } from '../../utils'
 import Card from '../Card/Card'
 import Table from '../Table/Table'
 

@@ -9,10 +9,10 @@ import {
     useExpenseContext,
 } from '../../contexts/ExpenseContext/ExpenseContext'
 import { Expense } from '../../contexts/ExpenseContext/types'
-import { escapeRegExp, formatCurrency } from '../../uitls'
+import { escapeRegExp, formatCurrency } from '../../utils'
 import AddEditExpenseDialog from '../../components/AddEditExpenseDialog/AddEditExpenseDialog'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import { formatDate } from '../../uitls/date-utils'
+import { formatDate } from '../../utils/date-utils'
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 import { useRouter } from 'next/router'
 import { ActionButton } from '../../components/ActionButton/ActionButton'

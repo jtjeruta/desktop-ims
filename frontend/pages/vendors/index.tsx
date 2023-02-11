@@ -10,7 +10,7 @@ import {
 } from '../../contexts/VendorContext/VendorContext'
 import { Vendor } from '../../contexts/VendorContext/types'
 import AddEditVendorDialog from '../../components/AddEditVendorDialog/AddEditVendorDialog'
-import { escapeRegExp } from '../../uitls'
+import { escapeRegExp } from '../../utils'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
 import { ActionButton } from '../../components/ActionButton/ActionButton'

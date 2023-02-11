@@ -13,9 +13,9 @@ import {
 import { Product } from '../../contexts/ProductContext/types'
 import AddProductDialog from '../../components/AddProductDialog/AddProductDialog'
 import Switch from '../../components/Switch/Switch'
-import { formatDate } from '../../uitls/date-utils'
-import { getProductWarehouseTotal } from '../../uitls/product-utils'
-import { escapeRegExp, formatCurrency } from '../../uitls'
+import { formatDate } from '../../utils/date-utils'
+import { getProductWarehouseTotal } from '../../utils/product-utils'
+import { escapeRegExp, formatCurrency } from '../../utils'
 import {
     useWarehouseContext,
     WarehouseContextProvider,

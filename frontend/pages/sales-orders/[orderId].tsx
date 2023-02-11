@@ -22,7 +22,7 @@ import {
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 import SalesOrderCustomerForm from '../../components/SalesOrderCustomerForm/SalesOrderCustomerForm'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
-import { undoProductOrWarehouseStockChanges } from '../../uitls/product-utils'
+import { undoProductOrWarehouseStockChanges } from '../../utils/product-utils'
 import {
     useWarehouseContext,
     WarehouseContextProvider,

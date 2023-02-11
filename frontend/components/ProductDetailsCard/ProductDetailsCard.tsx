@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { FC } from 'react'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
-import { getProductWarehouseTotal } from '../../uitls/product-utils'
+import { getProductWarehouseTotal } from '../../utils/product-utils'
 import Card from '../Card/Card'
 
 const ProductDetailsCard: FC = () => {

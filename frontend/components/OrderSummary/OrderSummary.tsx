@@ -2,7 +2,7 @@ import { FC, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import moment from 'moment'
 import Card from '../Card/Card'
-import { formatCurrency } from '../../uitls'
+import { formatCurrency } from '../../utils'
 import Button from '../Button/Button'
 import TextField from '../TextField/TextField'
 

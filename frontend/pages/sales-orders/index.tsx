@@ -12,8 +12,8 @@ import {
     useSalesOrderContext,
 } from '../../contexts/SalesOrderContext/SalesOrderContext'
 import { SalesOrder } from '../../contexts/SalesOrderContext/types'
-import { escapeRegExp } from '../../uitls'
-import { formatDate } from '../../uitls/date-utils'
+import { compare, escapeRegExp } from '../../utils'
+import { formatDate } from '../../utils/date-utils'
 
 const SalesOrdersPageContent = () => {
     const AppContext = useAppContext()
@@ -30,6 +30,10 @@ const SalesOrdersPageContent = () => {
             order.remarks,
         ].some((item) => regex.test(`${item}`))
     })
+
+    const sortedOrders = filteredOrders.sort(
+        (a, b) => -compare(a.orderDate ?? 0, b.orderDate ?? 0)
+    )
 
     useEffect(() => {
         async function init() {
@@ -65,7 +69,7 @@ const SalesOrdersPageContent = () => {
                 <Table
                     page={page}
                     handlePageChange={(newPage) => setPage(newPage)}
-                    rows={filteredOrders}
+                    rows={sortedOrders}
                     loading={AppContext.isLoading('list-sales-orders')}
                     columns={[
                         {
@@ -76,7 +80,7 @@ const SalesOrdersPageContent = () => {
                                     ? formatDate(order.orderDate)
                                     : ''
                             },
-                            sort: (order) => order.orderDate,
+                            sort: (order) => order.orderDate ?? 0,
                         },
                         {
                             title: 'Invoice #',

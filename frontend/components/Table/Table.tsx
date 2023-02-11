@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
-import { compare } from '../../uitls'
+import { compare } from '../../utils'
 import TablePagination from './TablePagination'
 import { ITEMS_PER_TABLE } from '../../constants'
 

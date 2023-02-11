@@ -12,8 +12,8 @@ import {
     usePurchaseOrderContext,
 } from '../../contexts/PurchaseOrderContext/PurchaseOrderContext'
 import { PurchaseOrder } from '../../contexts/PurchaseOrderContext/types'
-import { escapeRegExp } from '../../uitls'
-import { formatDate } from '../../uitls/date-utils'
+import { compare, escapeRegExp } from '../../utils'
+import { formatDate } from '../../utils/date-utils'
 
 const PurchaseOrdersPageContent = () => {
     const AppContext = useAppContext()
@@ -30,6 +30,10 @@ const PurchaseOrdersPageContent = () => {
             order.remarks,
         ].some((item) => regex.test(`${item}`))
     })
+
+    const sortedOrders = filteredOrders.sort(
+        (a, b) => -compare(a.orderDate ?? 0, b.orderDate ?? 0)
+    )
 
     useEffect(() => {
         async function init() {
@@ -61,7 +65,7 @@ const PurchaseOrdersPageContent = () => {
                 <Table
                     page={page}
                     handlePageChange={(newPage) => setPage(newPage)}
-                    rows={filteredOrders}
+                    rows={sortedOrders}
                     loading={AppContext.isLoading('list-purchase-orders')}
                     columns={[
                         {
@@ -72,7 +76,7 @@ const PurchaseOrdersPageContent = () => {
                                     ? formatDate(order.orderDate)
                                     : ''
                             },
-                            sort: (order) => order.orderDate,
+                            sort: (order) => order.orderDate ?? 0,
                         },
                         {
                             title: 'Invoice #',

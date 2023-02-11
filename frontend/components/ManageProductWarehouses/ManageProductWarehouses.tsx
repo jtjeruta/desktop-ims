@@ -13,7 +13,7 @@ import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseCo
 import {
     getProductWarehouses,
     ProductWarehouse,
-} from '../../uitls/product-utils'
+} from '../../utils/product-utils'
 
 const ManageProductWarehouses = () => {
     const AppContext = useAppContext()

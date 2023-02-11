@@ -14,7 +14,7 @@ import {
     customerCanBuyProduct,
     getProductWarehouses,
     updateProductOrWarehouseQuantity,
-} from '../../uitls/product-utils'
+} from '../../utils/product-utils'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 import SelectPicker from '../Select/SelectPicker'
 
