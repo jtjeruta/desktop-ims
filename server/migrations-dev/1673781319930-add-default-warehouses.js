@@ -6,12 +6,9 @@ const {
     deleteWarehouses,
 } = require('../src/modules/warehouses-module')
 require('../src/schemas/variant-schema')
+const { getRandomSubset } = require('../src/utils/array')
 
 dbConnect()
-
-function getRandomSubset(arr, size) {
-    return arr.filter(() => Math.random() < size / arr.length)
-}
 
 async function up() {
     const products = await listProducts()
@@ -26,10 +23,10 @@ async function up() {
         ),
     }))
 
-    const reponses = await Promise.all(
+    const responses = await Promise.all(
         warehouses.map((warehouse) => createWarehouse(warehouse))
     )
-    if (reponses.some((res) => res[0] !== 201)) {
+    if (responses.some((res) => res[0] !== 201)) {
         throw 'Failed to create warehouse'
     }
 }

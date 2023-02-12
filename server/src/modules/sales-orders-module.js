@@ -162,3 +162,16 @@ const calculateProductTotals = (products = []) => {
 
     return { total, products: newProducts }
 }
+
+module.exports.deleteSalesOrders = async (query = {}, session = null) => {
+    try {
+        const deletedSalesOrders = await SalesOrderModel.deleteMany(
+            query,
+            session
+        )
+        return [200, deletedSalesOrders]
+    } catch (error) {
+        console.error('Failed to delete sales orders')
+        return getMongoError(error)
+    }
+}
