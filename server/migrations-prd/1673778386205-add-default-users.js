@@ -4,9 +4,10 @@ const { createUser, deleteUser } = require('../src/modules/users-module')
 dbConnect()
 
 async function up() {
-    const reponses = await Promise.all([
+    const responses = await Promise.all([
         createUser({
             email: 'admin@gmail.com',
+            username: 'admin',
             firstName: 'Admin',
             lastName: 'User',
             role: 'admin',
@@ -14,6 +15,7 @@ async function up() {
         }),
         createUser({
             email: 'employee@gmail.com',
+            username: 'employee',
             firstName: 'Employee',
             lastName: 'User',
             role: 'employee',
@@ -21,7 +23,7 @@ async function up() {
         }),
     ])
 
-    if (reponses.some((res) => res[0] !== 201)) {
+    if (responses.some((res) => res[0] !== 201)) {
         throw 'Failed to create user'
     }
 }

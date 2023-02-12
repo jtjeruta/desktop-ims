@@ -95,10 +95,8 @@ describe('Controller: List sales orders', () => {
             .get('/api/v1/sales-orders')
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.orders.length).to.equal(2)
     })
 
     it('Fail: run as unauthorized', async () => {
@@ -175,10 +173,8 @@ describe('Controller: Get sales order', () => {
             .get(`/api/v1/sales-orders/${salesOrder._id}`)
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(200)
+        expect('id' in res.body.order).to.be.true
     })
 
     it('Fail: run as unauthorized', async () => {
@@ -274,13 +270,38 @@ describe('Controller: Create sales order', () => {
 
         const res = await request(app)
             .post('/api/v1/sales-orders')
-            .send({})
+            .send({
+                customer: customer._id,
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 5,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                invoiceNumber: 'invoice-number-1',
+            })
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(201)
+        expect(res.body.order.customer.id).to.equal(customer._id.toString())
+        expect(res.body.order.products[0].product.id).to.equal(
+            product._id.toString()
+        )
+        expect(res.body.order.products[0].totalPrice).to.equal(500)
+        expect(res.body.order.total).to.equal(500)
+
+        const updatedWarehouse = (
+            await WarehousesModule.getWarehouseById(warehouse)
+        )[1]
+
+        expect(updatedWarehouse.products[0].stock).to.equal(-50)
     })
 
     it('Fail: run as unauthorized', async () => {
@@ -394,14 +415,38 @@ describe('Controller: Update sales order', () => {
         })
 
         const res = await request(app)
-            .post('/api/v1/sales-orders')
-            .send({})
+            .put(`/api/v1/sales-orders/${salesOrder._id}`)
+            .send({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 5,
+                        },
+                    },
+                ],
+                invoiceNumber: 'invoice-number-1',
+            })
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.order.customer.id).to.equal(customer._id.toString())
+        expect(res.body.order.products[0].product.id).to.equal(
+            product._id.toString()
+        )
+        expect(res.body.order.products[0].totalPrice).to.equal(5000)
+        expect(res.body.order.total).to.equal(5000)
+
+        const updatedWarehouse = (
+            await WarehousesModule.getWarehouseById(warehouse)
+        )[1]
+
+        expect(updatedWarehouse.products[0].stock).to.equal(500)
     })
 
     it('Fail: run as unauthorized', async () => {

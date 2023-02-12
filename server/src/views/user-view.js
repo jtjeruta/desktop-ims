@@ -5,6 +5,7 @@ module.exports.UsersView = (userDocuments) => {
 module.exports.UserView = (userDocument) => {
     return {
         id: userDocument._id,
+        username: userDocument.username,
         firstName: userDocument.firstName,
         lastName: userDocument.lastName,
         email: userDocument.email,

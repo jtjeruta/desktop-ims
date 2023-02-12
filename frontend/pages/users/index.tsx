@@ -84,6 +84,21 @@ const PageContent: FC = () => {
                                 [user.firstName, user.lastName].join(' '),
                         },
                         {
+                            title: 'Username',
+                            format: (row) => {
+                                const user = row as User
+                                return (
+                                    <div
+                                        className="hover:text-teal-600 cursor-pointer"
+                                        onClick={openUserDialog(user)}
+                                    >
+                                        {user.username}
+                                    </div>
+                                )
+                            },
+                            sort: (user) => user.username,
+                        },
+                        {
                             title: 'Email',
                             bodyClsx: 'w-full',
                             format: (row) => {

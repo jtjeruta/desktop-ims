@@ -7,6 +7,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         validate: [validator.isEmail],
     },
+    username: {
+        type: String,
+        required: true,
+    },
     firstName: {
         type: String,
         required: true,
@@ -30,6 +34,7 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.index({ email: 1 }, { unique: true })
+UserSchema.index({ username: 1 }, { unique: true })
 const UserModel = mongoose.model('User', UserSchema)
 
 module.exports = { UserModel, UserSchema }

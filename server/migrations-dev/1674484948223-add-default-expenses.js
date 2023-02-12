@@ -18,10 +18,10 @@ async function up() {
         user: faker.helpers.arrayElement(users[1])._id,
     }))
 
-    const reponses = await Promise.all(
+    const responses = await Promise.all(
         expenses.map((expense) => ExpenseModule.createExpense(expense))
     )
-    if (reponses.some((res) => res[0] !== 201)) {
+    if (responses.some((res) => res[0] !== 201)) {
         throw 'Failed to create expense'
     }
 }

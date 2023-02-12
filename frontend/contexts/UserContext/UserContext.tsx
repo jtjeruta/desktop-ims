@@ -27,6 +27,7 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
         AppContext.addLoading(key)
         const response = await UsersAPI.createUser(userDoc)
+        console.log(response)
         AppContext.removeLoading(key)
 
         if (!response[0]) {
@@ -56,7 +57,7 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update auth detials
+        // update auth details
         if (id === AuthContext.user?.id) {
             AuthContext.setUser(response[1])
         }

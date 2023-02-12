@@ -21,10 +21,7 @@ async function up() {
     ])
 
     const purchaseOrders = Array.from({ length: 100 }, () => {
-        const orderProducts = getRandomSubset(
-            products[1],
-            faker.datatype.number(100)
-        ).map((product) => {
+        const orderProducts = getRandomSubset(products[1]).map((product) => {
             const qty = faker.datatype.number({ min: 1 })
             const itemPrice = faker.datatype.number({ min: 100 })
             const varQty = faker.datatype.number({ min: 1 })

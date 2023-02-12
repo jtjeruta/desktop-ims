@@ -40,9 +40,9 @@ module.exports.getUserById = async (id) => {
     }
 }
 
-module.exports.getUserByEmail = async (email) => {
+module.exports.getUser = async (query = {}) => {
     try {
-        const user = await UserModel.findOne({ email })
+        const user = await UserModel.findOne(query)
 
         if (!user) {
             return [404, { message: 'Not found.' }]

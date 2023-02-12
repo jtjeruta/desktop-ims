@@ -60,7 +60,7 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current vendor detials
+        // update current vendor details
         if (id === selectedVendor?.id) {
             setSelectedVendor(response[1])
         }

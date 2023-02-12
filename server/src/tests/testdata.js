@@ -3,6 +3,7 @@ const { generateSKU } = require('../modules/products-module')
 
 module.exports.admin1 = {
     email: 'dutch@vanderlinde.com',
+    username: 'dutch',
     firstName: 'Dutch',
     lastName: 'Vanderlinde',
     role: 'admin',
@@ -11,6 +12,7 @@ module.exports.admin1 = {
 
 module.exports.employee1 = {
     email: 'arthur@vanderlinde.com',
+    username: 'arthur',
     firstName: 'Arthur',
     lastName: 'Morgan',
     role: 'employee',
@@ -19,6 +21,7 @@ module.exports.employee1 = {
 
 module.exports.employee2 = {
     email: 'john@vanderlinde.com',
+    username: 'john',
     firstName: 'John',
     lastName: 'Marshton',
     role: 'employee',

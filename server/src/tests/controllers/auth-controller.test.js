@@ -11,6 +11,7 @@ describe('Login User', () => {
     beforeEach(async () => {
         const user = {
             email: 'admin@gmail.com',
+            username: 'admin',
             firstName: 'admin',
             lastName: 'admin',
             role: 'admin',
@@ -58,6 +59,7 @@ describe('Verify Token', () => {
     beforeEach(async () => {
         const admin = {
             email: 'admin@gmail.com',
+            username: 'admin',
             firstName: 'admin',
             lastName: 'admin',
             role: 'admin',

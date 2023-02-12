@@ -1,9 +1,11 @@
 module.exports.getRandomSubset = (arr, size) => {
     if (size === undefined) {
-        size = Math.floor(Math.random() * arr.length)
+        size = Math.floor(Math.random() * arr.length) + 1
     }
-
-    return arr.filter(() => Math.random() < (size || 1) / arr.length)
+    if (size > arr.length) {
+        size = arr.length
+    }
+    return arr.filter(() => Math.random() < size / arr.length)
 }
 
 module.exports.getRandomElement = (arr) => {

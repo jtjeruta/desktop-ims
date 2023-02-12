@@ -46,10 +46,8 @@ describe('Controller: List customers', () => {
             .get('/api/v1/customers')
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.customers.length).to.deep.equal(2)
     })
 
     it('Fail: run as unauthorized', async () => {
@@ -114,13 +112,14 @@ describe('Controller: Create customer', () => {
 
         const res = await request(app)
             .post('/api/v1/customers')
-            .send({})
+            .send(testdata.customer1)
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(201)
+        expect(res.body.customer.name).to.equal(testdata.customer1.name)
+        expect(res.body.customer.email).to.equal(testdata.customer1.email)
+        expect(res.body.customer.phone).to.equal(testdata.customer1.phone)
+        expect(res.body.customer.address).to.equal(testdata.customer1.address)
     })
 
     it('Fail: run as unauthorized', async () => {
@@ -191,12 +190,14 @@ describe('Controller: Update customer', () => {
 
         const res = await request(app)
             .put(`/api/v1/customers/${customer._id}`)
+            .send(testdata.customer2)
             .set('Authorization', token)
 
-        expect(res.statusCode).to.equal(401)
-        expect(res.body).to.deep.equal({
-            message: 'Unauthorized.',
-        })
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.customer.name).to.equal(testdata.customer2.name)
+        expect(res.body.customer.email).to.equal(testdata.customer2.email)
+        expect(res.body.customer.phone).to.equal(testdata.customer2.phone)
+        expect(res.body.customer.address).to.equal(testdata.customer2.address)
     })
 
     it('Fail: run as unauthorized', async () => {

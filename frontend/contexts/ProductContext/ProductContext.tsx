@@ -50,7 +50,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current product detials
+        // update current product details
         if (id === product?.id) {
             setProduct(response[1])
         }
@@ -106,7 +106,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current product detials
+        // update current product details
         if (productId === product?.id) {
             const variants = [...product.variants, response[1]]
             setProduct({ ...product, variants })
@@ -141,7 +141,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current product detials
+        // update current product details
         if (product) {
             const variants = product.variants.filter(
                 (variant) => variant.id !== variantId
@@ -169,7 +169,7 @@ const ProductContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current product detials
+        // update current product details
         if (product?.id === productId) {
             setProduct(response[1])
         }

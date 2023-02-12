@@ -60,7 +60,7 @@ const ExpenseContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current expense detials
+        // update current expense details
         if (id === selectedExpense?.id) {
             setSelectedExpense(response[1])
         }

@@ -6,7 +6,9 @@ const { UserView } = require('../views/user-view')
 module.exports.login = async (req, res) => {
     const { email, password } = req.body
 
-    const getUserResponse = await UsersModule.getUserByEmail(email)
+    const getUserResponse = await UsersModule.getUser({
+        $or: [{ email }, { username: email }],
+    })
 
     if (getUserResponse[0] !== 200) {
         return res.status(getUserResponse[0]).json(getUserResponse[1])

@@ -11,6 +11,7 @@ import Select from '../Select/Select'
 const addEditUserSchema = yup
     .object({
         email: yup.string().email().required(),
+        username: yup.string().required(),
         firstName: yup.string().required(),
         lastName: yup.string().required(),
         role: yup.string().required(),
@@ -24,6 +25,7 @@ const AddEditUserDialog: FC = () => {
 
     useEffect(() => {
         methods.setValue('email', UserContext.userToEdit?.email)
+        methods.setValue('username', UserContext.userToEdit?.username)
         methods.setValue('firstName', UserContext.userToEdit?.firstName)
         methods.setValue('lastName', UserContext.userToEdit?.lastName)
         methods.setValue('role', UserContext.userToEdit?.role)
@@ -32,6 +34,7 @@ const AddEditUserDialog: FC = () => {
     const onSubmit = async (data: FieldValues) => {
         const doc = {
             email: data.email,
+            username: data.username,
             firstName: data.firstName,
             lastName: data.lastName,
             role: data.role,
@@ -59,11 +62,6 @@ const AddEditUserDialog: FC = () => {
                     message: errors[key]?.message,
                 })
             })
-        } else if (response[1].message) {
-            methods.setError('email', {
-                type: 'custom',
-                message: 'Email already taken',
-            })
         }
     }
 
@@ -78,6 +76,12 @@ const AddEditUserDialog: FC = () => {
                             <TextField
                                 label="Email address"
                                 name="email"
+                                required
+                                autoFocus
+                            />
+                            <TextField
+                                label="Username"
+                                name="username"
                                 required
                                 autoFocus
                             />

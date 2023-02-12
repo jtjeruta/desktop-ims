@@ -41,7 +41,7 @@ const Login = () => {
                             <form onSubmit={methods.handleSubmit(onSubmit)}>
                                 <div className="flex flex-col gap-2">
                                     <TextField
-                                        label="Email address"
+                                        label="Username/Email"
                                         name="email"
                                     />
 

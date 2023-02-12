@@ -4,6 +4,7 @@ export type User = {
     lastName: string
     role: 'admin' | 'employee'
     email: string
+    username: string
 }
 
 export type CreateUpdateUserDoc = {
@@ -11,6 +12,7 @@ export type CreateUpdateUserDoc = {
     lastName: string
     role: 'admin' | 'employee'
     email: string
+    username: string
 }
 
 export type CreateUpdateUserErrors = {
@@ -18,6 +20,7 @@ export type CreateUpdateUserErrors = {
     lastName?: { message: string }
     role?: { message: string }
     email?: { message: string }
+    username?: { message: string }
 }
 
 export type CreateUser = (

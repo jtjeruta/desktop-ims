@@ -16,10 +16,10 @@ async function up() {
         address: faker.address.streetAddress(),
     }))
 
-    const reponses = await Promise.all(
+    const responses = await Promise.all(
         customers.map((customer) => createCustomer(customer))
     )
-    if (reponses.some((res) => res[0] !== 201)) {
+    if (responses.some((res) => res[0] !== 201)) {
         throw 'Failed to create customer'
     }
 }

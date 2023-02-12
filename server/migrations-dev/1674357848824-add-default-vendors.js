@@ -14,10 +14,10 @@ async function up() {
         remarks: faker.lorem.paragraph(),
     }))
 
-    const reponses = await Promise.all(
+    const responses = await Promise.all(
         vendors.map((vendor) => createVendor(vendor))
     )
-    if (reponses.some((res) => res[0] !== 201)) {
+    if (responses.some((res) => res[0] !== 201)) {
         throw 'Failed to create vendor'
     }
 }

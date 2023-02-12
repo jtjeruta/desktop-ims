@@ -149,6 +149,16 @@ module.exports.applyProductStockChanges = async (
     }
 }
 
+module.exports.deletePurchaseOrders = async (query = {}, session = null) => {
+    try {
+        await PurchaseOrderModel.deleteMany(query, { session })
+        return [200]
+    } catch (error) {
+        console.error('Failed to delete purchase orders')
+        return getMongoError(error)
+    }
+}
+
 const calculateProductTotals = (products = []) => {
     const [total, newProducts] = products.reduce(
         (acc, product) => {

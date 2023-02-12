@@ -59,7 +59,7 @@ const CustomerContextProvider: React.FC<{ children: React.ReactNode }> = ({
             })
         )
 
-        // update current customer detials
+        // update current customer details
         if (id === selectedCustomer?.id) {
             setSelectedCustomer(response[1])
         }
