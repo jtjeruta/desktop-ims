@@ -202,27 +202,37 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                 <FormProvider {...methods}>
                     <form>
                         <div className="flex flex-col gap-1">
-                            <SelectPicker
-                                label="Product"
-                                name="product"
-                                required
-                                options={productOptions}
-                                defaultValue={
-                                    ProductContext.product
-                                        ? {
-                                              label: ProductContext.product
-                                                  .name,
-                                              value: ProductContext.product.id,
-                                          }
-                                        : undefined
-                                }
-                                onChange={(product) =>
-                                    methods.setValue('product', product?.value)
-                                }
-                                error={
-                                    methods.formState.errors.product?.message
-                                }
-                            />
+                            {AppContext.dialogIsOpen(
+                                'add-order-product-dialog'
+                            ) && (
+                                <SelectPicker
+                                    label="Product"
+                                    name="product"
+                                    required
+                                    options={productOptions}
+                                    defaultValue={
+                                        ProductContext.product
+                                            ? {
+                                                  label: ProductContext.product
+                                                      .name,
+                                                  value: ProductContext.product
+                                                      .id,
+                                              }
+                                            : undefined
+                                    }
+                                    onChange={(product) =>
+                                        methods.setValue(
+                                            'product',
+                                            product?.value
+                                        )
+                                    }
+                                    error={
+                                        methods.formState.errors.product
+                                            ?.message
+                                    }
+                                    autoFocus
+                                />
+                            )}
                             <div className="flex gap-3">
                                 <span className="grow basis-0">
                                     <Select

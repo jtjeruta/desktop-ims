@@ -17,6 +17,7 @@ type Props = {
         newValue: SingleValue<{ label: string; value: string | number }>,
         actionMeta: ActionMeta<{ label: string; value: string | number }>
     ) => void
+    autoFocus?: boolean
 }
 
 const SelectPicker: FC<Props> = (props) => {
@@ -50,6 +51,8 @@ const SelectPicker: FC<Props> = (props) => {
                 onChange={props.onChange}
                 className={clsx(props.error && 'border-red-500 border rounded')}
                 menuPortalTarget={body}
+                openMenuOnFocus
+                autoFocus={props.autoFocus}
                 styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             />
             {props.error ? (

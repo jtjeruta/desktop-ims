@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback } from 'react'
 import clsx from 'clsx'
 import { FaTimes } from 'react-icons/fa'
 import Button from '../Button/Button'
@@ -27,24 +27,6 @@ const Dialog: FC<Props> = (props) => {
         () => (props.onClose ? props.onClose() : AppContext.closeDialog()),
         [AppContext, props]
     )
-
-    useEffect(() => {
-        const handleDialogKeyDown = (event: KeyboardEvent) => {
-            if (!props.open) return null
-            event.key === 'Escape' && handleClose()
-            event.key === 'Enter' && props.onSave && props.onSave()
-            event.key === 'Enter' &&
-                !props.onSave &&
-                props.showSaveButton !== false &&
-                handleClose()
-        }
-
-        window.addEventListener('keydown', handleDialogKeyDown)
-
-        return () => {
-            window.removeEventListener('keydown', handleDialogKeyDown)
-        }
-    }, [props.open, handleClose, props])
 
     return (
         <div
