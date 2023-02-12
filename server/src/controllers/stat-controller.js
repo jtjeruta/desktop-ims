@@ -5,7 +5,6 @@ const ProductModule = require('../modules/products-module')
 const WarehouseModule = require('../modules/warehouses-module')
 const ExpenseModule = require('../modules/expenses-module')
 const { ProductView } = require('../views/product-view')
-const { VariantView } = require('../views/variant-view')
 
 module.exports.getTotalProductSales = async (req, res) => {
     const { startDate, endDate } = getDateRangeFromQuery(req.query)
@@ -124,7 +123,9 @@ module.exports.listProductReports = async (req, res) => {
                             )
                                 return
                             totalPur += orderProduct.totalPrice
-                            purQty += orderProduct.quantity
+                            purQty +=
+                                orderProduct.quantity *
+                                (orderProduct.variant?.quantity ?? 0)
                         })
                     )
 
@@ -136,31 +137,58 @@ module.exports.listProductReports = async (req, res) => {
                             )
                                 return
                             totalSales += orderProduct.totalPrice
-                            salesQty += orderProduct.quantity
+                            salesQty +=
+                                orderProduct.quantity *
+                                (orderProduct.variant?.quantity ?? 0)
                         })
                     )
 
-                    const avePur = purQty > 0 ? totalPur / purQty : 0
-                    const aveSales = salesQty > 0 ? totalSales / salesQty : 0
-
                     return {
-                        id: variant._id,
-                        product: ProductView(product),
-                        variant: VariantView(variant),
-                        stock: totalStock,
                         totalPur,
                         purQty,
                         totalSales,
                         salesQty,
-                        avePur,
-                        aveSales,
                     }
                 })
                 .filter(
                     (variant) => variant.totalSales > 0 || variant.totalPur > 0
                 )
 
-            return [...acc, ...variants]
+            if (variants.length === 0) return acc
+
+            const totalPur = variants.reduce(
+                (acc, variant) => acc + variant.totalPur,
+                0
+            )
+
+            const totalSales = variants.reduce(
+                (acc, variant) => acc + variant.totalSales,
+                0
+            )
+
+            const purQty = variants.reduce(
+                (acc, variant) => acc + variant.purQty,
+                0
+            )
+
+            const salesQty = variants.reduce(
+                (acc, variant) => acc + variant.salesQty,
+                0
+            )
+
+            const productReport = {
+                id: product._id,
+                product: ProductView(product),
+                stock: totalStock,
+                totalPur,
+                totalSales,
+                purQty,
+                salesQty,
+                avePur: purQty > 0 ? totalPur / purQty : 0,
+                aveSales: salesQty > 0 ? totalSales / salesQty : 0,
+            }
+
+            return [...acc, productReport]
         }, [])
 
         return res.status(200).json({ productReports })

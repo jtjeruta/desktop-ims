@@ -20,7 +20,6 @@ const ReportingTable: FC<Props> = (props) => {
             const regex = new RegExp(escapeRegExp(StatContext.search), 'igm')
             return [
                 report.product.name,
-                report.variant.name,
                 report.avePur,
                 report.aveSales,
                 report.purQty,
@@ -51,23 +50,13 @@ const ReportingTable: FC<Props> = (props) => {
                             const report = row as ProductReport
                             return (
                                 <div className="hover:text-teal-600 cursor-pointer">
-                                    <Link
-                                        href={`/inventory/${report.product.id}`}
-                                    >
+                                    <Link href={`/inventory/${report.id}`}>
                                         {report.product.name}
                                     </Link>
                                 </div>
                             )
                         },
                         sort: (report) => report.product.name,
-                    },
-                    {
-                        title: 'Unit',
-                        format: (row) => {
-                            const report = row as ProductReport
-                            return report.variant.name
-                        },
-                        sort: (report) => report.variant.name,
                     },
                     {
                         title: 'Stock',

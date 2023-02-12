@@ -1,9 +1,8 @@
-import { Product, Variant } from '../ProductContext/types'
+import { Product } from '../ProductContext/types'
 
 export type ProductReport = {
     id: string
     product: Product
-    variant: Variant
     stock: number
     totalPur: number
     purQty: number

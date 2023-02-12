@@ -41,7 +41,10 @@ const OrderProductsTable: FC<Props> = (props) => {
                             },
                             {
                                 title: 'Unit',
-                                format: (row) => row.variant?.name ?? 'default',
+                                format: (row) =>
+                                    row.variant?.name
+                                        ? `${row.variant.name} (${row.variant.quantity})`
+                                        : 'default (1)',
                             },
                             {
                                 title: 'Product',

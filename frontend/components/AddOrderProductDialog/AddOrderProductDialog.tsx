@@ -235,7 +235,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
                                                     ?.variants || []
                                             ).map((variant) => ({
                                                 value: variant.id,
-                                                text: variant.name,
+                                                text: `${variant.name} (${variant.quantity})`,
                                             })),
                                         ]}
                                         className="grow"
