@@ -1,11 +1,19 @@
+import { FC } from 'react'
 import Link from 'next/link'
 import { FiLogOut } from 'react-icons/fi'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import Button from '../Button/Button'
+import { FaArrowLeft } from 'react-icons/fa'
+import { useRouter } from 'next/router'
 
-const Navbar = () => {
+type Props = {
+    backButton?: boolean
+}
+
+const Navbar: FC<Props> = (props) => {
+    const router = useRouter()
     const AppContext = useAppContext()
     const AuthContext = useAuthContext()
 
@@ -14,11 +22,19 @@ const Navbar = () => {
             <div className="justify-between px-2 md:px-6 md:items-center md:flex">
                 <div>
                     <div className="flex items-center justify-between py-3 md:py-5 md:block">
-                        <Link href="/">
-                            <h2 className="text-lg font-bold cursor-pointer">
-                                INVENTORY SYSTEM
-                            </h2>
-                        </Link>
+                        <div className="flex items-center gap-3">
+                            {props.backButton && (
+                                <Button onClick={() => router.back()}>
+                                    <FaArrowLeft />
+                                </Button>
+                            )}
+                            <Link href="/">
+                                <h2 className="text-lg font-bold cursor-pointer">
+                                    <span className='hidden md:block'>INVENTORY SYSTEM</span>
+                                    <span className='md:hidden'>IMS</span>
+                                </h2>
+                            </Link>
+                        </div>
                         <div className="md:hidden">
                             <Button
                                 onClick={() => {

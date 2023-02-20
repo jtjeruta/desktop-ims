@@ -5,12 +5,13 @@ import Sidebar from '../Sidebar/Sidebar'
 
 type Props = {
     children: (JSX.Element | false)[]
+    backButton?: boolean
 }
 
 const UserLayout: FC<Props> = (props) => {
     return (
         <div className="flex flex-col overflow-y-hidden h-screen">
-            <Navbar />
+            <Navbar backButton={props.backButton} />
             <div className="grow flex overflow-y-auto relative">
                 <Backdrop />
                 <Sidebar />
