@@ -20,21 +20,24 @@ async function up() {
         WarehousesModule.listWarehouses(),
     ])
 
-    const salesOrders = Array.from({ length: 100 }, () => {
-        const orderProducts = getRandomSubset(products[1]).map((product) => {
-            const qty = faker.datatype.number({ min: 1 })
-            const itemPrice = faker.datatype.number({ min: 100 })
-            const varQty = faker.datatype.number({ min: 1 })
+    const salesOrders = Array.from({ length: 10 }, () => {
+        const orderProducts = getRandomSubset(
+            products[1],
+            faker.datatype.number({ min: 1, max: 5 })
+        ).map((product) => {
+            const qty = faker.datatype.number({ min: 1, max: 20 })
+            const itemPrice = faker.datatype.number({ min: 1, max: 200 })
+            const variant = getRandomElement(product.variants)
 
             return {
                 id: faker.datatype.uuid(),
                 product: product._id,
                 quantity: qty,
                 itemPrice,
-                totalPrice: qty * itemPrice * varQty,
+                totalPrice: qty * itemPrice * variant.quantity,
                 variant: {
-                    name: faker.commerce.productName(),
-                    quantity: varQty,
+                    name: variant.name,
+                    quantity: variant.quantity,
                 },
                 warehouse: getRandomElement(warehouses[1])._id,
             }

@@ -1,11 +1,19 @@
 module.exports.getRandomSubset = (arr, size) => {
-    if (size === undefined) {
-        size = Math.floor(Math.random() * arr.length) + 1
+    if (!Array.isArray(arr) || arr.length <= 0) {
+        return []
     }
-    if (size > arr.length) {
-        size = arr.length
+
+    const arraySize = arr.length
+
+    if (!size) {
+        size = Math.floor(Math.random() * arraySize)
     }
-    return arr.filter(() => Math.random() < size / arr.length)
+
+    const subsetSize = Math.min(Math.max(size, 1), arraySize)
+    const shuffledArray = arr.sort(() => 0.5 - Math.random())
+    const randomSubset = shuffledArray.slice(0, subsetSize)
+
+    return randomSubset
 }
 
 module.exports.getRandomElement = (arr) => {

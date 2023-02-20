@@ -20,10 +20,10 @@ async function up() {
         company: faker.company.name(),
         category: faker.commerce.product(),
         subCategory: faker.commerce.product(),
-        price: faker.finance.amount(),
+        price: faker.finance.amount(10, 200),
         published: faker.datatype.boolean(),
         sku: faker.datatype.uuid().split('-').pop().toUpperCase(),
-        stock: faker.random.numeric(3),
+        stock: faker.datatype.number({ min: 1, max: 100 }),
     }))
 
     const productRes = await Promise.all(
@@ -35,20 +35,28 @@ async function up() {
     }
 
     const variants = productRes.reduce((acc, product) => {
-        const productVariants = Array.from(
-            {
-                length: faker.random.numeric(),
-            },
-            () => ({
-                name: [faker.random.word(), faker.random.numeric(2)].join(
-                    ' - '
-                ),
-                quantity: faker.random.numeric(2),
-                product: product[1]._id,
-            })
-        )
+        const defaultVariant = {
+            name: 'default',
+            quantity: 1,
+            product: product[1]._id,
+        }
 
-        return [...acc, ...productVariants]
+        const numberOfVariants = faker.datatype.number({ min: 1, max: 10 })
+        const uniqueQuantities = new Set()
+        const productVariants = Array.from({ length: numberOfVariants }, () => {
+            let quantity = faker.datatype.number({ min: 2, max: 20 })
+            while (uniqueQuantities.has(quantity)) {
+                quantity = faker.datatype.number({ min: 2, max: 20 })
+            }
+            uniqueQuantities.add(quantity)
+            return {
+                name: `group of ${quantity}`,
+                quantity,
+                product: product[1]._id,
+            }
+        })
+
+        return [...acc, defaultVariant, ...productVariants]
     }, [])
 
     const variantsRes = await Promise.all(
