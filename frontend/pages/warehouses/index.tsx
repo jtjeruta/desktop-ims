@@ -135,7 +135,7 @@ const WarehousesPageContent = () => {
                                     <div className="flex flex-col gap-1">
                                         <div
                                             className={clsx([
-                                                'flex gap-1 transition-all max-h-12 overflow-hidden duration-500',
+                                                'flex gap-1 transition-all max-h-12 overflow-auto duration-500',
                                                 isOpen && '!max-h-0',
                                             ])}
                                         >
@@ -183,7 +183,7 @@ const WarehousesPageContent = () => {
                                         </div>
                                         <div
                                             className={clsx([
-                                                'flex gap-1 flex-col transition-all overflow-hidden max-h-0 duration-500',
+                                                'flex gap-1 flex-col transition-all overflow-auto max-h-0 duration-500',
                                                 isOpen && '!max-h-screen',
                                             ])}
                                         >
