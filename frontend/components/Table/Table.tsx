@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import clsx from 'clsx'
 import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
 import { compare } from '../../utils'
@@ -63,7 +63,7 @@ const Table: FC<Props> = (props) => {
             index + 1 <= (props.page + 1) * ITEMS_PER_TABLE
     )
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (
             props.defaultSort !== undefined &&
             sort.col === '' &&

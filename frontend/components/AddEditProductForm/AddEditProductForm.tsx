@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import clsx from 'clsx'
@@ -66,7 +66,7 @@ const AddEditProductForm: FC<Props> = (props) => {
         }
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue('name', ProductContext.product?.name)
         methods.setValue('company', ProductContext.product?.company)
         methods.setValue('category', ProductContext.product?.category)

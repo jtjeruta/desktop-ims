@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -145,7 +145,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
         }))
 
     // set on change
-    useEffect(() => {
+    useLayoutEffect(() => {
         const subscription = methods.watch((data, { name }) => {
             if (name === 'product') {
                 setSelectedProduct(data.product)
@@ -180,7 +180,7 @@ const AddOrderProductDialog: FC<Props> = (props) => {
     }, [methods, setSelectedProduct, ProductContext.products, props.type])
 
     // set defaults
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (
             !ProductContext.product &&
             (ProductContext.products || []).length > 0

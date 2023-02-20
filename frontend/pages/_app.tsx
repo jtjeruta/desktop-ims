@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { useRouter } from 'next/router'
 import type { AppProps } from 'next/app'
 import {
@@ -19,11 +19,11 @@ function AppContent({ Component, pageProps }: AppProps) {
     const AuthContext = useAuthContext()
     const router = useRouter()
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         AuthContext.verifyToken()
     }, [AuthContext])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (AppContext.isLoading('auth-verify-token')) return
 
         const foundRoute = routes.find(

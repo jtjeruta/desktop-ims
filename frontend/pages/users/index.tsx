@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import { ActionButton } from '../../components/ActionButton/ActionButton'
 import AddEditUserDialog from '../../components/AddEditUserDialog/AddEditUserDialog'
 import Button from '../../components/Button/Button'
@@ -29,7 +29,7 @@ const PageContent: FC = () => {
         AppContext.openDialog('add-edit-user-dialog')
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             const response = await UserContext.listUsers()
             if (!response[0]) return router.push('/500')

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Button from '../../components/Button/Button'
@@ -88,7 +88,7 @@ const InventoryPageContent = () => {
         },
     ]
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             setPage(+(router.query.page ?? 0))
             const [productsRes, warehouseRes] = await Promise.all([

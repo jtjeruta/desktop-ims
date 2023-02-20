@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React, { FC, useCallback, useEffect } from 'react'
+import React, { FC, useCallback, useLayoutEffect } from 'react'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { Notification } from '../../contexts/AppContext/types'
@@ -18,7 +18,7 @@ const NotificationBadge: FC<Props> = ({ notif }) => {
         removeNotification(notif.id)
     }, [notif.id, removeNotification])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         timeout = setTimeout(() => closeNotif(), 4000)
     }, [closeNotif])
 

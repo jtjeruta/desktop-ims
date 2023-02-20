@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useLayoutEffect } from 'react'
 
 const sizes = {
     xs: '(min-width: 0)',
@@ -11,7 +11,7 @@ const sizes = {
 export const useMediaQuery = (size: keyof typeof sizes): boolean => {
     const [matches, setMatches] = useState(false)
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const media = window.matchMedia(sizes[size])
         setMatches(media.matches)
 

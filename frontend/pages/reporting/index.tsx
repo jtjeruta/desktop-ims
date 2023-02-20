@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
@@ -39,7 +39,7 @@ const ReportingContent = () => {
         },
     ]
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         StatContext.getTotalProductSales()
         StatContext.getTotalProductPurchases()
         StatContext.listProductReports()

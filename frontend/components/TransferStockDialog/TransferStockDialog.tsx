@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { HiSwitchHorizontal } from 'react-icons/hi'
@@ -52,7 +52,7 @@ const TransferStockDialog: FC<Props> = (props) => {
         transferOptions = [{ text: ' ', value: 1 }, ...transferOptions]
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const subscription = methods.watch((data, { name }) => {
             if (name !== 'product') return
             const foundProduct = ProductContext.products?.find(
@@ -63,7 +63,7 @@ const TransferStockDialog: FC<Props> = (props) => {
         return () => subscription.unsubscribe()
     }, [ProductContext.products])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue('transferFrom', WarehouseContext.selectedWarehouse?.id)
         methods.setValue('transferTo', 'store')
         methods.setValue('amount', 1)

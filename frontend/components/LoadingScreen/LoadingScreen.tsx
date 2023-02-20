@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 
@@ -69,7 +69,7 @@ const LoadingScreen = () => {
         AppContext.isLoading('auth-verify-token') ||
         AppContext.isLoading('auth-login')
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (loading && status === 'visible') return
         if (loading && status !== 'visible') return setStatus('visible')
         if (!loading && status === 'visible') {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import {
@@ -98,7 +98,7 @@ const SalesOrderPageContent = () => {
         if (!orderId) router.push(`/sales-orders/${purOrdRes[1].id}`)
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             if (
                 isEditPage &&

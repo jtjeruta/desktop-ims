@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useEffect } from 'react'
+import { Dispatch, FC, SetStateAction, useLayoutEffect } from 'react'
 import Link from 'next/link'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useStatContext } from '../../contexts/StatsContext/StatsContext'
@@ -31,7 +31,7 @@ const ReportingTable: FC<Props> = (props) => {
         }
     )
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         StatContext.listProductReports()
     }, [])
 

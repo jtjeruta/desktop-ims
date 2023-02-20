@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import Table from '../../components/Table/Table'
@@ -38,7 +38,7 @@ const VendorsPageContent = () => {
         AppContext.openDialog('add-edit-vendor-dialog')
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             const response = await VendorContext.listVendors()
             if (!response[0]) return router.push('/500')

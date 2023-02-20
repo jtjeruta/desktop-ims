@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FC, useEffect, useState } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import Select, { ActionMeta, PropsValue, SingleValue } from 'react-select'
 
 type Props = {
@@ -23,7 +23,7 @@ type Props = {
 const SelectPicker: FC<Props> = (props) => {
     const [body, setBody] = useState<HTMLElement | null>(null)
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         setBody(document.body)
     }, [])
 

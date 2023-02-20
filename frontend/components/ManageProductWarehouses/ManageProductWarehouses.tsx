@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
 import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Button from '../Button/Button'
 import Table from '../Table/Table'
@@ -24,7 +24,7 @@ const ManageProductWarehouses = () => {
     const [warehouses, setWarehouses] = useState<ProductWarehouse[]>([])
     const [page, setPage] = useState<number>(0)
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isLoading) return
         setWarehouses(
             getProductWarehouses(

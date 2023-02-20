@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import clsx from 'clsx'
 import moment, { Moment } from 'moment'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
@@ -90,7 +90,7 @@ const DateRangePicker: FC<Props> = (props) => {
         AppContext.closeDialog()
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         props.onChange(startDate.unix(), endDate.unix())
     }, [startDate, endDate])
 

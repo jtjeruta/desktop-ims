@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import moment from 'moment'
@@ -63,7 +63,7 @@ const AddEditExpenseDialog: FC = () => {
         }
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const currentDate =
             ExpenseContext.selectedExpense?.date ?? moment().unix()
         methods.setValue('name', ExpenseContext.selectedExpense?.name ?? '')

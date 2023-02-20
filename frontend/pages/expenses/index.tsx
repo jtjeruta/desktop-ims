@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
 import Table from '../../components/Table/Table'
@@ -40,7 +40,7 @@ const ExpensesPageContent = () => {
         AppContext.openDialog('add-edit-expense-dialog')
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             const responses = await Promise.all([ExpenseContext.listExpenses()])
             if (responses.some((response) => !response[0]))

@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useUserContext } from '../../contexts/UserContext/UserContext'
@@ -23,7 +23,7 @@ const AddEditUserDialog: FC = () => {
     const UserContext = useUserContext()
     const methods = useForm({ resolver: yupResolver(addEditUserSchema) })
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue('email', UserContext.userToEdit?.email)
         methods.setValue('username', UserContext.userToEdit?.username)
         methods.setValue('firstName', UserContext.userToEdit?.firstName)

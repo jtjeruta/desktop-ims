@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import Dialog from '../Dialog/Dialog'
@@ -52,7 +52,7 @@ const AddEditWarehouseDialog: FC = () => {
         }
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue(
             'name',
             WarehouseContext.selectedWarehouse?.name ?? null

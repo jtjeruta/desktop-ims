@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -34,7 +34,7 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
         AppContext.isLoading('get-sales-order') ||
         CustomerContext.customers === null
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue('id', CustomerContext.draftCustomer?.id)
         methods.setValue('name', CustomerContext.draftCustomer?.name)
         methods.setValue('phone', CustomerContext.draftCustomer?.phone)
@@ -46,7 +46,7 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
         methods,
     ])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const subscription = methods.watch(async (data, { name }) => {
             props.clearError && props.clearError()
             let customerData = data as AddEditCustomerDoc
@@ -70,7 +70,7 @@ const SalesOrderCustomerForm: FC<Props> = (props) => {
         return () => subscription.unsubscribe()
     }, [methods, props, CustomerContext])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setError('name', { message: props.error })
     }, [props, methods])
 

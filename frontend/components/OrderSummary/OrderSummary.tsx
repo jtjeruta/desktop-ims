@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import moment from 'moment'
 import Card from '../Card/Card'
@@ -21,7 +21,7 @@ const OrderSummary: FC<Props> = (props) => {
     const methods = useForm()
 
     // set on change
-    useEffect(() => {
+    useLayoutEffect(() => {
         const subscription = methods.watch((data) => {
             const date = moment(data.date, 'YYYY-MM-DD').unix()
             props.onChange(date, data.invoiceNumber)
@@ -30,7 +30,7 @@ const OrderSummary: FC<Props> = (props) => {
     }, [methods, props])
 
     // set defaults
-    useEffect(() => {
+    useLayoutEffect(() => {
         const currentDate =
             props.orderDate && props.orderDate !== methods.getValues('date')
                 ? props.orderDate * 1000

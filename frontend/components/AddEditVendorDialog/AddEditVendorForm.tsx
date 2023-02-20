@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -63,7 +63,7 @@ const AddEditVendorForm: FC = () => {
         }
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue('name', VendorContext.selectedVendor?.name)
         methods.setValue('phone', VendorContext.selectedVendor?.phone)
         methods.setValue('email', VendorContext.selectedVendor?.email)

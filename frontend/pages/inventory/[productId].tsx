@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
 import UserLayout from '../../components/UserLayout/UserLayout'
 import AddEditProductForm from '../../components/AddEditProductForm/AddEditProductForm'
 import ProductDetailsCard from '../../components/ProductDetailsCard/ProductDetailsCard'
@@ -25,7 +25,7 @@ const ProductPageContent = () => {
     const router = useRouter()
     const [published, setPublished] = useState<boolean>(false)
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             if (router.query.productId) {
                 const [productRes, warehouseRes] = await Promise.all([

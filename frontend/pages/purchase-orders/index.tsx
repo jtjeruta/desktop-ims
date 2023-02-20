@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { ActionButton } from '../../components/ActionButton/ActionButton'
 import Button from '../../components/Button/Button'
 import Card from '../../components/Card/Card'
@@ -35,7 +35,7 @@ const PurchaseOrdersPageContent = () => {
         (a, b) => -compare(a.orderDate ?? 0, b.orderDate ?? 0)
     )
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             const response = await PurOrdContext.listOrders()
             if (!response[0]) return router.push('/500')

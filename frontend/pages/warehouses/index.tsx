@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import clsx from 'clsx'
 import Button from '../../components/Button/Button'
@@ -52,7 +52,7 @@ const WarehousesPageContent = () => {
         AppContext.openDialog('add-edit-warehouse-dialog')
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         async function init() {
             const responses = await Promise.all([
                 WarehouseContext.listWarehouses(),

@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { useAuthContext } from '../contexts/AuthContext/AuthContext'
 
 const Home = () => {
     const AuthContext = useAuthContext()
     const router = useRouter()
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!AuthContext.user) {
             router.replace('/login')
         } else if (AuthContext.user.role === 'employee') {

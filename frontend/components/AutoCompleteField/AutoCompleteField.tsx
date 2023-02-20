@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, KeyboardEvent } from 'react'
+import { FC, useLayoutEffect, useState, KeyboardEvent } from 'react'
 import clsx from 'clsx'
 import { useFormContext } from 'react-hook-form'
 import styled from 'styled-components'
@@ -50,7 +50,7 @@ const AutoCompleteField: FC<Props> = (props) => {
     )
 
     // set on change
-    useEffect(() => {
+    useLayoutEffect(() => {
         const subscription = methods.watch((data, { name }) => {
             if (name !== props.name || !focused) return
             setSearch(data[name] ?? '')

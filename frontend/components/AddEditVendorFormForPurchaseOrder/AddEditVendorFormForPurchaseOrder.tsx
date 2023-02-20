@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useLayoutEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -34,7 +34,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
         AppContext.isLoading('get-purchase-order') ||
         VendorContext.vendors === null
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setValue('id', VendorContext.draftVendor?.id)
         methods.setValue('name', VendorContext.draftVendor?.name)
         methods.setValue('phone', VendorContext.draftVendor?.phone)
@@ -44,7 +44,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
     }, [VendorContext, methods])
 
     // set on change
-    useEffect(() => {
+    useLayoutEffect(() => {
         const subscription = methods.watch(async (data, { name }) => {
             props.clearError && props.clearError()
             if (name === 'id') {
@@ -63,7 +63,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
         return () => subscription.unsubscribe()
     }, [methods, props, VendorContext])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         methods.setError('name', { message: props.error })
     }, [props, methods])
 
