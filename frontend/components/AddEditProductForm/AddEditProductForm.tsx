@@ -99,6 +99,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                     <TextField
                         name="sellingPrice"
                         type="number"
+                        step="0.01"
                         label="Selling Price"
                         placeholder="100.00"
                         required
@@ -108,6 +109,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                     <TextField
                         name="costPrice"
                         type="number"
+                        step="0.01"
                         label="Cost Price"
                         placeholder="50.00"
                         min={0}

@@ -4,9 +4,10 @@ import { BsInfoCircle } from 'react-icons/bs'
 
 type Props = {
     title?: string
-    content?: string | JSX.Element
+    content?: React.ReactNode
     type: 'info' | 'warning'
     className?: string
+    onClick?: () => void
 }
 
 const Alert: FC<Props> = (props) => {
@@ -20,11 +21,13 @@ const Alert: FC<Props> = (props) => {
             className={clsx(
                 'border-t-4 rounded-b px-4 py-3 shadow-md',
                 style[props.type],
-                props.className
+                props.className,
+                props.onClick && 'cursor-pointer'
             )}
+            onClick={props.onClick}
             role="alert"
         >
-            <div className="flex">
+            <div className="flex items-center">
                 <div className="py-1 pr-2">
                     <BsInfoCircle fontSize={20} />
                 </div>
@@ -33,7 +36,7 @@ const Alert: FC<Props> = (props) => {
                         <p className="font-bold text-sm">{props.title}</p>
                     )}
                     {props.content && (
-                        <p className="text-sm">{props.content}</p>
+                        <div className="text-sm">{props.content}</div>
                     )}
                 </div>
             </div>

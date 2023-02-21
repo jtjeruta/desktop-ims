@@ -66,7 +66,7 @@ const InventoryPageContent = () => {
                 WarehouseContext.warehouses,
                 product
             )
-            return warehouseTotal + product.stock <= 5
+            return warehouseTotal + product.stock <= product.reorderPoint
         })
 
     const toggleFilter = useCallback((key: keyof Filters) => {
@@ -143,7 +143,10 @@ const InventoryPageContent = () => {
                 WarehouseContext.warehouses,
                 product
             )
-            return warehouseTotal + product.stock <= 5
+            return (
+                product.published &&
+                warehouseTotal + product.stock <= product.reorderPoint
+            )
         }) ?? []
 
     return (
@@ -184,18 +187,18 @@ const InventoryPageContent = () => {
                     type="warning"
                     title={`${lowStockedProducts.length} low stocked products`}
                     content={
-                        <span className="block">
-                            {lowStockedProducts.map((product) => (
-                                <Link
-                                    key={product.id}
-                                    href={`/inventory/${product.id}`}
-                                >
-                                    <a className="hover:text-teal-600">
-                                        {product.name}
-                                    </a>
-                                </Link>
-                            ))}
-                        </span>
+                        <div>
+                            Click here to show all{' '}
+                            {filters.lowStockedOnly
+                                ? 'products'
+                                : 'low stocked products'}
+                        </div>
+                    }
+                    onClick={() =>
+                        setFilters((prev) => ({
+                            ...prev,
+                            lowStockedOnly: !prev.lowStockedOnly,
+                        }))
                     }
                     className="mb-4"
                 />

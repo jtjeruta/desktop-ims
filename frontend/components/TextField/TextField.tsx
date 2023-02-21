@@ -17,6 +17,7 @@ export type Props = {
     className?: string
     autoComplete?: boolean
     disabled?: boolean
+    step?: string
 }
 
 const TextField: FC<Props> = (props) => {
@@ -60,6 +61,7 @@ const TextField: FC<Props> = (props) => {
                 autoComplete={props.autoComplete !== false ? 'on' : 'off'}
                 data-lpignore="true"
                 disabled={props.disabled}
+                step={props.step}
                 {...register}
             />
             {!props.disableHelperText && (
