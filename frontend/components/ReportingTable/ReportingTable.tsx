@@ -91,7 +91,7 @@ const ReportingTable: FC<Props> = (props) => {
                         sort: (report) => report.aveSales,
                     },
                     {
-                        title: 'Ave Pur',
+                        title: 'Ave Cost',
                         format: (row) => {
                             const report = row as ProductReport
                             return formatCurrency(report.avePur)
@@ -107,7 +107,7 @@ const ReportingTable: FC<Props> = (props) => {
                         sort: (report) => report.totalSales,
                     },
                     {
-                        title: 'Total Pur',
+                        title: 'Total Cost',
                         format: (row) => {
                             const report = row as ProductReport
                             return formatCurrency(report.totalPur)
