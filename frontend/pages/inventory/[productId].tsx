@@ -58,7 +58,7 @@ const ProductPageContent = () => {
     }, [ProductContext, published])
 
     return (
-        <UserLayout>
+        <UserLayout backButton>
             <div className="flex justify-between align-end mb-4 gap-3">
                 <h1>
                     {AppContext.isLoading('get-product') ? (

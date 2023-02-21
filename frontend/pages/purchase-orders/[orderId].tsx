@@ -136,7 +136,7 @@ const PurchaseOrderPageContent = () => {
 
     return (
         <>
-            <UserLayout>
+            <UserLayout backButton>
                 <div className="mb-4">
                     <h1>
                         {AppContext.isLoading('get-order') ? (
