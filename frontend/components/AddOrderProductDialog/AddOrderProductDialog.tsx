@@ -191,7 +191,12 @@ const AddOrderProductDialog: FC<Props> = (props) => {
 
         methods.setValue('quantity', 1)
         methods.setValue('warehouse', 'store')
-        methods.setValue('itemPrice', ProductContext.product?.price ?? 1)
+        methods.setValue(
+            'itemPrice',
+            (props.type === 'purchase'
+                ? ProductContext.product?.costPrice
+                : ProductContext.product?.sellingPrice) ?? 1
+        )
     }, [methods, ProductContext])
 
     return (

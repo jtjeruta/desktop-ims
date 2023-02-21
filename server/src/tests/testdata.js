@@ -33,11 +33,13 @@ module.exports.product1 = {
     company: 'company 1',
     category: 'category 1',
     subCategory: 'sub-category 1',
-    price: 15,
+    sellingPrice: 15,
+    costPrice: 10,
     published: true,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
     stock: 0,
+    reorderPoint: 10,
 }
 
 module.exports.product2 = {
@@ -45,11 +47,13 @@ module.exports.product2 = {
     company: 'company 2',
     category: 'category 2',
     subCategory: 'sub-category 2',
-    price: 24,
+    sellingPrice: 24,
+    costPrice: 20,
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
     stock: 10,
+    reorderPoint: 5,
 }
 
 module.exports.product3 = {
@@ -57,11 +61,13 @@ module.exports.product3 = {
     company: 'company 3',
     category: 'category 3',
     subCategory: 'sub-category 3',
-    price: 70,
+    sellingPrice: 70,
+    costPrice: 50,
     published: false,
     modifiedBy: mongoose.Types.ObjectId(),
     sku: generateSKU(),
     stock: 100,
+    reorderPoint: 50,
 }
 
 module.exports.variant1 = {

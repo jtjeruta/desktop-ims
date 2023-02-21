@@ -24,7 +24,7 @@ const ReportingContent = () => {
             iconClass: 'text-indigo-700',
         },
         {
-            title: 'Total Purchases',
+            title: 'Total Cost',
             total: StatContext.totalProductPurchases ?? 0,
             loading: 'get-total-product-purchases',
             icon: FaStore,

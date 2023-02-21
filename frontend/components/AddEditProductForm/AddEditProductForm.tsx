@@ -30,7 +30,9 @@ const AddEditProductForm: FC<Props> = (props) => {
             company: values.company as string,
             category: values.category as string,
             subCategory: values.subCategory as string,
-            price: +values.price,
+            sellingPrice: +values.sellingPrice,
+            costPrice: +values.costPrice,
+            reorderPoint: +values.reorderPoint,
             stock: +values.stock,
         }
 
@@ -71,50 +73,48 @@ const AddEditProductForm: FC<Props> = (props) => {
         methods.setValue('company', ProductContext.product?.company)
         methods.setValue('category', ProductContext.product?.category)
         methods.setValue('subCategory', ProductContext.product?.subCategory)
-        methods.setValue('price', +(ProductContext.product?.price || 0))
+        methods.setValue(
+            'sellingPrice',
+            +(ProductContext.product?.sellingPrice || 0)
+        )
+        methods.setValue('costPrice', +(ProductContext.product?.costPrice || 0))
+        methods.setValue(
+            'reorderPoint',
+            +(ProductContext.product?.reorderPoint || 0)
+        )
         methods.setValue('stock', +(ProductContext.product?.stock || 0))
     }, [ProductContext.product, methods])
 
     return (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-                <div
-                    className={clsx(
-                        'grid gap-3 mb-2',
-                        props.type !== 'update' && ' lg:grid-cols-2'
-                    )}
-                >
+                <TextField
+                    name="name"
+                    label="Name"
+                    placeholder="Product 1"
+                    disabled={isDisabled}
+                    required
+                />
+                <div className={clsx('grid gap-3 mb-2', 'lg:grid-cols-2')}>
                     <TextField
-                        name="name"
-                        label="Name"
-                        placeholder="Product 1"
+                        name="sellingPrice"
+                        type="number"
+                        label="Selling Price"
+                        placeholder="100.00"
+                        required
+                        disabled={isDisabled}
+                        min={0}
+                    />
+                    <TextField
+                        name="costPrice"
+                        type="number"
+                        label="Cost Price"
+                        placeholder="50.00"
+                        min={0}
                         disabled={isDisabled}
                         required
                     />
                     {props.type !== 'update' && (
-                        <TextField
-                            name="price"
-                            type="number"
-                            label="Selling Price"
-                            placeholder="100.00"
-                            required
-                            disabled={isDisabled}
-                            min={0}
-                        />
-                    )}
-                </div>
-                <div className="grid gap-3 mb-2 lg:grid-cols-2">
-                    {props.type === 'update' ? (
-                        <TextField
-                            name="price"
-                            type="number"
-                            label="Selling Price"
-                            placeholder="100.00"
-                            min={0}
-                            disabled={isDisabled}
-                            required
-                        />
-                    ) : (
                         <TextField
                             name="stock"
                             type="number"
@@ -131,8 +131,6 @@ const AddEditProductForm: FC<Props> = (props) => {
                         placeholder="Company 1"
                         disabled={isDisabled}
                     />
-                </div>
-                <div className="grid gap-3 mb-2 lg:grid-cols-2">
                     <TextField
                         name="category"
                         label="Category"
@@ -143,6 +141,12 @@ const AddEditProductForm: FC<Props> = (props) => {
                         name="subCategory"
                         label="Sub Category"
                         placeholder="sub category 1"
+                        disabled={isDisabled}
+                    />
+                    <TextField
+                        name="reorderPoint"
+                        label="Reorder Point"
+                        placeholder="re-order point"
                         disabled={isDisabled}
                     />
                 </div>

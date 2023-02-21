@@ -19,7 +19,15 @@ describe('Module: Create Product', () => {
         expect(createdProduct[1].subCategory).to.equal(
             testdata.product1.subCategory
         )
-        expect(createdProduct[1].price).to.equal(testdata.product1.price)
+        expect(createdProduct[1].sellingPrice).to.equal(
+            testdata.product1.sellingPrice
+        )
+        expect(createdProduct[1].costPrice).to.equal(
+            testdata.product1.costPrice
+        )
+        expect(createdProduct[1].reorderPoint).to.equal(
+            testdata.product1.reorderPoint
+        )
         expect(createdProduct[1].published).to.equal(
             testdata.product1.published
         )
@@ -28,14 +36,22 @@ describe('Module: Create Product', () => {
 
     it('Fail: create product using invalid data', async () => {
         const createdProduct = await ProductsModule.createProduct({
-            price: -1,
+            sellingPrice: -1,
+            costPrice: -1,
+            reorderPoint: -1,
         })
         expect(createdProduct[0]).to.equal(400)
         expect(createdProduct[1].errors.name.message).to.equal(
             'Path `name` is required.'
         )
-        expect(createdProduct[1].errors.price.message).to.equal(
-            'path price can not be less than 0.'
+        expect(createdProduct[1].errors.sellingPrice.message).to.equal(
+            'path selling price can not be less than 0.'
+        )
+        expect(createdProduct[1].errors.costPrice.message).to.equal(
+            'path cost price can not be less than 0.'
+        )
+        expect(createdProduct[1].errors.reorderPoint.message).to.equal(
+            'path reorder point can not be less than 0.'
         )
         expect(createdProduct[1].errors.published.message).to.equal(
             'Path `published` is required.'
@@ -108,7 +124,15 @@ describe('Module: Update Product', () => {
         expect(updatedProduct[1].subCategory).to.equal(
             testdata.product2.subCategory
         )
-        expect(updatedProduct[1].price).to.equal(testdata.product2.price)
+        expect(updatedProduct[1].sellingPrice).to.equal(
+            testdata.product2.sellingPrice
+        )
+        expect(updatedProduct[1].costPrice).to.equal(
+            testdata.product2.costPrice
+        )
+        expect(updatedProduct[1].reorderPoint).to.equal(
+            testdata.product2.reorderPoint
+        )
         expect(updatedProduct[1].published).to.equal(
             testdata.product2.published
         )
@@ -123,12 +147,18 @@ describe('Module: Update Product', () => {
         )
         const updatedProduct = await ProductsModule.updateProduct(
             createdProduct[1]._id,
-            { price: -1 }
+            { sellingPrice: -1, costPrice: -1, reorderPoint: -1 }
         )
 
         expect(updatedProduct[0]).to.equal(400)
-        expect(updatedProduct[1].errors.price.message).to.equal(
-            'path price can not be less than 0.'
+        expect(updatedProduct[1].errors.sellingPrice.message).to.equal(
+            'path selling price can not be less than 0.'
+        )
+        expect(updatedProduct[1].errors.costPrice.message).to.equal(
+            'path cost price can not be less than 0.'
+        )
+        expect(updatedProduct[1].errors.reorderPoint.message).to.equal(
+            'path reorder point can not be less than 0.'
         )
     })
 

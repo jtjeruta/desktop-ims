@@ -20,10 +20,12 @@ async function up() {
         company: faker.company.name(),
         category: faker.commerce.product(),
         subCategory: faker.commerce.product(),
-        price: faker.finance.amount(10, 200),
+        sellingPrice: faker.finance.amount(100, 200),
+        costPrice: faker.finance.amount(10, 100),
         published: faker.datatype.boolean(),
         sku: faker.datatype.uuid().split('-').pop().toUpperCase(),
         stock: faker.datatype.number({ min: 1, max: 100 }),
+        reorderPoint: faker.datatype.number({ min: 10, max: 100 }),
     }))
 
     const productRes = await Promise.all(

@@ -16,10 +16,15 @@ const ProductSchema = new mongoose.Schema({
     subCategory: {
         type: String,
     },
-    price: {
+    sellingPrice: {
         type: Number,
         required: true,
-        min: [0, 'path price can not be less than 0.'],
+        min: [0, 'path selling price can not be less than 0.'],
+    },
+    costPrice: {
+        type: Number,
+        required: true,
+        min: [0, 'path cost price can not be less than 0.'],
     },
     published: {
         type: Boolean,
@@ -39,6 +44,11 @@ const ProductSchema = new mongoose.Schema({
             ref: 'Variant',
         },
     ],
+    reorderPoint: {
+        type: Number,
+        required: true,
+        min: [0, 'path reorder point can not be less than 0.'],
+    }
 })
 
 ProductSchema.index({ name: 1 }, { unique: true })

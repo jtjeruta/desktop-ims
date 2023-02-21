@@ -156,7 +156,8 @@ describe('Controller: Create product', () => {
         expect(res.statusCode).to.equal(201)
         expect(Object.keys(res.body.product)).to.deep.equalInAnyOrder([
             'name',
-            'price',
+            'sellingPrice',
+            'costPrice',
             'published',
             'sku',
             'stock',
@@ -167,6 +168,7 @@ describe('Controller: Create product', () => {
             'createdAt',
             'id',
             'modifiedAt',
+            'reorderPoint',
         ])
         expect(res.body.product.published).to.be.false
     })
@@ -193,13 +195,19 @@ describe('Controller: Create product', () => {
         }).then(({ token }) => {
             request(app)
                 .post('/api/v1/products')
-                .send({ price: -1 })
+                .send({ sellingPrice: -1, costPrice: -1, reorderPoint: -1 })
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(400)
                     expect(
                         Object.keys(res.body.errors)
-                    ).to.deep.equalInAnyOrder(['name', 'price', 'stock'])
+                    ).to.deep.equalInAnyOrder([
+                        'name',
+                        'sellingPrice',
+                        'costPrice',
+                        'reorderPoint',
+                        'stock',
+                    ])
                     done()
                 })
                 .catch((err) => done(err))
@@ -269,92 +277,85 @@ describe('Controller: Update product', () => {
         createdProducts.product2 = updatedProduct2[1]
     })
 
-    it('Success: run as admin with correct data', (done) => {
-        login({
+    it('Success: run as admin with correct data', async () => {
+        const { token } = await login({
             email: testdata.admin1.email,
             password: testdata.admin1.password,
-        }).then(({ token }) => {
-            request(app)
-                .put(`/api/v1/products/${createdProducts.product1.id}`)
-                .send(testdata.product3)
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(200)
-                    expect(res.body.product.name).to.equal(
-                        testdata.product3.name
-                    )
-                    expect(res.body.product.company).to.equal(
-                        testdata.product3.company
-                    )
-                    expect(res.body.product.category).to.equal(
-                        testdata.product3.category
-                    )
-                    expect(res.body.product.subCategory).to.equal(
-                        testdata.product3.subCategory
-                    )
-                    expect(res.body.product.price).to.equal(
-                        testdata.product3.price
-                    )
-                    expect(res.body.product.published).to.equal(
-                        testdata.product3.published
-                    )
-                    expect(res.body.product.variants[0].name).to.equal(
-                        testdata.variant1.name
-                    )
-                    expect(res.body.product.variants[0].quantity).to.equal(
-                        testdata.variant1.quantity
-                    )
-                    expect(Object.keys(res.body.product)).to.include('id')
-                    done()
-                })
-                .catch((err) => done(err))
         })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
+            .send(testdata.product3)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.name).to.equal(testdata.product3.name)
+        expect(res.body.product.company).to.equal(testdata.product3.company)
+        expect(res.body.product.category).to.equal(testdata.product3.category)
+        expect(res.body.product.subCategory).to.equal(
+            testdata.product3.subCategory
+        )
+        expect(res.body.product.sellingPrice).to.equal(
+            testdata.product3.sellingPrice
+        )
+        expect(res.body.product.costPrice).to.equal(testdata.product3.costPrice)
+        expect(res.body.product.published).to.equal(testdata.product3.published)
+        expect(res.body.product.variants[0].name).to.equal(
+            testdata.variant1.name
+        )
+        expect(res.body.product.variants[0].quantity).to.equal(
+            testdata.variant1.quantity
+        )
+        expect(res.body.product.reorderPoint).to.equal(
+            testdata.product3.reorderPoint
+        )
+        expect(Object.keys(res.body.product)).to.include('id')
     })
 
-    it('Fail: run as admin with incorrect data', (done) => {
-        login({
+    it('Fail: run as admin with incorrect data', async () => {
+        const { token } = await login({
             email: testdata.admin1.email,
             password: testdata.admin1.password,
-        }).then(({ token }) => {
-            request(app)
-                .put(`/api/v1/products/${createdProducts.product1.id}`)
-                .send({
-                    name: '',
-                    company: '',
-                    category: '',
-                    subCategory: '',
-                    published: null,
-                    price: -1,
-                })
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(400)
-                    expect(
-                        Object.keys(res.body.errors)
-                    ).to.deep.equalInAnyOrder(['name', 'published', 'price'])
-                    done()
-                })
-                .catch((err) => done(err))
         })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
+            .send({
+                name: '',
+                company: '',
+                category: '',
+                subCategory: '',
+                published: null,
+                sellingPrice: -1,
+                costPrice: -1,
+                reorderPoint: -1,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(400)
+        expect(Object.keys(res.body.errors)).to.deep.equalInAnyOrder([
+            'name',
+            'published',
+            'sellingPrice',
+            'costPrice',
+            'reorderPoint',
+        ])
     })
 
-    it('Fail: run as employee', (done) => {
-        login({
+    it('Fail: run as employee', async () => {
+        const { token } = await login({
             email: testdata.employee1.email,
             password: testdata.employee1.password,
-        }).then(({ token }) => {
-            request(app)
-                .put(`/api/v1/products/${createdProducts.product1.id}`)
-                .send({})
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(401)
-                    expect(res.body).to.deep.equal({
-                        message: 'Unauthorized.',
-                    })
-                    done()
-                })
-                .catch((err) => done(err))
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
+            .send({})
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body).to.deep.equal({
+            message: 'Unauthorized.',
         })
     })
 

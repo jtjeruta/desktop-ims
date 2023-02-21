@@ -8,12 +8,14 @@ module.exports.createProduct = async (req, res) => {
     const productDoc = {
         sku: ProductsModule.generateSKU(),
         name: req.body.name,
-        price: req.body.price,
+        sellingPrice: req.body.sellingPrice,
+        costPrice: req.body.costPrice,
         company: req.body.company,
         category: req.body.category,
         subCategory: req.body.subCategory,
         published: false,
         stock: req.body.stock,
+        reorderPoint: req.body.reorderPoint,
         modifiedBy: req.con._id,
     }
     const createProductRes = await ProductsModule.createProduct(productDoc)
@@ -76,11 +78,13 @@ module.exports.updateProduct = async (req, res) => {
     const { productId } = req.params
     const updateDoc = {
         name: req.body.name,
-        price: req.body.price,
+        sellingPrice: req.body.sellingPrice,
+        costPrice: req.body.costPrice,
         company: req.body.company,
         category: req.body.category,
         subCategory: req.body.subCategory,
         published: req.body.published,
+        reorderPoint: req.body.reorderPoint,
         modifiedBy: req.con._id,
     }
 

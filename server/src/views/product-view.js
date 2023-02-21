@@ -13,12 +13,14 @@ module.exports.ProductView = (productDocument) => {
         company: productDocument.company,
         category: productDocument.category,
         subCategory: productDocument.subCategory,
-        price: productDocument.price,
+        sellingPrice: productDocument.sellingPrice,
+        costPrice: productDocument.costPrice,
         createdAt: productDocument.createdAt,
         modifiedAt: productDocument.modifiedAt,
         published: productDocument.published,
         sku: productDocument.sku,
         stock: productDocument.stock,
+        reorderPoint: productDocument.reorderPoint,
         variants: productDocument.variants?.map(VariantView) ?? [],
     }
 }

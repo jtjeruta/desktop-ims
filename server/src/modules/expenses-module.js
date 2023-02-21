@@ -17,7 +17,6 @@ module.exports.createExpense = async (data, session = null) => {
             : expense.save())
         return [201, createdExpense]
     } catch (error) {
-        console.error(error)
         console.error('Failed to create expense')
         return getMongoError(error)
     }

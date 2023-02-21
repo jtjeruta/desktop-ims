@@ -6,11 +6,13 @@ export type Product = {
     company: string
     category: string
     subCategory: string
-    price: number
+    sellingPrice: number
+    costPrice: number
     createdAt: number
     sku: string
     published: boolean
     stock: number
+    reorderPoint: number
     variants: Variant[]
 }
 
@@ -25,7 +27,9 @@ export type CreateProductDoc = {
     company: string
     category: string
     subCategory: string
-    price: number
+    sellingPrice: number
+    costPrice: number
+    reorderPoint: number
     stock: number
 }
 
@@ -34,7 +38,9 @@ export type UpdateProductDoc = {
     company?: string
     category?: string
     subCategory?: string
-    price?: number
+    sellingPrice?: number
+    costPrice?: number
+    reorderPoint?: number
     published?: boolean
 }
 

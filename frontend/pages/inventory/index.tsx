@@ -52,7 +52,6 @@ const InventoryPageContent = () => {
                 product.name,
                 product.company,
                 product.category,
-                product.price,
                 `#${product.sku}`,
                 product.sku,
                 formatDate(product.createdAt),
@@ -237,10 +236,18 @@ const InventoryPageContent = () => {
                             sort: (product) => product.name,
                         },
                         {
-                            title: 'Price',
+                            title: 'Selling Price',
                             format: (row) => {
                                 const product = row as Product
-                                return formatCurrency(product.price)
+                                return formatCurrency(product.sellingPrice)
+                            },
+                            sort: (product) => product.price,
+                        },
+                        {
+                            title: 'Cost Price',
+                            format: (row) => {
+                                const product = row as Product
+                                return formatCurrency(product.costPrice)
                             },
                             sort: (product) => product.price,
                         },

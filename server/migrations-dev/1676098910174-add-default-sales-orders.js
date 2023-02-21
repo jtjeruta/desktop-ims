@@ -26,7 +26,7 @@ async function up() {
             faker.datatype.number({ min: 1, max: 5 })
         ).map((product) => {
             const qty = faker.datatype.number({ min: 1, max: 20 })
-            const itemPrice = faker.datatype.number({ min: 1, max: 200 })
+            const itemPrice = product.sellingPrice
             const variant = getRandomElement(product.variants)
 
             return {
