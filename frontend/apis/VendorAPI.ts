@@ -28,3 +28,9 @@ export const updateVendor = (id: string, data: Types.AddEditVendorDoc) =>
         .put(`/api/v1/vendors/${id}`, data)
         .then((response): [true, Types.Vendor] => [true, response.data.vendor])
         .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const deleteVendor = (id: string) =>
+    Axios()
+        .delete(`/api/v1/vendors/${id}`)
+        .then((): [true] => [true])
+        .catch((err): [false, AxiosResponse] => [false, err.response])

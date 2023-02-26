@@ -242,6 +242,8 @@ const PurchaseOrderPageContent = () => {
                         PurOrdContext.selectedOrder.id
                     )
 
+                    AppContext.closeDialog()
+
                     if (!response[0]) {
                         return AppContext.addNotification({
                             title: 'Something went wrong!',
@@ -249,10 +251,9 @@ const PurchaseOrderPageContent = () => {
                         })
                     }
 
-                    AppContext.closeDialog()
                     AppContext.addNotification({
                         title: 'Order deleted',
-                        type: 'success'
+                        type: 'success',
                     })
                     router.push('/purchase-orders')
                 }}

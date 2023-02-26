@@ -157,7 +157,7 @@ module.exports.deletePurchaseOrderById = async (orderId, session = null) => {
         )
         return [200, deletedPurchaseOrder]
     } catch (error) {
-        console.error('Failed to delete purchase order')
+        console.error('Failed to delete purchase order by id')
         return getMongoError(error)
     }
 }

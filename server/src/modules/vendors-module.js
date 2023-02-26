@@ -63,6 +63,16 @@ module.exports.getVendorById = async (id, session = null) => {
     }
 }
 
+module.exports.deleteVendorById = async (vendorId, session = null) => {
+    try {
+        await VendorModel.deleteOne({ _id: vendorId }).session(session)
+        return [200]
+    } catch (error) {
+        console.error('Failed to delete vendor by id')
+        return getMongoError(error)
+    }
+}
+
 module.exports.deleteVendors = async (query = {}, session = null) => {
     try {
         await VendorModel.deleteMany(query).session(session)

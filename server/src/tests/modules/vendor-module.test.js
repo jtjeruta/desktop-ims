@@ -112,3 +112,29 @@ describe('Module: Update Vendor', () => {
         expect(updatedVendor[1].message).to.equal('Duplicate found.')
     })
 })
+
+describe('Module: Delete Vendor', () => {
+    setup()
+
+    it('Success: delete an existing vendor', async () => {
+        const createdVendor = await VendorsModule.createVendor(testdata.vendor1)
+        const deletedVendor = await VendorsModule.deleteVendorById(
+            createdVendor[1]._id
+        )
+        const getVendor = await VendorsModule.getVendorById(
+            createdVendor[1]._id
+        )
+
+        expect(deletedVendor[0]).to.equal(200)
+        expect(getVendor[0]).to.equal(404)
+    })
+
+    it('Fail: delete a non-existing vendor', async () => {
+        const deletedVendor = await VendorsModule.deleteVendorById(
+            'non-existing-id'
+        )
+
+        expect(deletedVendor[0]).to.equal(404)
+        expect(deletedVendor[1].message).to.equal('Not found.')
+    })
+})

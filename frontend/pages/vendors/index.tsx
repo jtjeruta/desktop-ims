@@ -14,6 +14,7 @@ import { escapeRegExp } from '../../utils'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
 import { ActionButton } from '../../components/ActionButton/ActionButton'
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 
 const VendorsPageContent = () => {
     const AppContext = useAppContext()
@@ -132,12 +133,27 @@ const VendorsPageContent = () => {
                             format: (row) => {
                                 const vendor = row as Vendor
                                 return (
-                                    <Button
-                                        style="link"
-                                        onClick={openVendorDialog(vendor)}
-                                    >
-                                        Edit
-                                    </Button>
+                                    <div className="flex gap-1">
+                                        <Button
+                                            style="link"
+                                            onClick={openVendorDialog(vendor)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            style="link"
+                                            onClick={() => {
+                                                VendorContext.setSelectedVendor(
+                                                    vendor
+                                                )
+                                                AppContext.openDialog(
+                                                    'remove-vendor-dialog'
+                                                )
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
                                 )
                             },
                         },
@@ -146,6 +162,32 @@ const VendorsPageContent = () => {
             </Card>
             <AddEditVendorDialog />
             <ActionButton onClick={openVendorDialog(null)} />
+
+            <ConfirmDialog
+                text={`Are you sure you want to delete this vendor?`}
+                dialogKey="remove-vendor-dialog"
+                onConfirm={async () => {
+                    if (!VendorContext.selectedVendor) return
+
+                    const response = await VendorContext.deleteVendor(
+                        VendorContext.selectedVendor.id
+                    )
+
+                    AppContext.closeDialog()
+
+                    if (!response[0]) {
+                        return AppContext.addNotification({
+                            title: 'Something went wrong!',
+                            type: 'danger',
+                        })
+                    }
+
+                    AppContext.addNotification({
+                        title: 'Vendor deleted',
+                        type: 'success',
+                    })
+                }}
+            />
         </UserLayout>
     )
 }

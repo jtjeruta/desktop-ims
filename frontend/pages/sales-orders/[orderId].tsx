@@ -257,6 +257,8 @@ const SalesOrderPageContent = () => {
                         SalesOrderContext.selectedOrder.id
                     )
 
+                    AppContext.closeDialog()
+
                     if (!response[0]) {
                         return AppContext.addNotification({
                             title: 'Something went wrong!',
@@ -264,7 +266,6 @@ const SalesOrderPageContent = () => {
                         })
                     }
 
-                    AppContext.closeDialog()
                     AppContext.addNotification({
                         title: 'Order deleted',
                         type: 'success'

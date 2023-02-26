@@ -38,6 +38,9 @@ export type ListVendors = () => Promise<[true, Vendor[]] | [false, string]>
 export type GetVendor = (
     id: Vendor['id']
 ) => Promise<[true, Vendor] | [false, AxiosResponse]>
+export type DeleteVendor = (
+    id: Vendor['id']
+) => Promise<[true] | [false, AxiosResponse]>
 
 export type Context = {
     vendors: Vendor[] | null
@@ -48,4 +51,5 @@ export type Context = {
     listVendors: ListVendors
     setSelectedVendor: (vendor: Vendor | null) => void
     setDraftVendor: React.Dispatch<React.SetStateAction<AddEditVendorDoc>>
+    deleteVendor: DeleteVendor
 }

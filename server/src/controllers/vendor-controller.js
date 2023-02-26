@@ -37,3 +37,15 @@ module.exports.updateVendor = async (req, res) => {
 
     return res.status(200).json({ vendor: VendorView(response[1]) })
 }
+
+module.exports.deleteVendor = async (req, res) => {
+    const { vendorId } = req.params
+
+    const vendorRes = await VendorsModule.deleteVendorById(vendorId)
+
+    if (vendorRes[0] !== 200) {
+        return res.status(vendorRes[0]).json(vendorRes[1])
+    }
+
+    return res.status(200).json({ message: 'Vendor deleted successfully.' })
+}

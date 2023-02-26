@@ -88,6 +88,20 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const deleteVendor: Types.DeleteVendor = async (id) => {
+        const key = 'delete-vendor'
+
+        AppContext.addLoading(key)
+        const response = await VendorsAPI.deleteVendor(id)
+        AppContext.removeLoading(key)
+
+        if (response[0]) {
+            setVendors((prev) => prev?.filter((vendor) => vendor.id !== id) ?? null)
+        }
+
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             vendors,
@@ -98,6 +112,7 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
             updateVendor,
             listVendors,
             setSelectedVendor,
+            deleteVendor,
         }),
         [vendors, selectedVendor, draftVendor]
     )

@@ -171,7 +171,7 @@ module.exports.deleteSalesOrderById = async (orderId, session = null) => {
         )
         return [200, deletedSalesOrder]
     } catch (error) {
-        console.error('Failed to delete sales order')
+        console.error('Failed to delete sales order by id')
         return getMongoError(error)
     }
 }
