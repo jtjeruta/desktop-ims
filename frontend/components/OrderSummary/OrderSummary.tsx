@@ -10,11 +10,12 @@ type Props = {
     total: number
     disabled?: boolean
     loading?: boolean
-    onSubmit: () => void
-    buttonText: string
-    onChange: (date: number, invoiceNumber: string) => void
     orderDate: number | null
     invoiceNumber: string | null
+    showDeleteButton?: boolean
+    onSubmit: () => void
+    onChange: (date: number, invoiceNumber: string) => void
+    onDelete: () => void
 }
 
 const OrderSummary: FC<Props> = (props) => {
@@ -57,13 +58,24 @@ const OrderSummary: FC<Props> = (props) => {
                     <b>{formatCurrency(props.total)}</b>
                 </div>
                 <Button
-                    className="text-2xl w-full"
+                    className="text-2xl w-full mb-3"
                     disabled={props.disabled}
                     loading={props.loading}
                     onClick={props.onSubmit}
                 >
-                    {props.buttonText}
+                    Save Order
                 </Button>
+                {props.showDeleteButton && (
+                    <Button
+                        color="secondary"
+                        className="text-2xl w-full"
+                        disabled={props.disabled}
+                        loading={props.loading}
+                        onClick={props.onDelete}
+                    >
+                        Delete Order
+                    </Button>
+                )}
             </div>
         </Card>
     )

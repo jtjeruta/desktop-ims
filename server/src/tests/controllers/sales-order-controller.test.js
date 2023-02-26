@@ -262,7 +262,7 @@ describe('Controller: Create sales order', () => {
         )
     })
 
-    it('Fail: run as employee', async () => {
+    it('Success: run as employee', async () => {
         const { token } = await login({
             email: testdata.employee1.email,
             password: testdata.employee1.password,
@@ -408,7 +408,7 @@ describe('Controller: Update sales order', () => {
         )
     })
 
-    it('Fail: run as employee', async () => {
+    it('Success: run as employee', async () => {
         const { token } = await login({
             email: testdata.employee1.email,
             password: testdata.employee1.password,
@@ -451,6 +451,82 @@ describe('Controller: Update sales order', () => {
 
     it('Fail: run as unauthorized', async () => {
         const res = await request(app).post('/api/v1/sales-orders')
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body).to.deep.equal({
+            message: 'Unauthorized.',
+        })
+    })
+})
+
+describe('Controller: Delete sales order', () => {
+    setup()
+    let product, customer, salesOrder, warehouse
+
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        await UsersModule.createUser(testdata.employee1)
+
+        product = (await ProductsModule.createProduct(testdata.product1))[1]
+        customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
+        )[1]
+
+        salesOrder = (
+            await SalesOrdersModule.createSalesOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                customer: customer._id,
+                orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
+            })
+        )[1]
+    })
+
+    it('Success: run as admin with correct data', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .delete(`/api/v1/sales-orders/${salesOrder._id}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.message).to.equal('Sales order deleted successfully')
+    })
+
+    it('Success: run as employee', async () => {
+        const { token } = await login({
+            email: testdata.employee1.email,
+            password: testdata.employee1.password,
+        })
+
+        const res = await request(app)
+            .delete(`/api/v1/sales-orders/${salesOrder._id}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.message).to.equal('Sales order deleted successfully')
+    })
+
+    it('Fail: run as unauthorized', async () => {
+        const res = await request(app).delete(
+            `/api/v1/sales-orders/${salesOrder._id}`
+        )
 
         expect(res.statusCode).to.equal(401)
         expect(res.body).to.deep.equal({

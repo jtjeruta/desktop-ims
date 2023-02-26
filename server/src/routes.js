@@ -105,6 +105,11 @@ router.post(
     isAdmin,
     PurchaseOrderController.createPurchaseOrder
 )
+router.delete(
+    '/api/v1/purchase-orders/:orderId',
+    isAdmin,
+    PurchaseOrderController.deletePurchaseOrder
+)
 
 // customers
 router.get(
@@ -143,6 +148,11 @@ router.post(
     '/api/v1/sales-orders',
     isAuthenticated,
     SalesOrderController.createSalesOrder
+)
+router.delete(
+    '/api/v1/sales-orders/:orderId',
+    isAuthenticated,
+    SalesOrderController.deleteSalesOrder
 )
 
 // stats

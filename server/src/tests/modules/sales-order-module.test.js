@@ -438,3 +438,58 @@ describe('Module: Apply Product Stock Changes', () => {
         expect(alteredWarehouse.products[0].stock).to.equal(-1000)
     })
 })
+
+describe('Module: Delete SalesOrder', () => {
+    setup()
+
+    let product1, customer, salesOrder, warehouse
+
+    beforeEach(async () => {
+        product1 = (await ProductsModule.createProduct(testdata.product1))[1]
+        customer = (await CustomersModule.createCustomer(testdata.customer1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
+        )[1]
+
+        salesOrder = (
+            await SalesOrdersModule.createSalesOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product1._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                customer: customer._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number-1',
+            })
+        )[1]
+    })
+
+    it('Success: using correct data', async () => {
+        const deletedSalesOrder = await SalesOrdersModule.deleteSalesOrderById(
+            salesOrder._id
+        )
+        const getSalesOrder = await SalesOrdersModule.getSalesOrderById(
+            salesOrder._id
+        )
+        expect(deletedSalesOrder[0]).to.equal(200)
+        expect(getSalesOrder[0]).to.equal(404)
+    })
+
+    it('Fail: using invalid ID', async () => {
+        const deletedSalesOrder = await SalesOrdersModule.deleteSalesOrderById(
+            'invalid-id'
+        )
+
+        expect(deletedSalesOrder[0]).to.equal(404)
+        expect(deletedSalesOrder[1].message).to.equal('Not found.')
+    })
+})

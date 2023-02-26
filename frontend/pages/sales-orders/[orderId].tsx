@@ -193,9 +193,6 @@ const SalesOrderPageContent = () => {
                             total={SalesOrderContext.draftOrder?.total}
                             loading={submitButtonLoading}
                             onSubmit={onSubmit}
-                            buttonText={
-                                isEditPage ? 'Update Order' : 'Create Order'
-                            }
                             onChange={(
                                 orderDate: number,
                                 invoiceNumber: string
@@ -209,6 +206,10 @@ const SalesOrderPageContent = () => {
                             orderDate={SalesOrderContext.draftOrder.orderDate}
                             invoiceNumber={
                                 SalesOrderContext.draftOrder.invoiceNumber
+                            }
+                            showDeleteButton={!!SalesOrderContext.selectedOrder}
+                            onDelete={() =>
+                                AppContext.openDialog('remove-order-dialog')
                             }
                         />
                     )}
@@ -243,6 +244,33 @@ const SalesOrderPageContent = () => {
                     })
 
                     AppContext.closeDialog()
+                }}
+            />
+
+            <ConfirmDialog
+                text={`Are you sure you want to delete this order?`}
+                dialogKey="remove-order-dialog"
+                onConfirm={async () => {
+                    if (!SalesOrderContext.selectedOrder) return
+
+                    const response = await SalesOrderContext.deleteOrder(
+                        SalesOrderContext.selectedOrder.id
+                    )
+
+                    if (!response[0]) {
+                        return AppContext.addNotification({
+                            title: 'Something went wrong!',
+                            type: 'danger',
+                        })
+                    }
+
+                    AppContext.closeDialog()
+                    AppContext.addNotification({
+                        title: 'Order deleted',
+                        type: 'success'
+                    })
+
+                    router.push('/sales-orders')
                 }}
             />
         </>

@@ -196,3 +196,10 @@ module.exports.updateSalesOrder = async (req, res) => {
         .status(200)
         .json({ order: SalesOrderView(populatedSalesOrderRes[1]) })
 }
+
+module.exports.deleteSalesOrder = async (req, res) => {
+    const { orderId } = req.params
+    const [status, data] = await SalesOrdersModule.deleteSalesOrderById(orderId)
+    if (status !== 200) return res.status(status).json(data)
+    return res.status(200).json({ message: 'Sales order deleted successfully' })
+}

@@ -149,6 +149,19 @@ module.exports.applyProductStockChanges = async (
     }
 }
 
+module.exports.deletePurchaseOrderById = async (orderId, session = null) => {
+    try {
+        const deletedPurchaseOrder = await PurchaseOrderModel.deleteOne(
+            { _id: orderId },
+            session
+        )
+        return [200, deletedPurchaseOrder]
+    } catch (error) {
+        console.error('Failed to delete purchase order')
+        return getMongoError(error)
+    }
+}
+
 module.exports.deletePurchaseOrders = async (query = {}, session = null) => {
     try {
         await PurchaseOrderModel.deleteMany(query, { session })

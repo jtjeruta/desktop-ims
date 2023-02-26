@@ -88,6 +88,9 @@ export type ListSalesOrders = () => Promise<
 export type GetSalesOrder = (
     id: string
 ) => Promise<[true, SalesOrder] | [false, AxiosResponse]>
+export type DeleteSalesOrder = (
+    id: string
+) => Promise<[true] | [false, AxiosResponse]>
 
 export type Context = {
     orders: SalesOrder[] | null
@@ -99,4 +102,5 @@ export type Context = {
     updateOrder: UpdateSalesOrder
     listOrders: ListSalesOrders
     getOrder: GetSalesOrder
+    deleteOrder: DeleteSalesOrder
 }

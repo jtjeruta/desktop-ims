@@ -118,6 +118,16 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const deleteOrder: Types.DeletePurchaseOrder = async (id) => {
+        const key = 'delete-purchase-order'
+
+        AppContext.addLoading(key)
+        const response = await PurchaseOrdersAPI.deletePurchaseOrder(id)
+        AppContext.removeLoading(key)
+
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             orders,
@@ -129,6 +139,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
             getOrder,
             setSelectedOrder,
             setDraftOrder,
+            deleteOrder,
         }),
         [orders, selectedOrder, draftOrder]
     )

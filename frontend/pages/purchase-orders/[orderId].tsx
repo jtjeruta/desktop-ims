@@ -186,9 +186,6 @@ const PurchaseOrderPageContent = () => {
                             total={PurOrdContext.draftOrder.total}
                             onSubmit={onSubmit}
                             loading={submitButtonLoading}
-                            buttonText={
-                                isEditPage ? 'Update Order' : 'Create Order'
-                            }
                             onChange={(
                                 orderDate: number,
                                 invoiceNumber: string
@@ -202,6 +199,10 @@ const PurchaseOrderPageContent = () => {
                             orderDate={PurOrdContext.draftOrder.orderDate}
                             invoiceNumber={
                                 PurOrdContext.draftOrder.invoiceNumber
+                            }
+                            showDeleteButton={!!PurOrdContext.selectedOrder}
+                            onDelete={() =>
+                                AppContext.openDialog('remove-order-dialog')
                             }
                         />
                     )}
@@ -228,6 +229,32 @@ const PurchaseOrderPageContent = () => {
                         }
                     })
                     AppContext.closeDialog()
+                }}
+            />
+
+            <ConfirmDialog
+                text={`Are you sure you want to delete this order?`}
+                dialogKey="remove-order-dialog"
+                onConfirm={async () => {
+                    if (!PurOrdContext.selectedOrder) return
+
+                    const response = await PurOrdContext.deleteOrder(
+                        PurOrdContext.selectedOrder.id
+                    )
+
+                    if (!response[0]) {
+                        return AppContext.addNotification({
+                            title: 'Something went wrong!',
+                            type: 'danger',
+                        })
+                    }
+
+                    AppContext.closeDialog()
+                    AppContext.addNotification({
+                        title: 'Order deleted',
+                        type: 'success'
+                    })
+                    router.push('/purchase-orders')
                 }}
             />
         </>

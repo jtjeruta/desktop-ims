@@ -109,7 +109,7 @@ describe('Module: List PurchaseOrders', () => {
 describe('Module: Get PurchaseOrder by id', () => {
     setup()
 
-    let product, vendor, purchaseOrder
+    let product, vendor, purchaseOrder, warehouse
 
     beforeEach(async () => {
         product = (await ProductsModule.createProduct(testdata.product1))[1]
@@ -412,5 +412,61 @@ describe('Module: Apply Product Stock Changes', () => {
             await WarehousesModule.getWarehouseById(warehouse._id)
         )[1]
         expect(alteredWarehouse.products[0].stock).to.equal(-1000)
+    })
+})
+
+describe('Module: Delete Purchase Order', () => {
+    let product, vendor, warehouse, purchaseOrder
+    setup()
+
+    beforeEach(async () => {
+        product = (await ProductsModule.createProduct(testdata.product1))[1]
+        vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse(testdata.warehouse1)
+        )[1]
+
+        purchaseOrder = (
+            await PurchaseOrdersModule.createPurchaseOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse: warehouse._id,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                vendor: vendor._id,
+                orderDate: 12345,
+                invoiceNumber: 'invoice-number',
+            })
+        )[1]
+    })
+
+    it('Success: using correct data', async () => {
+        const deletedPurchaseOrder =
+            await PurchaseOrdersModule.deletePurchaseOrderById(
+                purchaseOrder._id
+            )
+        const getPurchaseOrder =
+            await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrder._id)
+
+        expect(deletedPurchaseOrder[0]).to.equal(200)
+        expect(getPurchaseOrder[0]).to.equal(404)
+    })
+
+    it('Fail: using invalid data', async () => {
+        const deletedPurchaseOrder =
+            await PurchaseOrdersModule.deletePurchaseOrderById(
+                'non-existent-id'
+            )
+
+        expect(deletedPurchaseOrder[0]).to.equal(404)
+        expect(deletedPurchaseOrder[1].message).to.equal('Not found.')
     })
 })

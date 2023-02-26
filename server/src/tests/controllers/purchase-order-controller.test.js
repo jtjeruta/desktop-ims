@@ -291,7 +291,7 @@ describe('Controller: Create purchase order', () => {
 })
 
 describe('Controller: Update purchase order', () => {
-    let product, vendor, purchaseOrder
+    let product, vendor, purchaseOrder, warehouse
     setup()
 
     beforeEach(async () => {
@@ -415,3 +415,103 @@ describe('Controller: Update purchase order', () => {
         })
     })
 })
+
+describe('Controller: Delete purchase order', () => {
+    let product, vendor, purchaseOrder, warehouse
+    setup()
+
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        await UsersModule.createUser(testdata.employee1)
+
+        product = (await ProductsModule.createProduct(testdata.product1))[1]
+        vendor = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        warehouse = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                products: [{ source: product._id, stock: 1000 }],
+            })
+        )[1]
+
+        purchaseOrder = (
+            await PurchaseOrdersModule.createPurchaseOrder({
+                products: [
+                    {
+                        id: 'test_product_1',
+                        product: product._id,
+                        quantity: 100,
+                        itemPrice: 10,
+                        warehouse,
+                        variant: {
+                            name: 'Test Variant',
+                            quantity: 10,
+                        },
+                    },
+                ],
+                vendor: vendor._id,
+                orderDate: moment().unix(),
+                invoiceNumber: 'invoice-number-1',
+            })
+        )[1]
+    })
+
+    it('Success: run as admin with correct data', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .delete(`/api/v1/purchase-orders/${purchaseOrder._id}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+
+        const getPurchaseOrder = await PurchaseOrdersModule.getPurchaseOrderById(
+            purchaseOrder._id
+        )
+        expect(getPurchaseOrder[0]).to.equal(404)
+    })
+
+    it('Fail: run as employee', async () => {
+        const { token } = await login({
+            email: testdata.employee1.email,
+            password: testdata.employee1.password,
+        })
+
+        const res = await request(app)
+            .delete(`/api/v1/purchase-orders/${purchaseOrder._id}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body).to.deep.equal({
+            message: 'Unauthorized.',
+        })
+    })
+
+    it('Fail: run as unauthorized', async () => {
+        const res = await request(app).delete(
+            `/api/v1/purchase-orders/${purchaseOrder._id}`
+        )
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body).to.deep.equal({
+            message: 'Unauthorized.',
+        })
+    })
+
+    it('Fail: delete non-existent purchase order', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .delete('/api/v1/purchase-orders/invalid-id')
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(404)
+        expect(res.body.message).to.equal('Not found.')
+    })
+})
+

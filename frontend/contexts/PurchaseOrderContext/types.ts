@@ -88,6 +88,9 @@ export type ListPurchaseOrders = () => Promise<
 export type GetPurchaseOrder = (
     id: string
 ) => Promise<[true, PurchaseOrder] | [false, AxiosResponse]>
+export type DeletePurchaseOrder = (
+    id: string
+) => Promise<[true] | [false, AxiosResponse]>
 
 export type Context = {
     orders: PurchaseOrder[] | null
@@ -99,4 +102,5 @@ export type Context = {
     updateOrder: UpdatePurchaseOrder
     listOrders: ListPurchaseOrders
     getOrder: GetPurchaseOrder
+    deleteOrder: DeletePurchaseOrder
 }

@@ -205,3 +205,14 @@ module.exports.updatePurchaseOrder = async (req, res) => {
         .status(200)
         .json({ order: PurchaseOrderView(populatedPurchaseOrderRes[1]) })
 }
+
+module.exports.deletePurchaseOrder = async (req, res) => {
+    const { orderId } = req.params
+    const [status, data] = await PurchaseOrdersModule.deletePurchaseOrderById(
+        orderId
+    )
+    if (status !== 200) return res.status(status).json(data)
+    return res
+        .status(200)
+        .json({ message: 'Purchase order deleted successfully' })
+}
