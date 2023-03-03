@@ -4,6 +4,7 @@ const PurchaseOrderModule = require('../modules/purchase-orders-module')
 const ProductModule = require('../modules/products-module')
 const WarehouseModule = require('../modules/warehouses-module')
 const ExpenseModule = require('../modules/expenses-module')
+const ReceivableModule = require('../modules/receivables-module')
 const { ProductView } = require('../views/product-view')
 
 module.exports.getTotalProductSales = async (req, res) => {
@@ -197,4 +198,24 @@ module.exports.listProductReports = async (req, res) => {
             .status(500)
             .json({ message: 'Failed to list product reports' })
     }
+}
+
+
+
+module.exports.getTotalReceivables = async (req, res) => {
+    const { startDate, endDate } = getDateRangeFromQuery(req.query)
+
+    const receivablesRes = await ReceivableModule.listReceivables({
+        date: { $gte: startDate, $lte: endDate },
+    })
+
+    if (receivablesRes[0] !== 200) {
+        return res.status(receivablesRes[0]).json(receivablesRes[1])
+    }
+
+    const total = receivablesRes[1].reduce(
+        (acc, receivable) => acc + receivable.amount,
+        0
+    )
+    return res.status(200).json({ totalReceivables: total })
 }

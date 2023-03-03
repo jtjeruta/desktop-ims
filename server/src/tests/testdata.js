@@ -131,3 +131,17 @@ module.exports.expense2 = {
     date: 1674142197,
     description: 'This is a test.',
 }
+
+module.exports.receivable1 = {
+    name: 'Receivable 1',
+    amount: 100,
+    date: 1674401397,
+    description: 'This is a test.',
+}
+
+module.exports.receivable2 = {
+    name: 'Receivable 2',
+    amount: 200,
+    date: 1674142197,
+    description: 'This is a test.',
+}

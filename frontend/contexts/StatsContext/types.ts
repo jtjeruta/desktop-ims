@@ -27,4 +27,6 @@ export type Context = {
     listProductReports: () => Promise<[true, ProductReport[]] | [false, string]>
     search: string
     setSearch: React.Dispatch<React.SetStateAction<string>>
+    totalReceivables: number | null
+    getTotalReceivables: () => Promise<[true, number] | [false, string]>
 }

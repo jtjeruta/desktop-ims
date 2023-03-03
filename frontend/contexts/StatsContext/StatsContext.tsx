@@ -28,6 +28,9 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     >(null)
     const [search, setSearch] = useState<string>('')
     const [totalExpenses, setTotalExpenses] = useState<number | null>(null)
+    const [totalReceivables, setTotalReceivables] = useState<number | null>(
+        null
+    )
 
     const listProductReports = async () => {
         const key = 'list-product-reports'
@@ -121,6 +124,29 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const getTotalReceivables = async () => {
+        const key = 'get-total-receivables'
+
+        AppContext.addLoading(key)
+        const response = await StatsAPI.getTotalReceivables(
+            dateRange.startDate,
+            dateRange.endDate
+        )
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return response
+        }
+
+        setTotalReceivables(response[1])
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             dateRange,
@@ -135,6 +161,8 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
             totalExpenses,
             totalProductPurchases,
             totalProductSales,
+            getTotalReceivables,
+            totalReceivables,
         }),
         [
             dateRange,
@@ -143,6 +171,7 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
             totalExpenses,
             totalProductSales,
             totalProductPurchases,
+            totalReceivables,
         ]
     )
 

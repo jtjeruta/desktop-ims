@@ -3,7 +3,14 @@ import { useRouter } from 'next/router'
 import { IconType } from 'react-icons'
 import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
-import { FaBoxes, FaMoneyBill, FaStore, FaTags, FaUsers } from 'react-icons/fa'
+import {
+    FaBoxes,
+    FaMoneyBill,
+    FaMoneyBillWave,
+    FaStore,
+    FaTags,
+    FaUsers,
+} from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import { FiLogOut } from 'react-icons/fi'
@@ -74,6 +81,12 @@ const Sidebar = () => {
             active: router.asPath === '/expenses',
             icon: FaMoneyBill,
             onClick: () => sideBarRedirect('/expenses'),
+        },
+        {
+            text: 'Receivables',
+            active: router.asPath === '/receivables',
+            icon: FaMoneyBillWave,
+            onClick: () => sideBarRedirect('/receivables'),
         },
     ]
 

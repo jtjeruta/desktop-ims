@@ -11,6 +11,7 @@ const CustomerController = require('./controllers/customer-controller')
 const SalesOrderController = require('./controllers/sales-order-controller')
 const StatController = require('./controllers/stat-controller')
 const ExpenseController = require('./controllers/expense-controller')
+const ReceivableController = require('./controllers/receivable-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -83,7 +84,11 @@ router.delete(
 router.get('/api/v1/vendors', isAdmin, VendorController.listVendors)
 router.post('/api/v1/vendors', isAdmin, VendorController.createVendor)
 router.put('/api/v1/vendors/:vendorId', isAdmin, VendorController.updateVendor)
-router.delete('/api/v1/vendors/:vendorId', isAdmin, VendorController.deleteVendor)
+router.delete(
+    '/api/v1/vendors/:vendorId',
+    isAdmin,
+    VendorController.deleteVendor
+)
 
 // purchase orders
 router.get(
@@ -177,6 +182,11 @@ router.get(
     isAdmin,
     StatController.getTotalExpenses
 )
+router.get(
+    '/api/v1/stats/total-receivables',
+    isAdmin,
+    StatController.getTotalReceivables
+)
 
 // expenses
 router.get('/api/v1/expenses', isAdmin, ExpenseController.listExpenses)
@@ -190,6 +200,24 @@ router.delete(
     '/api/v1/expenses/:expenseId',
     isAdmin,
     ExpenseController.deleteExpense
+)
+
+// receivables
+router.get('/api/v1/receivables', isAdmin, ReceivableController.listReceivables)
+router.post(
+    '/api/v1/receivables',
+    isAdmin,
+    ReceivableController.createReceivable
+)
+router.put(
+    '/api/v1/receivables/:receivableId',
+    isAdmin,
+    ReceivableController.updateReceivable
+)
+router.delete(
+    '/api/v1/receivables/:receivableId',
+    isAdmin,
+    ReceivableController.deleteReceivable
 )
 
 module.exports = router

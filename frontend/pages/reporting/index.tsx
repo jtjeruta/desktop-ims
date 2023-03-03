@@ -3,7 +3,7 @@ import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
 import UserLayout from '../../components/UserLayout/UserLayout'
-import { FaMoneyBill, FaShoppingCart, FaStore } from 'react-icons/fa'
+import { FaMoneyBill, FaMoneyBillWave, FaShoppingCart, FaStore } from 'react-icons/fa'
 import ReportingTable from '../../components/ReportingTable/ReportingTable'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
 import {
@@ -37,6 +37,13 @@ const ReportingContent = () => {
             icon: FaMoneyBill,
             iconClass: 'text-green-700',
         },
+        {
+            title: 'Total Receivables',
+            total: StatContext.totalReceivables ?? 0,
+            loading: 'get-total-receivables',
+            icon: FaMoneyBillWave,
+            iconClass: 'text-red-700',
+        },
     ]
 
     useLayoutEffect(() => {
@@ -44,6 +51,7 @@ const ReportingContent = () => {
         StatContext.getTotalProductPurchases()
         StatContext.listProductReports()
         StatContext.getTotalExpenses()
+        StatContext.getTotalReceivables()
     }, [StatContext.dateRange])
 
     return (

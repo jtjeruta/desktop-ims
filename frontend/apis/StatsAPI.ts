@@ -38,3 +38,14 @@ export const getTotalExpenses = (startDate: number, endDate: number) =>
         )
         .then((response): [true, number] => [true, response.data.totalExpenses])
         .catch((err): [false, string] => [false, err.response?.message])
+
+export const getTotalReceivables = (startDate: number, endDate: number) =>
+    Axios()
+        .get(
+            `/api/v1/stats/total-receivables?startDate=${startDate}&endDate=${endDate}`
+        )
+        .then((response): [true, number] => [
+            true,
+            response.data.totalReceivables,
+        ])
+        .catch((err): [false, string] => [false, err.response?.message])

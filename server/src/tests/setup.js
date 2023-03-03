@@ -7,12 +7,14 @@ const { PurchaseOrderModel } = require('../schemas/purchase-order-schema')
 const { CustomerModel } = require('../schemas/customer-schema')
 const { SalesOrderModel } = require('../schemas/sales-order-schema')
 const { ExpenseModel } = require('../schemas/expense-schema')
+const { ReceivableModel } = require('../schemas/receivable-schema')
 
 const models = [
     CustomerModel,
     ExpenseModel,
     ProductModel,
     PurchaseOrderModel,
+    ReceivableModel,
     SalesOrderModel,
     UserModel,
     VariantModel,
