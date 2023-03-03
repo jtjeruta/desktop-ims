@@ -86,6 +86,22 @@ const WarehouseContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return response
     }
 
+    const deleteWarehouse: Types.DeleteWarehouse = async (id) => {
+        const key = 'delete-warehouse'
+
+        AppContext.addLoading(key)
+        const response = await WarehousesAPI.deleteWarehouse(id)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) return response
+
+        setWarehouses(
+            (prev) => prev?.filter((warehouse) => warehouse.id !== id) ?? []
+        )
+
+        return response
+    }
+
     const value: Types.Context = useMemo(
         () => ({
             createWarehouse,
@@ -95,6 +111,7 @@ const WarehouseContextProvider: React.FC<{ children: React.ReactNode }> = ({
             setWarehouses,
             updateWarehouse,
             warehouses,
+            deleteWarehouse,
         }),
         [warehouses, selectedWarehouse]
     )

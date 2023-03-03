@@ -43,6 +43,9 @@ export type ListWarehouses = () => Promise<
 export type GetWarehouse = (
     id: Warehouse['id']
 ) => Promise<[true, Warehouse] | [false, AxiosResponse]>
+export type DeleteWarehouse = (
+    id: Warehouse['id']
+) => Promise<[true] | [false, AxiosResponse]>
 
 export type Context = {
     createWarehouse: CreateWarehouse
@@ -52,4 +55,5 @@ export type Context = {
     setSelectedWarehouse: (warehouse: Warehouse | null) => void
     setWarehouses: React.Dispatch<React.SetStateAction<Warehouse[] | null>>
     warehouses: Warehouse[] | null
+    deleteWarehouse: DeleteWarehouse
 }

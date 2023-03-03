@@ -21,6 +21,7 @@ import {
 import SearchBar from '../../components/SearchBar/SearchBar'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { ActionButton } from '../../components/ActionButton/ActionButton'
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog'
 
 const WarehousesPageContent = () => {
     const AppContext = useAppContext()
@@ -248,6 +249,19 @@ const WarehousesPageContent = () => {
                                         >
                                             Edit
                                         </Button>
+                                        <Button
+                                            style="link"
+                                            onClick={() => {
+                                                WarehouseContext.setSelectedWarehouse(
+                                                    warehouse
+                                                )
+                                                AppContext.openDialog(
+                                                    'delete-warehouse-dialog'
+                                                )
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
                                     </div>
                                 )
                             },
@@ -258,6 +272,31 @@ const WarehousesPageContent = () => {
             <AddEditWarehouseDialog />
             <TransferStockDialog showProductSelect />
             <ActionButton onClick={handleAddWarehouse} />
+            <ConfirmDialog
+                text={`Are you sure you want to delete this warehouse?`}
+                dialogKey="delete-warehouse-dialog"
+                onConfirm={async () => {
+                    if (!WarehouseContext.selectedWarehouse) return
+
+                    const response = await WarehouseContext.deleteWarehouse(
+                        WarehouseContext.selectedWarehouse.id
+                    )
+
+                    AppContext.closeDialog()
+
+                    if (!response[0]) {
+                        return AppContext.addNotification({
+                            title: 'Something went wrong!',
+                            type: 'danger',
+                        })
+                    }
+
+                    AppContext.addNotification({
+                        title: 'Warehouse deleted',
+                        type: 'success',
+                    })
+                }}
+            />
         </UserLayout>
     )
 }
