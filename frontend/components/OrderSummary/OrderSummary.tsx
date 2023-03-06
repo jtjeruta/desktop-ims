@@ -32,17 +32,15 @@ const OrderSummary: FC<Props> = (props) => {
 
     // set defaults
     useLayoutEffect(() => {
-        const currentDate =
-            props.orderDate && props.orderDate !== methods.getValues('date')
-                ? props.orderDate * 1000
-                : moment().unix() * 1000
-
-        methods.setValue('date', moment(currentDate).format('YYYY-MM-DD'))
+        if (props.orderDate && props.orderDate !== methods.getValues('date')) {
+            const currentDate = props.orderDate * 1000
+            methods.setValue('date', moment(currentDate).format('YYYY-MM-DD'))
+        }
 
         if (props.invoiceNumber != methods.getValues('invoiceNumber')) {
             methods.setValue('invoiceNumber', props.invoiceNumber)
         }
-    }, [methods])
+    }, [methods, props.orderDate, props.invoiceNumber])
 
     return (
         <Card cardClsx="w-full md:w-1/3 h-full" bodyClsx="h-full">

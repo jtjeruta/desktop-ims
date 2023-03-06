@@ -27,7 +27,6 @@ import {
     useWarehouseContext,
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
-import OrderSummarySkeleton from '../../components/OrderSummary/OrderSummaySkeleton'
 
 const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -186,33 +185,30 @@ const SalesOrderPageContent = () => {
                             }))
                         }}
                     />
-                    {submitButtonDisabled ? (
-                        <OrderSummarySkeleton />
-                    ) : (
-                        <OrderSummary
-                            total={SalesOrderContext.draftOrder?.total}
-                            loading={submitButtonLoading}
-                            onSubmit={onSubmit}
-                            onChange={(
-                                orderDate: number,
-                                invoiceNumber: string
-                            ) => {
-                                SalesOrderContext.setDraftOrder((prev) => ({
-                                    ...prev,
-                                    orderDate,
-                                    invoiceNumber,
-                                }))
-                            }}
-                            orderDate={SalesOrderContext.draftOrder.orderDate}
-                            invoiceNumber={
-                                SalesOrderContext.draftOrder.invoiceNumber
-                            }
-                            showDeleteButton={!!SalesOrderContext.selectedOrder}
-                            onDelete={() =>
-                                AppContext.openDialog('remove-order-dialog')
-                            }
-                        />
-                    )}
+                    <OrderSummary
+                        total={SalesOrderContext.draftOrder?.total}
+                        loading={submitButtonLoading}
+                        onSubmit={onSubmit}
+                        onChange={(
+                            orderDate: number,
+                            invoiceNumber: string
+                        ) => {
+                            SalesOrderContext.setDraftOrder((prev) => ({
+                                ...prev,
+                                orderDate,
+                                invoiceNumber,
+                            }))
+                        }}
+                        orderDate={SalesOrderContext.draftOrder.orderDate}
+                        invoiceNumber={
+                            SalesOrderContext.draftOrder.invoiceNumber
+                        }
+                        showDeleteButton={!!SalesOrderContext.selectedOrder}
+                        onDelete={() =>
+                            AppContext.openDialog('remove-order-dialog')
+                        }
+                        disabled={submitButtonDisabled}
+                    />
                 </div>
             </UserLayout>
 
@@ -268,7 +264,7 @@ const SalesOrderPageContent = () => {
 
                     AppContext.addNotification({
                         title: 'Order deleted',
-                        type: 'success'
+                        type: 'success',
                     })
 
                     router.push('/sales-orders')

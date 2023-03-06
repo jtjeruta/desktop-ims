@@ -22,7 +22,6 @@ import {
 import OrderRemarksForm from '../../components/OrderRemarksForm/OrderRemarksForm'
 import AddEditVendorFormForPurchaseOrder from '../../components/AddEditVendorFormForPurchaseOrder/AddEditVendorFormForPurchaseOrder'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
-import OrderSummarySkeleton from '../../components/OrderSummary/OrderSummaySkeleton'
 import {
     useWarehouseContext,
     WarehouseContextProvider,
@@ -179,33 +178,28 @@ const PurchaseOrderPageContent = () => {
                             }))
                         }}
                     />
-                    {submitButtonDisabled ? (
-                        <OrderSummarySkeleton />
-                    ) : (
-                        <OrderSummary
-                            total={PurOrdContext.draftOrder.total}
-                            onSubmit={onSubmit}
-                            loading={submitButtonLoading}
-                            onChange={(
-                                orderDate: number,
-                                invoiceNumber: string
-                            ) => {
-                                PurOrdContext.setDraftOrder((prev) => ({
-                                    ...prev,
-                                    orderDate,
-                                    invoiceNumber,
-                                }))
-                            }}
-                            orderDate={PurOrdContext.draftOrder.orderDate}
-                            invoiceNumber={
-                                PurOrdContext.draftOrder.invoiceNumber
-                            }
-                            showDeleteButton={!!PurOrdContext.selectedOrder}
-                            onDelete={() =>
-                                AppContext.openDialog('remove-order-dialog')
-                            }
-                        />
-                    )}
+                    <OrderSummary
+                        total={PurOrdContext.draftOrder.total}
+                        onSubmit={onSubmit}
+                        loading={submitButtonLoading}
+                        onChange={(
+                            orderDate: number,
+                            invoiceNumber: string
+                        ) => {
+                            PurOrdContext.setDraftOrder((prev) => ({
+                                ...prev,
+                                orderDate,
+                                invoiceNumber,
+                            }))
+                        }}
+                        orderDate={PurOrdContext.draftOrder.orderDate}
+                        invoiceNumber={PurOrdContext.draftOrder.invoiceNumber}
+                        showDeleteButton={!!PurOrdContext.selectedOrder}
+                        onDelete={() =>
+                            AppContext.openDialog('remove-order-dialog')
+                        }
+                        disabled={submitButtonDisabled}
+                    />
                 </div>
             </UserLayout>
 
