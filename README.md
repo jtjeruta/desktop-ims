@@ -101,3 +101,12 @@ Pushing to the production branch triggers deployment:
 -   Server is deployed [here](https://dashboard.render.com/web/srv-ccb9atkgqg461mcodu70) through [render.com](https://dashboard.render.com/web/srv-ccb9atkgqg461mcodu70)
 
 -   Frontend is deployed [here](https://desktop-ims.vercel.app) through [vercel.com](https://vercel.com/tristanjeruta/desktop-ims)
+
+---
+
+## Average Price/Cost Calculation
+
+```
+avePrice = (Σ(purchases.price * purchase.qty) + (product.price * product.qty)) / (Σ(purchases.quantity) + product.quantity)
+```
+```
