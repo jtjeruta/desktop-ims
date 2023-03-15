@@ -7,7 +7,7 @@
         "test:server": "docker exec -it desktop-ims-server sh -c \"./start-test.sh\"",
         "lint:frontend": "docker exec -it desktop-ims-frontend npm run lint",
         "lint:server": "docker exec -it desktop-ims-server npm run lint",
-        "migrate-dev": "docker exec -it desktop-ims-server npm run migrate-dev"
+        "migrate": "docker exec -it desktop-ims-server npm run migrate"
     },
     "devDependencies": {
         "husky": "^8.0.1"
