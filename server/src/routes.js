@@ -12,6 +12,7 @@ const SalesOrderController = require('./controllers/sales-order-controller')
 const StatController = require('./controllers/stat-controller')
 const ExpenseController = require('./controllers/expense-controller')
 const ReceivableController = require('./controllers/receivable-controller')
+const PingController = require('./controllers/ping-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -219,5 +220,8 @@ router.delete(
     isAdmin,
     ReceivableController.deleteReceivable
 )
+
+// ping
+router.get('/api/v1/ping', PingController.ping)
 
 module.exports = router
