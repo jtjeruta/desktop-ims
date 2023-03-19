@@ -108,7 +108,7 @@ const PurchaseOrderPageContent = () => {
 
                 if (response[0]) {
                     PurOrdContext.setDraftOrder(response[1])
-                    VendorContext.setDraftVendor(response[1].vendor)
+                    response[1].vendor && VendorContext.setDraftVendor(response[1].vendor)
                 }
             }
 

@@ -54,9 +54,6 @@ describe('Module: Create Purchase Order', () => {
             await PurchaseOrdersModule.createPurchaseOrder({})
 
         expect(createdPurchaseOrder[0]).to.equal(400)
-        expect(createdPurchaseOrder[1].errors.vendor.message).to.equal(
-            'Path `vendor` is required.'
-        )
         expect(createdPurchaseOrder[1].errors.products.message).to.equal(
             'Path `products` must contain atleast 1.'
         )
@@ -241,9 +238,6 @@ describe('Module: Update PurchaseOrder', () => {
             })
 
         expect(updatedPurchaseOrder[0]).to.equal(400)
-        expect(updatedPurchaseOrder[1].errors.vendor.message).to.equal(
-            'Path `vendor` is required.'
-        )
         expect(updatedPurchaseOrder[1].errors.products.message).to.equal(
             'Path `products` must contain atleast 1.'
         )

@@ -18,7 +18,7 @@ export type PurchaseOrder = {
         } | null
     }[]
     createdAt: number
-    vendor: Vendor
+    vendor: Vendor | null
     total: number
     remarks: string | null
     orderDate: number | null

@@ -19,7 +19,7 @@ module.exports.PurchaseOrderView = (document) => {
 
     return {
         id: document._id,
-        vendor: VendorView(document.vendor),
+        vendor: document.vendor ? VendorView(document.vendor) : null,
         products,
         total: document.total,
         createdAt: document.createdAt,
