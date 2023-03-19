@@ -12,6 +12,7 @@ services:
             - '3000:3000'
         networks:
             - desktop-ims
+        restart: 'always'
 
     server:
         container_name: desktop-ims-server
@@ -28,6 +29,7 @@ services:
             - desktop-ims
         depends_on:
             - db
+        restart: 'always'
 
     db:
         container_name: desktop-ims-db
@@ -43,6 +45,7 @@ services:
         environment:
             MONGODB_REPLICA_SET_MODE: 'primary'
             ALLOW_EMPTY_PASSWORD: 'yes'
+        restart: 'always'
 
 networks:
     desktop-ims:
