@@ -19,6 +19,10 @@ const VendorSchema = new mongoose.Schema({
     remarks: {
         type: String,
     },
+    archived: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 VendorSchema.index({ name: 1 }, { unique: true })

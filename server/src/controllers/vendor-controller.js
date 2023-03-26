@@ -3,7 +3,9 @@ const VendorsModule = require('../modules/vendors-module')
 const { VendorsView, VendorView } = require('../views/vendor-view')
 
 module.exports.listVendors = async (req, res) => {
-    const vendorsRes = await VendorsModule.listVendors()
+    const includeArchived = req.query['include-archived']
+    const query = includeArchived ? {} : { archived: false }
+    const vendorsRes = await VendorsModule.listVendors(query)
 
     if (vendorsRes[0] !== 200) {
         return res.status(vendorsRes[0]).json(vendorsRes[1])
@@ -38,14 +40,14 @@ module.exports.updateVendor = async (req, res) => {
     return res.status(200).json({ vendor: VendorView(response[1]) })
 }
 
-module.exports.deleteVendor = async (req, res) => {
+module.exports.archiveVendor = async (req, res) => {
     const { vendorId } = req.params
 
-    const vendorRes = await VendorsModule.deleteVendorById(vendorId)
+    const vendorRes = await VendorsModule.archiveVendorById(vendorId)
 
     if (vendorRes[0] !== 200) {
         return res.status(vendorRes[0]).json(vendorRes[1])
     }
 
-    return res.status(200).json({ message: 'Vendor deleted successfully.' })
+    return res.status(200).json({ message: 'Vendor archived successfully.' })
 }

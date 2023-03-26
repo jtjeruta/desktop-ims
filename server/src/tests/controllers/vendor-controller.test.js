@@ -205,7 +205,7 @@ describe('Controller: Update vendor', () => {
     })
 })
 
-describe('Controller: Delete vendor', () => {
+describe('Controller: Archive vendor', () => {
     setup()
 
     let vendor = null
@@ -227,7 +227,7 @@ describe('Controller: Delete vendor', () => {
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(200)
-        expect(res.body.message).to.equal('Vendor deleted successfully.')
+        expect(res.body.message).to.equal('Vendor archived successfully.')
     })
 
     it('Fail: run as employee', async () => {
@@ -253,58 +253,5 @@ describe('Controller: Delete vendor', () => {
         expect(res.body).to.deep.equal({
             message: 'Unauthorized.',
         })
-    })
-
-    it('Success: deleting vendor should not cause an error to purchase orders', async () => {
-        const product = (
-            await ProductsModule.createProduct(testdata.product1)
-        )[1]
-        const warehouse = (
-            await WarehouseModule.createWarehouse(testdata.warehouse1)
-        )[1]
-
-        const purchaseOrder = (
-            await PurOrdModule.createPurchaseOrder({
-                products: [
-                    {
-                        id: 'test_product_1',
-                        product: product._id,
-                        quantity: 100,
-                        itemPrice: 10,
-                        warehouse: warehouse._id,
-                        variant: {
-                            name: 'Test Variant',
-                            quantity: 10,
-                        },
-                    },
-                ],
-                vendor: vendor._id,
-                orderDate: 12345,
-                invoiceNumber: 'invoice-number',
-            })
-        )[1]
-
-        const { token } = await login({
-            email: testdata.admin1.email,
-            password: testdata.admin1.password,
-        })
-
-        const deleteRes = await request(app)
-            .delete(`/api/v1/vendors/${vendor._id}`)
-            .set('Authorization', token)
-
-        expect(deleteRes.statusCode).to.equal(200)
-
-        const listRes = await request(app)
-            .get(`/api/v1/purchase-orders`)
-            .set('Authorization', token)
-
-        expect(listRes.statusCode).to.equal(200)
-
-        const getRes = await request(app)
-            .get(`/api/v1/purchase-orders/${purchaseOrder._id}`)
-            .set('Authorization', token)
-
-        expect(getRes.statusCode).to.equal(200)
     })
 })

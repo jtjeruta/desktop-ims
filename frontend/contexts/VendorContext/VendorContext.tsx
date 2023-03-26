@@ -68,11 +68,11 @@ const VendorContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true, response[1]]
     }
 
-    const listVendors: Types.ListVendors = async () => {
+    const listVendors: Types.ListVendors = async (includeArchived) => {
         const key = 'list-vendors'
 
         AppContext.addLoading(key)
-        const response = await VendorsAPI.listVendors()
+        const response = await VendorsAPI.listVendors(includeArchived)
         AppContext.removeLoading(key)
 
         if (!response[0]) {

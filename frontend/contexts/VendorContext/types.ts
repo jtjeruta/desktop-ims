@@ -34,7 +34,7 @@ export type UpdateVendor = (
     | [false, { message: string; errors?: CreateUpdateVendorErrors }]
 >
 
-export type ListVendors = () => Promise<[true, Vendor[]] | [false, string]>
+export type ListVendors = (includeArchived?: boolean) => Promise<[true, Vendor[]] | [false, string]>
 export type GetVendor = (
     id: Vendor['id']
 ) => Promise<[true, Vendor] | [false, AxiosResponse]>

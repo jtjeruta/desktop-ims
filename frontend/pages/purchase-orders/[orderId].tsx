@@ -120,7 +120,7 @@ const PurchaseOrderPageContent = () => {
 
             // fetch vendors
             if (VendorContext.vendors === null) {
-                const response = await VendorContext.listVendors()
+                const response = await VendorContext.listVendors(true)
                 if (!response[0]) return router.push('/500')
             }
 

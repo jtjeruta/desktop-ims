@@ -12,5 +12,6 @@ module.exports.VendorView = (vendorDocument) => {
         phone: vendorDocument.phone,
         address: vendorDocument.address,
         remarks: vendorDocument.remarks,
+        archived: vendorDocument.archived,
     }
 }

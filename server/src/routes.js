@@ -88,7 +88,7 @@ router.put('/api/v1/vendors/:vendorId', isAdmin, VendorController.updateVendor)
 router.delete(
     '/api/v1/vendors/:vendorId',
     isAdmin,
-    VendorController.deleteVendor
+    VendorController.archiveVendor
 )
 
 // purchase orders

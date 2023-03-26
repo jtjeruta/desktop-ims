@@ -2,9 +2,11 @@ import { AxiosResponse } from 'axios'
 import * as Types from '../contexts/VendorContext/types'
 import Axios from './AxiosAPI'
 
-export const listVendors = () =>
+export const listVendors = (includeArchived?: boolean) =>
     Axios()
-        .get('/api/v1/vendors')
+        .get(
+            `/api/v1/vendors${includeArchived ? '?include-archived=true' : ''}`
+        )
         .then((response): [true, Types.Vendor[]] => [
             true,
             response.data.vendors,

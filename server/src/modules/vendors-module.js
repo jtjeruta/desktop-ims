@@ -22,9 +22,9 @@ module.exports.createVendor = async (data, session = null) => {
     }
 }
 
-module.exports.listVendors = async () => {
+module.exports.listVendors = async (query = {}) => {
     try {
-        const vendors = await VendorModel.find({})
+        const vendors = await VendorModel.find(query)
         return [200, vendors]
     } catch (error) {
         console.error('Failed to list vendors')
@@ -63,12 +63,16 @@ module.exports.getVendorById = async (id, session = null) => {
     }
 }
 
-module.exports.deleteVendorById = async (vendorId, session = null) => {
+module.exports.archiveVendorById = async (vendorId, session = null) => {
     try {
-        await VendorModel.deleteOne({ _id: vendorId }).session(session)
+        await VendorModel.findByIdAndUpdate(
+            { _id: vendorId },
+            { $set: { archived: true } },
+            { new: true, runValidators: true }
+        ).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete vendor by id')
+        console.error('Failed to archive vendor by id')
         return getMongoError(error)
     }
 }

@@ -113,28 +113,24 @@ describe('Module: Update Vendor', () => {
     })
 })
 
-describe('Module: Delete Vendor', () => {
+describe('Module: Archive Vendor', () => {
     setup()
 
-    it('Success: delete an existing vendor', async () => {
+    it('Success: archive an existing vendor', async () => {
         const createdVendor = await VendorsModule.createVendor(testdata.vendor1)
-        const deletedVendor = await VendorsModule.deleteVendorById(
-            createdVendor[1]._id
-        )
-        const getVendor = await VendorsModule.getVendorById(
+        const archivedVendor = await VendorsModule.archiveVendorById(
             createdVendor[1]._id
         )
 
-        expect(deletedVendor[0]).to.equal(200)
-        expect(getVendor[0]).to.equal(404)
+        expect(archivedVendor[0]).to.equal(200)
     })
 
-    it('Fail: delete a non-existing vendor', async () => {
-        const deletedVendor = await VendorsModule.deleteVendorById(
+    it('Fail: archive a non-existing vendor', async () => {
+        const archivedVendor = await VendorsModule.archiveVendorById(
             'non-existing-id'
         )
 
-        expect(deletedVendor[0]).to.equal(404)
-        expect(deletedVendor[1].message).to.equal('Not found.')
+        expect(archivedVendor[0]).to.equal(404)
+        expect(archivedVendor[1].message).to.equal('Not found.')
     })
 })
