@@ -108,8 +108,8 @@ module.exports.listProductReports = async (req, res) => {
             }, 0)
 
             const totalStock = warehouseStock + product.stock
-            let purchases = [];
-            let sales = [];
+            let purchases = []
+            let sales = []
 
             const variants = product.variants
                 .map((variant) => {
@@ -129,7 +129,10 @@ module.exports.listProductReports = async (req, res) => {
                             const varQty =
                                 orderProduct.quantity *
                                 (orderProduct.variant?.quantity ?? 0)
-                            purchases = [...purchases, { cost: orderProduct.itemPrice, qty: varQty }]
+                            purchases = [
+                                ...purchases,
+                                { cost: orderProduct.itemPrice, qty: varQty },
+                            ]
                             purQty += varQty
                         })
                     )
@@ -145,7 +148,10 @@ module.exports.listProductReports = async (req, res) => {
                             const varQty =
                                 orderProduct.quantity *
                                 (orderProduct.variant?.quantity ?? 0)
-                            sales = [...sales, { cost: orderProduct.itemPrice, qty: varQty }]
+                            sales = [
+                                ...sales,
+                                { cost: orderProduct.itemPrice, qty: varQty },
+                            ]
                             salesQty += varQty
                         })
                     )
@@ -183,8 +189,16 @@ module.exports.listProductReports = async (req, res) => {
                 0
             )
 
-            const avePur = this.calculateAverageCost(totalStock, product.costPrice, purchases);
-            const aveSales = this.calculateAverageCost(totalStock, product.sellingPrice, sales);
+            const avePur = this.calculateAverageCost(
+                totalStock,
+                product.costPrice,
+                purchases
+            )
+            const aveSales = this.calculateAverageSales(
+                totalStock,
+                product.sellingPrice,
+                sales
+            )
 
             const productReport = {
                 id: product._id,
@@ -228,13 +242,31 @@ module.exports.getTotalReceivables = async (req, res) => {
 }
 
 module.exports.calculateAverageCost = (currentQty, currentCost, purchases) => {
-    let totalCost = currentQty * currentCost
-    let totalQty = currentQty
+    let totalCost = 0
+    let totalQty = 0
 
     for (let purchase of purchases) {
         totalQty += purchase.qty
         totalCost += purchase.qty * purchase.cost
     }
 
-    return totalCost / totalQty
+    const prevQty = currentQty - totalQty
+    totalCost += prevQty * currentCost
+
+    return totalCost / (totalQty + prevQty)
+}
+
+module.exports.calculateAverageSales = (currentQty, currentCost, purchases) => {
+    let totalCost = 0
+    let totalQty = 0
+
+    for (let purchase of purchases) {
+        totalQty += purchase.qty
+        totalCost += purchase.qty * purchase.cost
+    }
+
+    const prevQty = currentQty + totalQty
+    totalCost += prevQty * currentCost
+
+    return totalCost / (totalQty + prevQty)
 }

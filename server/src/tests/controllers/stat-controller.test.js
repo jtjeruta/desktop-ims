@@ -7,7 +7,10 @@ const { login } = require('../helpers')
 const testdata = require('../testdata')
 const UsersModule = require('../../modules/users-module')
 const ProductsModule = require('../../modules/products-module')
-const { calculateAverageCost } = require('../../controllers/stat-controller')
+const {
+    calculateAverageCost,
+    calculateAverageSales,
+} = require('../../controllers/stat-controller')
 
 describe('Controller: get total product sales', () => {
     setup()
@@ -81,7 +84,7 @@ describe('Controller: list product reports', () => {
 
 describe('Controller: calculate average cost', () => {
     it('should calculate average cost correctly', () => {
-        const currentQty = 500
+        const currentQty = 560
         const currentCost = 500
         const purchases = [
             { qty: 10, cost: 550 },
@@ -105,7 +108,7 @@ describe('Controller: calculate average cost', () => {
     })
 
     it('should return purchase cost if only one purchase is made', () => {
-        const currentQty = 0
+        const currentQty = 10
         const currentCost = 0
         const purchases = [{ qty: 10, cost: 550 }]
 
@@ -115,7 +118,7 @@ describe('Controller: calculate average cost', () => {
     })
 
     it('should handle purchases with zero quantity', () => {
-        const currentQty = 500
+        const currentQty = 550
         const currentCost = 500
         const purchases = [
             { qty: 0, cost: 0 },
@@ -123,13 +126,96 @@ describe('Controller: calculate average cost', () => {
             { qty: 30, cost: 650 },
         ]
 
-        // ((500 * 500) + (0 * 0) + (20 * 600) + (30 * 650)) / (500 + 0 + 20 + 30)
-        // (250000 + 0 + 12000 + 19500) / 550
-        // 281500 / 550
-        // 511.8181
-
         const aveCost = calculateAverageCost(currentQty, currentCost, purchases)
 
         expect(aveCost).to.be.closeTo(511.81, 0.01)
+    })
+
+    it('should return correct value down to the decimal', () => {
+        const currentQty = 566
+        const currentCost = 400
+        const purchases = [{ qty: 120, cost: 420 }]
+
+        const aveCost = calculateAverageCost(currentQty, currentCost, purchases)
+        expect(aveCost).to.be.closeTo(404.24, 0.01)
+    })
+})
+
+describe('Controller: calculate average sales', () => {
+    it('should calculate average sales correctly', () => {
+        const currentQty = 440
+        const currentCost = 500
+        const purchases = [
+            { qty: 10, cost: 550 },
+            { qty: 20, cost: 600 },
+            { qty: 30, cost: 650 },
+        ]
+
+        const aveCost = calculateAverageSales(
+            currentQty,
+            currentCost,
+            purchases
+        )
+
+        expect(aveCost).to.be.closeTo(512.5, 0.01)
+    })
+
+    it('should return current sales if no sales are made', () => {
+        const currentQty = 500
+        const currentCost = 500
+        const purchases = []
+
+        const aveCost = calculateAverageSales(
+            currentQty,
+            currentCost,
+            purchases
+        )
+
+        expect(aveCost).to.equal(currentCost)
+    })
+
+    it('should return sales cost if only one purchase is made', () => {
+        const currentQty = -10
+        const currentCost = 0
+        const purchases = [{ qty: 10, cost: 550 }]
+
+        const aveCost = calculateAverageSales(
+            currentQty,
+            currentCost,
+            purchases
+        )
+
+        expect(aveCost).to.equal(550)
+    })
+
+    it('should handle sales with zero quantity', () => {
+        const currentQty = 450
+        const currentCost = 500
+        const purchases = [
+            { qty: 0, cost: 0 },
+            { qty: 20, cost: 600 },
+            { qty: 30, cost: 650 },
+        ]
+
+        const aveCost = calculateAverageSales(
+            currentQty,
+            currentCost,
+            purchases
+        )
+
+        expect(aveCost).to.be.closeTo(511.81, 0.01)
+    })
+
+    it('should return correct value down to the decimal', () => {
+        const currentQty = 326
+        const currentCost = 400
+        const purchases = [{ qty: 120, cost: 420 }]
+
+        const aveCost = calculateAverageSales(
+            currentQty,
+            currentCost,
+            purchases
+        )
+        expect(aveCost).to.be.closeTo(404.24, 0.01)
     })
 })
