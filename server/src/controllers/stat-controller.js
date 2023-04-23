@@ -223,6 +223,100 @@ module.exports.listProductReports = async (req, res) => {
     }
 }
 
+module.exports.listProductSalesReports = async (req, res) => {
+    try {
+        const { startDate, endDate } = getDateRangeFromQuery(req.query)
+
+        const [salesOrdersRes, productsRes, warehousesRes] = await Promise.all([
+            SalesOrderModule.listSalesOrders({
+                orderDate: { $gte: startDate, $lte: endDate },
+            }),
+            ProductModule.listProducts(),
+            WarehouseModule.listWarehouses(),
+        ])
+
+        if (salesOrdersRes[0] !== 200) {
+            return res.status(salesOrdersRes[0]).json(salesOrdersRes[1])
+        }
+
+        if (productsRes[0] !== 200) {
+            return res.status(productsRes[0]).json(productsRes[1])
+        }
+
+        if (warehousesRes[0] !== 200) {
+            return res.status(warehousesRes[0]).json(warehousesRes[1])
+        }
+
+        const salesReports = salesOrdersRes[1]
+            .reduce((acc, order) => {
+                order.products.forEach((product) => {
+                    const foundProduct = productsRes[1].find((p) =>
+                        p._id.equals(product.product.id)
+                    )
+
+                    const warehouseStocks = warehousesRes[1].reduce(
+                        (acc, wh) => {
+                            wh.products.forEach((whp) => {
+                                if (!whp.source._id.equals(product.product.id))
+                                    return
+                                acc += whp.stock
+                            })
+
+                            return acc
+                        },
+                        0
+                    )
+
+                    const foundVariant = acc.find((variant) => {
+                        return (
+                            variant.productId.equals(product.product._id) &&
+                            variant.variant === product.variant.name &&
+                            variant.originalPrice === product.originalItemPrice
+                        )
+                    }) ?? {
+                        productId: product.product._id,
+                        productName: product.product.name,
+                        variant: product.variant.name,
+                        price: product.itemPrice,
+                        originalPrice: product.originalItemPrice,
+                        currentStock:
+                            (foundProduct?.stock ?? 0) + warehouseStocks,
+                        items: [],
+                    }
+
+                    foundVariant.items = [
+                        ...foundVariant.items,
+                        {
+                            qty: product.quantity * product.variant.quantity,
+                            price: product.itemPrice,
+                        },
+                    ]
+                    acc = acc.filter(
+                        (v) => !v.productId.equals(foundVariant.productId)
+                    )
+                    acc.push(foundVariant)
+                })
+
+                return acc
+            }, [])
+            .map((variant) => {
+                const avePrice = this.calculateAverageSales(
+                    variant.currentStock,
+                    variant.originalPrice,
+                    variant.items
+                )
+
+                return { ...variant, avePrice }
+            })
+
+        return res.status(200).json({ salesReports })
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: 'Failed to list product reports' })
+    }
+}
+
 module.exports.getTotalReceivables = async (req, res) => {
     const { startDate, endDate } = getDateRangeFromQuery(req.query)
 
@@ -256,17 +350,17 @@ module.exports.calculateAverageCost = (currentQty, currentCost, purchases) => {
     return totalCost / (totalQty + prevQty)
 }
 
-module.exports.calculateAverageSales = (currentQty, currentCost, purchases) => {
-    let totalCost = 0
+module.exports.calculateAverageSales = (currentQty, currentPrice, sales) => {
+    let totalPrice = 0
     let totalQty = 0
 
-    for (let purchase of purchases) {
+    for (let purchase of sales) {
         totalQty += purchase.qty
-        totalCost += purchase.qty * purchase.cost
+        totalPrice += purchase.qty * purchase.price
     }
 
     const prevQty = currentQty + totalQty
-    totalCost += prevQty * currentCost
+    totalPrice += prevQty * currentPrice
 
-    return totalCost / (totalQty + prevQty)
+    return totalPrice / (totalQty + prevQty)
 }

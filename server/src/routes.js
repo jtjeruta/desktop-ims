@@ -179,6 +179,11 @@ router.get(
     StatController.listProductReports
 )
 router.get(
+    '/api/v1/stats/sales-reports',
+    isAdmin,
+    StatController.listProductSalesReports
+)
+router.get(
     '/api/v1/stats/total-expenses',
     isAdmin,
     StatController.getTotalExpenses

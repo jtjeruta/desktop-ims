@@ -47,6 +47,15 @@ const SalesOrderSchema = new mongoose.Schema({
                         quantity: String,
                     },
                 },
+                originalItemPrice: {
+                    type: Number,
+                    required: true,
+                    min: [
+                        0,
+                        'Path `originalItemPrice` can not be less than 0.',
+                    ],
+                    default: 0,
+                },
             },
         ],
     },

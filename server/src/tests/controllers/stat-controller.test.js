@@ -1,5 +1,6 @@
 const { expect } = require('chai')
 const request = require('supertest')
+const moment = require('moment')
 
 const setup = require('../setup')
 const app = require('../../app')
@@ -7,6 +8,8 @@ const { login } = require('../helpers')
 const testdata = require('../testdata')
 const UsersModule = require('../../modules/users-module')
 const ProductsModule = require('../../modules/products-module')
+const WarehousesModule = require('../../modules/warehouses-module')
+const SalesOrderModule = require('../../modules/sales-orders-module')
 const {
     calculateAverageCost,
     calculateAverageSales,
@@ -217,5 +220,70 @@ describe('Controller: calculate average sales', () => {
             purchases
         )
         expect(aveCost).to.be.closeTo(404.24, 0.01)
+    })
+})
+
+describe('Controller: list product sales reports', () => {
+    setup()
+    const data = {}
+
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        data.product1 = (
+            await ProductsModule.createProduct({
+                ...testdata.product1,
+                sellingPrice: 500,
+                stock: 400,
+            })
+        )[1]
+        data.warehouse1 = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                products: [{ source: data.product1._id, stock: 40 }],
+            })
+        )[1]
+    })
+
+    it('Success return correct average', async () => {
+        const items = [
+            { id: '1', qty: 10, price: 550, variantQty: 1 },
+            { id: '2', qty: 10, price: 600, variantQty: 2 },
+            { id: '3', qty: 3, price: 650, variantQty: 10 },
+        ]
+
+        await Promise.all(
+            items.map((item) =>
+                SalesOrderModule.createSalesOrder({
+                    products: [
+                        {
+                            id: item.id,
+                            product: data.product1._id,
+                            quantity: item.qty,
+                            itemPrice: item.price,
+                            originalItemPrice: 500,
+                            variant: {
+                                name: 'Test Variant',
+                                quantity: item.variantQty,
+                            },
+                        },
+                    ],
+                    orderDate: moment().subtract(1, 'minute').unix(),
+                    invoiceNumber: 'invoice-number-1',
+                })
+            )
+        )
+
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .get(`/api/v1/stats/sales-reports`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.salesReports.length).to.equal(1)
+        expect(res.body.salesReports[0].avePrice).to.equal(512.5)
     })
 })
