@@ -13,6 +13,13 @@
 -   [docker & docker compose](https://docs.docker.com/compose/) (optional) - makes setup a lot easier
 -   [npm](https://nodejs.org/en/) - node package manager
 -   [MongoDB v5](https://www.mongodb.com/try/download/community) - NoSQL Database, make sure to choose version 5 (ignore if docker and docker-compose is installed)
+-   the following need to be placed in your `etc/hosts` file
+
+    ```
+    127.0.0.1       mongo1
+    127.0.0.1       mongo2
+    127.0.0.1       mongo3
+    ```
 
 ## Installation with docker
 
@@ -108,5 +115,4 @@ Pushing to the production branch triggers deployment:
 
 ```
 avePrice = (Σ(purchases.price * purchase.qty) + (product.price * product.qty)) / (Σ(purchases.quantity) + product.quantity)
-```
 ```

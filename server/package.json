@@ -7,7 +7,7 @@
         "lint": "eslint ./src/**/*.js",
         "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
         "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000",
-        "migrate": "migrate --md ./migrations -d mongodb://desktop-ims-db/ims --autosync"
+        "migrate": "migrate --md ./migrations -d mongodb://mongo1:30001/ims --autosync"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",

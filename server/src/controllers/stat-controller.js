@@ -223,6 +223,101 @@ module.exports.listProductReports = async (req, res) => {
     }
 }
 
+module.exports.listProductPurchasesReports = async (req, res) => {
+    try {
+        const { startDate, endDate } = getDateRangeFromQuery(req.query)
+
+        const [purchaseOrdersRes, productsRes, warehousesRes] =
+            await Promise.all([
+                PurchaseOrderModule.listPurchaseOrders({
+                    orderDate: { $gte: startDate, $lte: endDate },
+                }),
+                ProductModule.listProducts(),
+                WarehouseModule.listWarehouses(),
+            ])
+
+        if (purchaseOrdersRes[0] !== 200) {
+            return res.status(purchaseOrdersRes[0]).json(purchaseOrdersRes[1])
+        }
+
+        if (productsRes[0] !== 200) {
+            return res.status(productsRes[0]).json(productsRes[1])
+        }
+
+        if (warehousesRes[0] !== 200) {
+            return res.status(warehousesRes[0]).json(warehousesRes[1])
+        }
+
+        const purchasesReports = purchaseOrdersRes[1]
+            .reduce((acc, order) => {
+                order.products.forEach((product) => {
+                    const foundProduct = productsRes[1].find((p) =>
+                        p._id.equals(product.product.id)
+                    )
+
+                    const warehouseStocks = warehousesRes[1].reduce(
+                        (acc, wh) => {
+                            wh.products.forEach((whp) => {
+                                if (!whp.source._id.equals(product.product.id))
+                                    return
+                                acc += whp.stock
+                            })
+
+                            return acc
+                        },
+                        0
+                    )
+
+                    const foundVariant = acc.find((variant) => {
+                        return (
+                            variant.productId.equals(product.product._id) &&
+                            variant.variant === product.variant.name &&
+                            variant.originalPrice === product.originalItemPrice
+                        )
+                    }) ?? {
+                        productId: product.product._id,
+                        productName: product.product.name,
+                        variant: product.variant.name,
+                        price: product.itemPrice,
+                        originalPrice: product.originalItemPrice,
+                        currentStock:
+                            (foundProduct?.stock ?? 0) + warehouseStocks,
+                        items: [],
+                    }
+
+                    foundVariant.items = [
+                        ...foundVariant.items,
+                        {
+                            qty: product.quantity * product.variant.quantity,
+                            cost: product.itemPrice,
+                        },
+                    ]
+                    acc = acc.filter(
+                        (v) => !v.productId.equals(foundVariant.productId)
+                    )
+                    acc.push(foundVariant)
+                })
+
+                return acc
+            }, [])
+            .map((variant) => {
+                const aveCost = this.calculateAverageCost(
+                    variant.currentStock,
+                    variant.originalPrice,
+                    variant.items
+                )
+
+                return { ...variant, aveCost }
+            })
+
+        return res.status(200).json({ purchasesReports })
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: 'Failed to list product reports' })
+    }
+}
+
 module.exports.listProductSalesReports = async (req, res) => {
     try {
         const { startDate, endDate } = getDateRangeFromQuery(req.query)

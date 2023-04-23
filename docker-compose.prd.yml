@@ -27,25 +27,49 @@ services:
             - '4000:4000'
         networks:
             - desktop-ims
-        depends_on:
-            - db
         restart: 'always'
+        depends_on:
+            - mongo1
 
-    db:
-        container_name: desktop-ims-db
-        image: bitnami/mongodb:5.0
+    mongo1:
+        image: mongo:5.0
+        container_name: mongo1
+        command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30001"]
         volumes:
-            - ./data:/data
+            - ./data/mongo-1:/data/db
+        ports:
+            - 30001:30001
+        healthcheck:
+            test: test $$(echo "rs.initiate({_id:'my-replica-set',members:[{_id:0,host:\"mongo1:30001\"},{_id:1,host:\"mongo2:30002\"},{_id:2,host:\"mongo3:30003\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
+            interval: 10s
+            start_period: 30s
+        restart: 'always'
         networks:
             - desktop-ims
+
+    mongo2:
+        image: mongo:5.0
+        container_name: mongo2
+        command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30002"]
+        volumes:
+            - ./data/mongo-2:/data/db
         ports:
-            - 27017:27017
-        logging:
-            driver: none
-        environment:
-            MONGODB_REPLICA_SET_MODE: 'primary'
-            ALLOW_EMPTY_PASSWORD: 'yes'
+            - 30002:30002
         restart: 'always'
+        networks:
+            - desktop-ims
+
+    mongo3:
+        image: mongo:5.0
+        container_name: mongo3
+        command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30003"]
+        volumes:
+            - ./data/mongo-3:/data/db
+        ports:
+            - 30003:30003
+        restart: 'always'
+        networks:
+            - desktop-ims
 
 networks:
     desktop-ims:

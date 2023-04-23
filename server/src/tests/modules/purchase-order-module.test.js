@@ -35,6 +35,7 @@ describe('Module: Create Purchase Order', () => {
                             name: 'Test Variant',
                             quantity: 10,
                         },
+                        originalItemPrice: 10,
                     },
                 ],
                 vendor: vendor._id,
@@ -44,6 +45,9 @@ describe('Module: Create Purchase Order', () => {
 
         expect(createdPurchaseOrder[0]).to.equal(201)
         expect(createdPurchaseOrder[1].products[0].totalPrice).to.equal(10000)
+        expect(createdPurchaseOrder[1].products[0].originalItemPrice).to.equal(
+            10
+        )
         expect(createdPurchaseOrder[1].orderDate).to.equal(12345)
         expect(createdPurchaseOrder[1].invoiceNumber).to.equal('invoice-number')
         expect(createdPurchaseOrder[1].total).to.equal(10000)

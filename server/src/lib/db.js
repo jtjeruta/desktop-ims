@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const MONGO_CONNECTION_STRING =
-    process.env.MONGO_CONNECTION_STRING || 'mongodb://desktop-ims-db/ims'
+    process.env.MONGO_CONNECTION_STRING || 'mongodb://mongo1:30001/ims'
 
 async function dbConnect() {
     await mongoose.connect(MONGO_CONNECTION_STRING, {
