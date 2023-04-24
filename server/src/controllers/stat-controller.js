@@ -164,7 +164,7 @@ module.exports.listProductPurchaseReports = async (req, res) => {
                     variant.variant +
                     variant.originalPrice
 
-                return { ...variant, aveCost, totalQty, id }
+                return { ...variant, aveCost, qty: totalQty, id }
             })
 
         return res.status(200).json({ purchaseReports })
@@ -273,7 +273,7 @@ module.exports.listProductSalesReports = async (req, res) => {
                     variant.variant +
                     variant.originalPrice
 
-                return { ...variant, avePrice, totalQty, id }
+                return { ...variant, avePrice, qty: totalQty, id }
             })
 
         return res.status(200).json({ salesReports })
