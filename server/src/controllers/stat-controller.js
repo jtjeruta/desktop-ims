@@ -135,7 +135,12 @@ module.exports.listProductPurchaseReports = async (req, res) => {
                         },
                     ]
                     acc = acc.filter(
-                        (v) => !v.productId.equals(foundVariant.productId)
+                        (v) =>
+                            !(
+                                v.productId.equals(foundVariant.productId) &&
+                                v.variant === foundVariant.variant &&
+                                v.originalPrice === foundVariant.originalPrice
+                            )
                     )
                     acc.push(foundVariant)
                 })
@@ -239,7 +244,12 @@ module.exports.listProductSalesReports = async (req, res) => {
                         },
                     ]
                     acc = acc.filter(
-                        (v) => !v.productId.equals(foundVariant.productId)
+                        (v) =>
+                            !(
+                                v.productId.equals(foundVariant.productId) &&
+                                v.variant === foundVariant.variant &&
+                                v.originalPrice === foundVariant.originalPrice
+                            )
                     )
                     acc.push(foundVariant)
                 })
