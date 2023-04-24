@@ -174,19 +174,14 @@ router.get(
     StatController.getTotalProductPurchases
 )
 router.get(
-    '/api/v1/stats/product-reports',
-    isAdmin,
-    StatController.listProductReports
-)
-router.get(
     '/api/v1/stats/sales-reports',
     isAdmin,
     StatController.listProductSalesReports
 )
 router.get(
-    '/api/v1/stats/purchases-reports',
+    '/api/v1/stats/purchase-reports',
     isAdmin,
-    StatController.listProductPurchasesReports
+    StatController.listProductPurchaseReports
 )
 router.get(
     '/api/v1/stats/total-expenses',

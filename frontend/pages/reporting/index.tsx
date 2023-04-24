@@ -3,14 +3,20 @@ import SingleStatCounter, {
     SingleStatCounterType,
 } from '../../components/SingleStatCounter/SingleStatCounter'
 import UserLayout from '../../components/UserLayout/UserLayout'
-import { FaMoneyBill, FaMoneyBillWave, FaShoppingCart, FaStore } from 'react-icons/fa'
-import ReportingTable from '../../components/ReportingTable/ReportingTable'
+import {
+    FaMoneyBill,
+    FaMoneyBillWave,
+    FaShoppingCart,
+    FaStore,
+} from 'react-icons/fa'
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker'
 import {
     StatContextProvider,
     useStatContext,
 } from '../../contexts/StatsContext/StatsContext'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import SalesReportTable from '../../components/SalesReportTable/SalesReportTable'
+import CostReportTable from '../../components/CostReportTable/CostReportTable'
 
 const ReportingContent = () => {
     const StatContext = useStatContext()
@@ -49,7 +55,6 @@ const ReportingContent = () => {
     useLayoutEffect(() => {
         StatContext.getTotalProductSales()
         StatContext.getTotalProductPurchases()
-        StatContext.listProductReports()
         StatContext.getTotalExpenses()
         StatContext.getTotalReceivables()
     }, [StatContext.dateRange])
@@ -81,7 +86,16 @@ const ReportingContent = () => {
                         <SingleStatCounter key={stat.title} {...stat} />
                     ))}
                 </div>
-                <ReportingTable page={page} setPage={setPage} />
+
+                <div>
+                    <h5 className="uppercase mb-1">Sales Reports</h5>
+                    <SalesReportTable page={page} setPage={setPage} />
+                </div>
+
+                <div>
+                    <h5 className="uppercase mb-1">Cost Reports</h5>
+                    <CostReportTable page={page} setPage={setPage} />
+                </div>
             </div>
         </UserLayout>
     )

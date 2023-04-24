@@ -1,4 +1,8 @@
-import { ProductReport } from '../contexts/StatsContext/types'
+import {
+    CostReport,
+    ProductReport,
+    SalesReport,
+} from '../contexts/StatsContext/types'
 import Axios from './AxiosAPI'
 
 export const getTotalProductSales = (startDate: number, endDate: number) =>
@@ -20,17 +24,6 @@ export const getTotalProductPurchases = (startDate: number, endDate: number) =>
         ])
         .catch((err): [false, string] => [false, err.response?.message])
 
-export const listProductReports = (startDate: number, endDate: number) =>
-    Axios()
-        .get(
-            `/api/v1/stats/product-reports?startDate=${startDate}&endDate=${endDate}`
-        )
-        .then((response): [true, ProductReport[]] => [
-            true,
-            response.data.productReports,
-        ])
-        .catch((err): [false, string] => [false, err.response?.message])
-
 export const getTotalExpenses = (startDate: number, endDate: number) =>
     Axios()
         .get(
@@ -47,5 +40,27 @@ export const getTotalReceivables = (startDate: number, endDate: number) =>
         .then((response): [true, number] => [
             true,
             response.data.totalReceivables,
+        ])
+        .catch((err): [false, string] => [false, err.response?.message])
+
+export const listSalesReports = (startDate: number, endDate: number) =>
+    Axios()
+        .get(
+            `/api/v1/stats/sales-reports?startDate=${startDate}&endDate=${endDate}`
+        )
+        .then((response): [true, SalesReport[]] => [
+            true,
+            response.data.salesReports,
+        ])
+        .catch((err): [false, string] => [false, err.response?.message])
+
+export const listCostReports = (startDate: number, endDate: number) =>
+    Axios()
+        .get(
+            `/api/v1/stats/purchase-reports?startDate=${startDate}&endDate=${endDate}`
+        )
+        .then((response): [true, CostReport[]] => [
+            true,
+            response.data.purchaseReports,
         ])
         .catch((err): [false, string] => [false, err.response?.message])

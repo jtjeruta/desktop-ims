@@ -12,8 +12,28 @@ export type ProductReport = {
     avePur: number
 }
 
+export type SalesReport = {
+    productId: string
+    productName: string
+    qty: number
+    variant: string
+    price: number
+    originalPrice: number
+    avePrice: number
+}
+
+export type CostReport = {
+    productId: string
+    productName: string
+    qty: number
+    variant: string
+    price: number
+    originalPrice: number
+    aveCost: number
+}
+
 export type Context = {
-    productReports: ProductReport[] | null
+    costReports: CostReport[]
     dateRange: { startDate: number; endDate: number }
     setDateRange: React.Dispatch<
         React.SetStateAction<{ startDate: number; endDate: number }>
@@ -24,7 +44,9 @@ export type Context = {
     getTotalProductSales: () => Promise<[true, number] | [false, string]>
     getTotalProductPurchases: () => Promise<[true, number] | [false, string]>
     getTotalExpenses: () => Promise<[true, number] | [false, string]>
-    listProductReports: () => Promise<[true, ProductReport[]] | [false, string]>
+    listCostReports: () => Promise<[true, CostReport[]] | [false, string]>
+    listSalesReports: () => Promise<[true, SalesReport[]] | [false, string]>
+    salesReports: SalesReport[]
     search: string
     setSearch: React.Dispatch<React.SetStateAction<string>>
     totalReceivables: number | null

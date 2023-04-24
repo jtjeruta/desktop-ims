@@ -23,20 +23,19 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const [totalProductPurchases, setTotalProductPurchases] = useState<
         number | null
     >(null)
-    const [productReports, setProductReports] = useState<
-        Types.ProductReport[] | null
-    >(null)
     const [search, setSearch] = useState<string>('')
     const [totalExpenses, setTotalExpenses] = useState<number | null>(null)
     const [totalReceivables, setTotalReceivables] = useState<number | null>(
         null
     )
+    const [salesReports, setSalesReports] = useState<Types.SalesReport[]>([])
+    const [costReports, setCostReports] = useState<Types.CostReport[]>([])
 
-    const listProductReports = async () => {
-        const key = 'list-product-reports'
+    const listSalesReports = async () => {
+        const key = 'list-sales-reports'
 
         AppContext.addLoading(key)
-        const response = await StatsAPI.listProductReports(
+        const response = await StatsAPI.listSalesReports(
             dateRange.startDate,
             dateRange.endDate
         )
@@ -51,7 +50,30 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
             return response
         }
 
-        setProductReports(response[1])
+        setSalesReports(response[1])
+        return response
+    }
+
+    const listCostReports = async () => {
+        const key = 'list-cost-reports'
+
+        AppContext.addLoading(key)
+        const response = await StatsAPI.listCostReports(
+            dateRange.startDate,
+            dateRange.endDate
+        )
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later',
+            })
+            return response
+        }
+
+        setCostReports(response[1])
         return response
     }
 
@@ -149,12 +171,14 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const value: Types.Context = useMemo(
         () => ({
+            costReports,
             dateRange,
             getTotalExpenses,
             getTotalProductPurchases,
             getTotalProductSales,
-            listProductReports,
-            productReports,
+            listCostReports,
+            listSalesReports,
+            salesReports,
             search,
             setDateRange,
             setSearch,
@@ -165,8 +189,9 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
             totalReceivables,
         }),
         [
+            costReports,
             dateRange,
-            productReports,
+            salesReports,
             search,
             totalExpenses,
             totalProductSales,

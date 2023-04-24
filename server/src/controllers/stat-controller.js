@@ -65,165 +65,7 @@ const getDateRangeFromQuery = (query) => {
     }
 }
 
-module.exports.listProductReports = async (req, res) => {
-    try {
-        const { startDate, endDate } = getDateRangeFromQuery(req.query)
-
-        const [purchaseOrdersRes, salesOrdersRes, productsRes, warehousesRes] =
-            await Promise.all([
-                PurchaseOrderModule.listPurchaseOrders({
-                    orderDate: { $gte: startDate, $lte: endDate },
-                }),
-                SalesOrderModule.listSalesOrders({
-                    orderDate: { $gte: startDate, $lte: endDate },
-                }),
-                ProductModule.listProducts(),
-                WarehouseModule.listWarehouses(),
-            ])
-
-        if (purchaseOrdersRes[0] !== 200) {
-            return res.status(purchaseOrdersRes[0]).json(purchaseOrdersRes[1])
-        }
-
-        if (salesOrdersRes[0] !== 200) {
-            return res.status(salesOrdersRes[0]).json(salesOrdersRes[1])
-        }
-
-        if (productsRes[0] !== 200) {
-            return res.status(productsRes[0]).json(productsRes[1])
-        }
-
-        if (warehousesRes[0] !== 200) {
-            return res.status(warehousesRes[0]).json(warehousesRes[1])
-        }
-
-        const productReports = productsRes[1].reduce((acc, product) => {
-            const warehouseStock = warehousesRes[1].reduce((acc, warehouse) => {
-                warehouse.products.forEach((whp) => {
-                    if (!whp.source._id.equals(product._id)) return
-                    acc += whp.stock
-                })
-
-                return acc
-            }, 0)
-
-            const totalStock = warehouseStock + product.stock
-            let purchases = []
-            let sales = []
-
-            const variants = product.variants
-                .map((variant) => {
-                    let totalPur = 0
-                    let purQty = 0
-                    let totalSales = 0
-                    let salesQty = 0
-
-                    purchaseOrdersRes[1].forEach((order) =>
-                        order.products.forEach((orderProduct) => {
-                            if (
-                                orderProduct.variant.name !== variant.name ||
-                                !product._id.equals(orderProduct.product._id)
-                            )
-                                return
-                            totalPur += orderProduct.totalPrice
-                            const varQty =
-                                orderProduct.quantity *
-                                (orderProduct.variant?.quantity ?? 0)
-                            purchases = [
-                                ...purchases,
-                                { cost: orderProduct.itemPrice, qty: varQty },
-                            ]
-                            purQty += varQty
-                        })
-                    )
-
-                    salesOrdersRes[1].forEach((order) =>
-                        order.products.forEach((orderProduct) => {
-                            if (
-                                orderProduct.variant.name !== variant.name ||
-                                !product._id.equals(orderProduct.product._id)
-                            )
-                                return
-                            totalSales += orderProduct.totalPrice
-                            const varQty =
-                                orderProduct.quantity *
-                                (orderProduct.variant?.quantity ?? 0)
-                            sales = [
-                                ...sales,
-                                { cost: orderProduct.itemPrice, qty: varQty },
-                            ]
-                            salesQty += varQty
-                        })
-                    )
-
-                    return {
-                        totalPur,
-                        purQty,
-                        totalSales,
-                        salesQty,
-                    }
-                })
-                .filter(
-                    (variant) => variant.totalPur > 0 || variant.totalSales > 0
-                )
-
-            if (variants.length === 0) return acc
-
-            const totalPur = variants.reduce(
-                (acc, variant) => acc + variant.totalPur,
-                0
-            )
-
-            const totalSales = variants.reduce(
-                (acc, variant) => acc + variant.totalSales,
-                0
-            )
-
-            const purQty = variants.reduce(
-                (acc, variant) => acc + variant.purQty,
-                0
-            )
-
-            const salesQty = variants.reduce(
-                (acc, variant) => acc + variant.salesQty,
-                0
-            )
-
-            const avePur = this.calculateAverageCost(
-                totalStock,
-                product.costPrice,
-                purchases
-            )
-            const aveSales = this.calculateAverageSales(
-                totalStock,
-                product.sellingPrice,
-                sales
-            )
-
-            const productReport = {
-                id: product._id,
-                product: ProductView(product),
-                stock: totalStock,
-                totalPur,
-                totalSales,
-                purQty,
-                salesQty,
-                avePur,
-                aveSales,
-            }
-
-            return [...acc, productReport]
-        }, [])
-
-        return res.status(200).json({ productReports })
-    } catch (err) {
-        return res
-            .status(500)
-            .json({ message: 'Failed to list product reports' })
-    }
-}
-
-module.exports.listProductPurchasesReports = async (req, res) => {
+module.exports.listProductPurchaseReports = async (req, res) => {
     try {
         const { startDate, endDate } = getDateRangeFromQuery(req.query)
 
@@ -248,7 +90,7 @@ module.exports.listProductPurchasesReports = async (req, res) => {
             return res.status(warehousesRes[0]).json(warehousesRes[1])
         }
 
-        const purchasesReports = purchaseOrdersRes[1]
+        const purchaseReports = purchaseOrdersRes[1]
             .reduce((acc, order) => {
                 order.products.forEach((product) => {
                     const foundProduct = productsRes[1].find((p) =>
@@ -307,14 +149,24 @@ module.exports.listProductPurchasesReports = async (req, res) => {
                     variant.items
                 )
 
-                return { ...variant, aveCost }
+                const totalQty = variant.items.reduce(
+                    (acc, item) => acc + item.qty,
+                    0
+                )
+
+                const id =
+                    variant.productId.toString() +
+                    variant.variant +
+                    variant.originalPrice
+
+                return { ...variant, aveCost, totalQty, id }
             })
 
-        return res.status(200).json({ purchasesReports })
+        return res.status(200).json({ purchaseReports })
     } catch (err) {
         return res
             .status(500)
-            .json({ message: 'Failed to list product reports' })
+            .json({ message: 'Failed to list product purchase reports' })
     }
 }
 
@@ -401,14 +253,24 @@ module.exports.listProductSalesReports = async (req, res) => {
                     variant.items
                 )
 
-                return { ...variant, avePrice }
+                const totalQty = variant.items.reduce(
+                    (acc, item) => acc + item.qty,
+                    0
+                )
+
+                const id =
+                    variant.productId.toString() +
+                    variant.variant +
+                    variant.originalPrice
+
+                return { ...variant, avePrice, totalQty, id }
             })
 
         return res.status(200).json({ salesReports })
     } catch (err) {
         return res
             .status(500)
-            .json({ message: 'Failed to list product reports' })
+            .json({ message: 'Failed to list product sales reports' })
     }
 }
 

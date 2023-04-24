@@ -61,32 +61,6 @@ describe('Controller: get total product purchases', () => {
     })
 })
 
-describe('Controller: list product reports', () => {
-    setup()
-    const data = {}
-
-    beforeEach(async () => {
-        await UsersModule.createUser(testdata.admin1)
-        await UsersModule.createUser(testdata.employee1)
-        data.product1 = (
-            await ProductsModule.createProduct(testdata.product1)
-        )[1]
-    })
-
-    it('Success run as admin', async () => {
-        const { token } = await login({
-            email: testdata.admin1.email,
-            password: testdata.admin1.password,
-        })
-
-        const res = await request(app)
-            .get('/api/v1/stats/product-reports')
-            .set('Authorization', token)
-
-        expect(res.statusCode).to.equal(200)
-    })
-})
-
 describe('Controller: calculate average cost', () => {
     it('should calculate average cost correctly', () => {
         const currentQty = 560
@@ -348,11 +322,11 @@ describe('Controller: list product purchases reports', () => {
         })
 
         const res = await request(app)
-            .get(`/api/v1/stats/purchases-reports`)
+            .get(`/api/v1/stats/purchase-reports`)
             .set('Authorization', token)
 
         expect(res.statusCode).to.equal(200)
-        expect(res.body.purchasesReports.length).to.equal(1)
-        expect(res.body.purchasesReports[0].aveCost).to.equal(512.5)
+        expect(res.body.purchaseReports.length).to.equal(1)
+        expect(res.body.purchaseReports[0].aveCost).to.equal(512.5)
     })
 })
