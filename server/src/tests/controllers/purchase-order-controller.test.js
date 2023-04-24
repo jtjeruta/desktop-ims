@@ -467,9 +467,8 @@ describe('Controller: Delete purchase order', () => {
 
         expect(res.statusCode).to.equal(200)
 
-        const getPurchaseOrder = await PurchaseOrdersModule.getPurchaseOrderById(
-            purchaseOrder._id
-        )
+        const getPurchaseOrder =
+            await PurchaseOrdersModule.getPurchaseOrderById(purchaseOrder._id)
         expect(getPurchaseOrder[0]).to.equal(404)
     })
 
@@ -514,4 +513,3 @@ describe('Controller: Delete purchase order', () => {
         expect(res.body.message).to.equal('Not found.')
     })
 })
-
