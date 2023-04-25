@@ -1,8 +1,4 @@
-import {
-    CostReport,
-    ProductReport,
-    SalesReport,
-} from '../contexts/StatsContext/types'
+import { CostReport, SalesReport } from '../contexts/StatsContext/types'
 import Axios from './AxiosAPI'
 
 export const getTotalProductSales = (startDate: number, endDate: number) =>

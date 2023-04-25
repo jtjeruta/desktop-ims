@@ -1,17 +1,3 @@
-import { Product } from '../ProductContext/types'
-
-export type ProductReport = {
-    id: string
-    product: Product
-    stock: number
-    totalPur: number
-    purQty: number
-    totalSales: number
-    salesQty: number
-    aveSales: number
-    avePur: number
-}
-
 export type SalesReport = {
     productId: string
     productName: string

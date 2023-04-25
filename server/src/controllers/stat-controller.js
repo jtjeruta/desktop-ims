@@ -5,7 +5,6 @@ const ProductModule = require('../modules/products-module')
 const WarehouseModule = require('../modules/warehouses-module')
 const ExpenseModule = require('../modules/expenses-module')
 const ReceivableModule = require('../modules/receivables-module')
-const { ProductView } = require('../views/product-view')
 
 module.exports.getTotalProductSales = async (req, res) => {
     const { startDate, endDate } = getDateRangeFromQuery(req.query)
