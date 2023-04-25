@@ -21,9 +21,9 @@ module.exports.createProduct = async (data) => {
     }
 }
 
-module.exports.listProducts = async () => {
+module.exports.listProducts = async (query = {}) => {
     try {
-        const products = await ProductModel.find({}).populate('variants')
+        const products = await ProductModel.find(query).populate('variants')
         return [200, products]
     } catch (error) {
         console.error('Failed to list products')
@@ -44,6 +44,23 @@ module.exports.getProductById = async (id, session = null) => {
         return [200, product]
     } catch (error) {
         console.error('Failed to find product by id')
+        return getMongoError(error)
+    }
+}
+
+module.exports.getProduct = async (query, session = null) => {
+    try {
+        const product = await ProductModel.findOne(query)
+            .populate('variants')
+            .session(session)
+
+        if (!product) {
+            return [404, { message: 'Product not found.' }]
+        }
+
+        return [200, product]
+    } catch (error) {
+        console.error('Failed to find product')
         return getMongoError(error)
     }
 }

@@ -18,6 +18,15 @@ module.exports.createProduct = async (req, res) => {
         reorderPoint: req.body.reorderPoint,
         modifiedBy: req.con._id,
     }
+
+    const duplicateProductRes = await ProductsModule.getProduct({
+        $or: [{ name: productDoc.name }, { sku: productDoc.sku }],
+        archived: false,
+    })
+
+    if (duplicateProductRes[0] !== 404)
+        return res.status(409).json({ message: 'Product already exists.' })
+
     const createProductRes = await ProductsModule.createProduct(productDoc)
     if (createProductRes[0] !== 201)
         return res.status(createProductRes[0]).json(createProductRes[1])
@@ -66,7 +75,9 @@ module.exports.getProduct = async (req, res) => {
 }
 
 module.exports.listProducts = async (req, res) => {
-    const [status, data] = await ProductsModule.listProducts()
+    const [status, data] = await ProductsModule.listProducts({
+        archived: false,
+    })
 
     if (status !== 200) return res.status(status).json(data)
 
@@ -76,16 +87,47 @@ module.exports.listProducts = async (req, res) => {
 
 module.exports.updateProduct = async (req, res) => {
     const { productId } = req.params
-    const updateDoc = {
-        name: req.body.name,
-        sellingPrice: req.body.sellingPrice,
-        costPrice: req.body.costPrice,
-        company: req.body.company,
-        category: req.body.category,
-        subCategory: req.body.subCategory,
-        published: req.body.published,
-        reorderPoint: req.body.reorderPoint,
-        modifiedBy: req.con._id,
+    let updateDoc = [
+        'name',
+        'sellingPrice',
+        'costPrice',
+        'company',
+        'category',
+        'subCategory',
+        'published',
+        'reorderPoint',
+    ].reduce((acc, key) => {
+        if (req.body[key] !== undefined) acc[key] = req.body[key]
+        return acc
+    }, {})
+    updateDoc.modifiedBy = req.con._id
+
+    const duplicateProductRes = await ProductsModule.getProduct({
+        $or: [{ name: updateDoc.name }, { sku: updateDoc.sku }],
+        archived: false,
+        _id: { $ne: productId },
+    })
+
+    if (duplicateProductRes[0] !== 404)
+        return res.status(409).json({ message: 'Product already exists.' })
+
+    const orgProductRes = await ProductsModule.getProductById(productId)
+    if (orgProductRes[0] !== 200)
+        return res.status(orgProductRes[0]).json(orgProductRes[1])
+
+    let newProductId = null
+    if (
+        (updateDoc.sellingPrice || updateDoc.costPrice) &&
+        (orgProductRes[1].sellingPrice !== updateDoc.sellingPrice ||
+            orgProductRes[1].costPrice !== updateDoc.costPrice)
+    ) {
+        const doc = { ...orgProductRes[1]._doc, ...updateDoc }
+        delete doc._id
+        const createProductRes = await ProductsModule.createProduct(doc)
+        if (createProductRes[0] !== 201)
+            return res.status(createProductRes[0]).json(createProductRes[1])
+        newProductId = createProductRes[1].id
+        updateDoc = { archived: true }
     }
 
     const updateProductRes = await ProductsModule.updateProduct(
@@ -95,7 +137,9 @@ module.exports.updateProduct = async (req, res) => {
     if (updateProductRes[0] !== 200)
         return res.status(updateProductRes[0]).json(updateProductRes[1])
 
-    const getProductRes = await ProductsModule.getProductById(productId)
+    const getProductRes = await ProductsModule.getProductById(
+        newProductId ?? productId
+    )
     if (getProductRes[0] !== 200)
         return res.status(getProductRes[0]).json(getProductRes[1])
 

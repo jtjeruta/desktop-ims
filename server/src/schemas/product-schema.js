@@ -48,11 +48,12 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: [0, 'path reorder point can not be less than 0.'],
-    }
+    },
+    archived: {
+        type: Boolean,
+        default: false,
+    },
 })
-
-ProductSchema.index({ name: 1 }, { unique: true })
-ProductSchema.index({ sku: 1 }, { unique: true })
 
 const ProductModel = mongoose.model('Product', ProductSchema)
 

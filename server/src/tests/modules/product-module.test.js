@@ -57,15 +57,6 @@ describe('Module: Create Product', () => {
             'Path `published` is required.'
         )
     })
-
-    it('Fail: create product using duplicate name', async () => {
-        await ProductsModule.createProduct(testdata.product1)
-        const createdProduct = await ProductsModule.createProduct(
-            testdata.product1
-        )
-        expect(createdProduct[0]).to.equal(409)
-        expect(createdProduct[1].message).to.equal('Duplicate found.')
-    })
 })
 
 describe('Module: List Products', () => {
@@ -160,20 +151,6 @@ describe('Module: Update Product', () => {
         expect(updatedProduct[1].errors.reorderPoint.message).to.equal(
             'path reorder point can not be less than 0.'
         )
-    })
-
-    it('Fail: update product using duplicate name', async () => {
-        await ProductsModule.createProduct(testdata.product1)
-        const createdProduct = await ProductsModule.createProduct(
-            testdata.product2
-        )
-        const updatedProduct = await ProductsModule.updateProduct(
-            createdProduct[1]._id,
-            testdata.product1
-        )
-
-        expect(updatedProduct[0]).to.equal(409)
-        expect(updatedProduct[1].message).to.equal('Duplicate found.')
     })
 })
 

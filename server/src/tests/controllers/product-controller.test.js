@@ -246,6 +246,23 @@ describe('Controller: Create product', () => {
             })
             .catch((err) => done(err))
     })
+
+    it('Fail: create product using duplicate name or sku', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        await ProductsModule.createProduct(testdata.product1)
+
+        const res = await request(app)
+            .post('/api/v1/products')
+            .send(testdata.product1)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(409)
+        expect(res.body.message).to.equal('Product already exists.')
+    })
 })
 
 describe('Controller: Update product', () => {
@@ -370,6 +387,62 @@ describe('Controller: Update product', () => {
                 done()
             })
             .catch((err) => done(err))
+    })
+
+    it('Fail: update product name and sku to an existing product', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
+            .send({
+                name: createdProducts.product2.name,
+                sku: createdProducts.product2.sku,
+            })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(409)
+        expect(res.body).to.deep.equal({
+            message: 'Product already exists.',
+        })
+    })
+
+    it('Success: duplicate product if price is changed', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
+            .send(testdata.product3)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.price).to.equal(testdata.product3.price)
+        expect(res.body.product.id).to.not.equal(createdProducts.product1.id)
+
+        const orgProduct = await ProductsModule.getProductById(
+            createdProducts.product1.id
+        )
+        expect(orgProduct[1].price).to.equal(testdata.product1.price)
+    })
+
+    it('Success: update product published field only', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/products/${createdProducts.product1.id}`)
+            .send({ published: true })
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.id).to.equal(createdProducts.product1.id)
     })
 })
 

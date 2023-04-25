@@ -49,8 +49,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                     : 'Product updated!',
                 type: 'success',
             })
-            !ProductContext.product &&
-                router.push(`/inventory/${response[1].id}`)
+            router.push(`/inventory/${response[1].id}`)
         } else if (response[1].errors) {
             const { errors } = response[1]
 
