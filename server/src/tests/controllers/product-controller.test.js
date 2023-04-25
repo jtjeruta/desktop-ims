@@ -267,6 +267,7 @@ describe('Controller: Create product', () => {
 
 describe('Controller: Update product', () => {
     const createdProducts = {}
+    const createdWarehouses = {}
 
     setup()
     beforeEach(async () => {
@@ -290,8 +291,21 @@ describe('Controller: Update product', () => {
             product2[1]._id,
             { variants: [variant2[1]._id] }
         )
+        const warehouse1 = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                products: [
+                    {
+                        source: updatedProduct1[1]._id,
+                        stock: 50,
+                    },
+                ],
+            })
+        )[1]
+
         createdProducts.product1 = updatedProduct1[1]
         createdProducts.product2 = updatedProduct2[1]
+        createdWarehouses.warehouse1 = warehouse1
     })
 
     it('Success: run as admin with correct data', async () => {
@@ -428,6 +442,20 @@ describe('Controller: Update product', () => {
             createdProducts.product1.id
         )
         expect(orgProduct[1].price).to.equal(testdata.product1.price)
+
+        const warehouse = (
+            await WarehousesModule.getWarehouseById(
+                createdWarehouses.warehouse1.id
+            )
+        )[1]
+        const warehouseProduct1 = warehouse.products.find(
+            (p) => p.source.id === createdProducts.product1.id
+        )
+        const warehouseProduct2 = warehouse.products.find(
+            (p) => p.source.id === res.body.product.id
+        )
+        expect(warehouseProduct1.stock).to.equal(50)
+        expect(warehouseProduct2.stock).to.equal(50)
     })
 
     it('Success: update product published field only', async () => {

@@ -7,9 +7,15 @@ module.exports.listWarehouses = async (req, res) => {
     if (warehousesRes[0] !== 200)
         return res.status(warehousesRes[0]).json(warehousesRes[1])
 
-    return res
-        .status(200)
-        .json({ warehouses: warehousesRes[1].map(WarehouseView) })
+    // remove archived products from each warehouse
+    const warehouses = warehousesRes[1].map((warehouse) => {
+        warehouse.products = warehouse.products.filter(
+            (product) => !product.source.archived
+        )
+        return warehouse
+    })
+
+    return res.status(200).json({ warehouses: warehouses.map(WarehouseView) })
 }
 
 module.exports.getWarehouse = async (req, res) => {

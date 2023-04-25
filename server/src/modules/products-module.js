@@ -3,7 +3,7 @@ const crypto = require('crypto')
 const { getMongoError } = require('../lib/mongo-errors')
 const { ProductModel } = require('../schemas/product-schema')
 
-module.exports.createProduct = async (data) => {
+module.exports.createProduct = async (data, session) => {
     const doc = {
         ...data,
         createdAt: moment().unix(),
@@ -13,7 +13,9 @@ module.exports.createProduct = async (data) => {
     const product = new ProductModel(doc)
 
     try {
-        const createdProduct = await product.save()
+        const createdProduct = await (session
+            ? product.save({ session })
+            : product.save())
         return [201, createdProduct]
     } catch (error) {
         console.error('Failed to create product')
