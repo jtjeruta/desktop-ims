@@ -98,7 +98,7 @@
 Using compass to connect wont work without a `directConnection` parameter
 
 ```
-mongodb://localhost:27017/?directConnection=true
+mongodb://localhost:30001/ims
 ```
 
 ## Deployment
