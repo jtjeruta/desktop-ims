@@ -6,6 +6,7 @@ export type SalesReport = {
     price: number
     originalPrice: number
     avePrice: number
+    sku: string
 }
 
 export type CostReport = {
@@ -16,6 +17,7 @@ export type CostReport = {
     price: number
     originalPrice: number
     aveCost: number
+    sku: string
 }
 
 export type Context = {

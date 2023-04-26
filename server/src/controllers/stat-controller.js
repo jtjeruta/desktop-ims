@@ -111,6 +111,7 @@ module.exports.listProductPurchaseReports = async (req, res) => {
                             variant.variant === product.variant.name
                         )
                     }) ?? {
+                        sku: product.product.sku,
                         productId: product.product._id,
                         productName: product.product.name,
                         variant: product.variant.name,
@@ -210,6 +211,7 @@ module.exports.listProductSalesReports = async (req, res) => {
                             variant.variant === product.variant.name
                         )
                     }) ?? {
+                        sku: product.product.sku,
                         productId: product.product._id,
                         productName: product.product.name,
                         variant: product.variant.name,

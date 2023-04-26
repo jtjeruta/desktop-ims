@@ -66,9 +66,10 @@ module.exports.createProduct = async (req, res) => {
 }
 
 module.exports.getProduct = async (req, res) => {
-    const [status, data] = await ProductsModule.getProductById(
-        req.params.productId
-    )
+    const [status, data] = await ProductsModule.getProduct({
+        $or: [{ id: req.params.productId }, { sku: req.params.productId }],
+        archived: false,
+    })
 
     if (status !== 200) return res.status(status).json(data)
     return res.status(200).json({ product: ProductView(data) })

@@ -41,9 +41,7 @@ const CostReportTable: FC<Props> = (props) => {
                             const report = row as CostReport
                             return (
                                 <div className="hover:text-teal-600 cursor-pointer">
-                                    <Link
-                                        href={`/inventory/${report.productId}`}
-                                    >
+                                    <Link href={`/inventory/${report.sku}`}>
                                         {report.productName}
                                     </Link>
                                 </div>
