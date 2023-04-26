@@ -37,22 +37,10 @@ module.exports.createSalesOrder = async (req, res) => {
         return res.status(404).json({ message: 'Product not found.' })
     }
 
-    // add original price to products
-    const products = (req.body.products || []).map((product) => {
-        const foundProduct = validatedProducts.find(
-            (p) => p[1]._id.toString() === product.product
-        )
-        return {
-            ...product,
-            originalItemPrice: foundProduct[1].sellingPrice,
-        }
-    })
-
     // Create sales order
     const createdSalesOrderRes = await SalesOrdersModule.createSalesOrder(
         {
             ...req.body,
-            products,
             customer: customer?._id ?? null,
         },
         session
@@ -126,16 +114,6 @@ module.exports.updateSalesOrder = async (req, res) => {
         }
     }
 
-    const foundSalesOrderRes = await SalesOrdersModule.getSalesOrderById(
-        salesOrderId,
-        session
-    )
-
-    if (foundSalesOrderRes[0] !== 200) {
-        await session.endSession()
-        return res.status(foundSalesOrderRes[0]).json(foundSalesOrderRes[1])
-    }
-
     if (req.body.products) {
         const validatedProducts = await Promise.all(
             (req.body.products || []).map((product) =>
@@ -149,24 +127,16 @@ module.exports.updateSalesOrder = async (req, res) => {
             await session.endSession()
             return res.status(404).json({ message: 'Product not found.' })
         }
+    }
 
-        // add original price to products
-        const products = req.body.products.map((product) => {
-            const foundProduct = validatedProducts.find(
-                (p) => p[1]._id.toString() === product.product
-            )
-            const orderProduct = foundSalesOrderRes[1].products.find(
-                (p) => p.product.toString() === product.product
-            )
-            return {
-                ...product,
-                originalItemPrice: orderProduct
-                    ? orderProduct.originalItemPrice
-                    : foundProduct[1].sellingPrice,
-            }
-        })
+    const foundSalesOrderRes = await SalesOrdersModule.getSalesOrderById(
+        salesOrderId,
+        session
+    )
 
-        req.body.products = products
+    if (foundSalesOrderRes[0] !== 200) {
+        await session.endSession()
+        return res.status(foundSalesOrderRes[0]).json(foundSalesOrderRes[1])
     }
 
     // Update sales order

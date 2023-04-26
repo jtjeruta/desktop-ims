@@ -35,7 +35,6 @@ describe('Module: Create Sales Order', () => {
                         name: 'Test Variant',
                         quantity: 10,
                     },
-                    originalItemPrice: 10,
                 },
             ],
             customer: customer._id,
@@ -45,7 +44,6 @@ describe('Module: Create Sales Order', () => {
 
         expect(createdSalesOrder[0]).to.equal(201)
         expect(createdSalesOrder[1].products[0].totalPrice).to.equal(10000)
-        expect(createdSalesOrder[1].products[0].originalItemPrice).to.equal(10)
         expect(createdSalesOrder[1].orderDate).to.equal(12345)
         expect(createdSalesOrder[1].invoiceNumber).to.equal('invoice-number-1')
         expect(createdSalesOrder[1].total).to.equal(10000)

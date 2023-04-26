@@ -199,242 +199,327 @@ describe('Controller: calculate average sales', () => {
     })
 })
 
-// describe('Controller: list product sales reports', () => {
-//     setup()
-//     const data = {}
+describe('Controller: list product sales reports', () => {
+    setup()
+    const data = {}
 
-//     beforeEach(async () => {
-//         await UsersModule.createUser(testdata.admin1)
-//         data.product1 = (
-//             await ProductsModule.createProduct({
-//                 ...testdata.product1,
-//                 sellingPrice: 500,
-//                 stock: 400,
-//             })
-//         )[1]
-//         data.warehouse1 = (
-//             await WarehousesModule.createWarehouse({
-//                 ...testdata.warehouse1,
-//                 products: [{ source: data.product1._id, stock: 40 }],
-//             })
-//         )[1]
-//     })
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        data.product1 = (
+            await ProductsModule.createProduct({
+                ...testdata.product1,
+                sellingPrice: 500,
+                stock: 400,
+            })
+        )[1]
+        data.warehouse1 = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                products: [{ source: data.product1._id, stock: 40 }],
+            })
+        )[1]
+    })
 
-//     it('Success return correct average', async () => {
-//         const items = [
-//             { id: '1', qty: 10, price: 550, variantQty: 1 },
-//             { id: '2', qty: 10, price: 600, variantQty: 2 },
-//             { id: '3', qty: 3, price: 650, variantQty: 10 },
-//         ]
+    it('Success return correct average', async () => {
+        const items = [
+            { id: '1', qty: 10, price: 550, variantQty: 1 },
+            { id: '2', qty: 10, price: 600, variantQty: 2 },
+            { id: '3', qty: 3, price: 650, variantQty: 10 },
+        ]
 
-//         await Promise.all(
-//             items.map((item) =>
-//                 SalesOrderModule.createSalesOrder({
-//                     products: [
-//                         {
-//                             id: item.id,
-//                             product: data.product1._id,
-//                             quantity: item.qty,
-//                             itemPrice: item.price,
-//                             originalItemPrice: 500,
-//                             variant: {
-//                                 name: 'Test Variant',
-//                                 quantity: item.variantQty,
-//                             },
-//                         },
-//                     ],
-//                     orderDate: moment().subtract(1, 'minute').unix(),
-//                     invoiceNumber: 'invoice-number-1',
-//                 })
-//             )
-//         )
+        await Promise.all(
+            items.map((item) =>
+                SalesOrderModule.createSalesOrder({
+                    products: [
+                        {
+                            id: item.id,
+                            product: data.product1._id,
+                            quantity: item.qty,
+                            itemPrice: item.price,
+                            variant: {
+                                name: 'Test Variant',
+                                quantity: item.variantQty,
+                            },
+                        },
+                    ],
+                    orderDate: moment().subtract(1, 'minute').unix(),
+                    invoiceNumber: 'invoice-number-1',
+                })
+            )
+        )
 
-//         const { token } = await login({
-//             email: testdata.admin1.email,
-//             password: testdata.admin1.password,
-//         })
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
 
-//         const res = await request(app)
-//             .get(`/api/v1/stats/sales-reports`)
-//             .set('Authorization', token)
+        const res = await request(app)
+            .get(`/api/v1/stats/sales-reports`)
+            .set('Authorization', token)
 
-//         expect(res.statusCode).to.equal(200)
-//         expect(res.body.salesReports.length).to.equal(1)
-//         expect(res.body.salesReports[0].avePrice).to.equal(512.5)
-//     })
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.salesReports.length).to.equal(1)
+        expect(res.body.salesReports[0].avePrice).to.equal(512.5)
+    })
 
-//     it('Success return 2 items if original price changes', async () => {
-//         const items = [
-//             { id: '1', qty: 10, price: 550, variantQty: 1, ogPrice: 500 },
-//             { id: '2', qty: 10, price: 600, variantQty: 2, ogPrice: 500 },
-//             { id: '3', qty: 3, price: 650, variantQty: 10, ogPrice: 500 },
+    it('Success return 2 items if original price changes', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
 
-//             // [(550 * 10) + (600 * 10) + (650 * 30) + (500 * 440)] / (50 + 440)
-//             // => (5500 + 6000 + 19,500 + 220,000) / 490
-//             // => 251,000 / 490
-//             // => 512.24
+        const updateRes = await request(app)
+            .put(`/api/v1/products/${data.product1._id}`)
+            .send({ sellingPrice: 550 })
+            .set('Authorization', token)
 
-//             // price change
-//             { id: '1', qty: 10, price: 550, variantQty: 1, ogPrice: 550 },
-//             { id: '2', qty: 10, price: 600, variantQty: 2, ogPrice: 550 },
-//             { id: '3', qty: 3, price: 650, variantQty: 10, ogPrice: 550 },
+        expect(updateRes.statusCode).to.equal(200)
+        const product2 = updateRes.body.product
 
-//             // [(550 * 10) + (600 * 10) + (650 * 30) + (550 * 440)] / (50 + 440)
-//             // => (5500 + 6000 + 19,500 + 242,000) / 490
-//             // => 273,000 / 490
-//             // => 557.14
-//         ]
+        const items = [
+            {
+                id: '1',
+                qty: 10,
+                price: 550,
+                variantQty: 1,
+                product: data.product1._id,
+            },
+            {
+                id: '2',
+                qty: 10,
+                price: 600,
+                variantQty: 2,
+                product: data.product1._id,
+            },
+            {
+                id: '3',
+                qty: 3,
+                price: 650,
+                variantQty: 10,
+                product: data.product1._id,
+            },
 
-//         await Promise.all(
-//             items.map((item) =>
-//                 SalesOrderModule.createSalesOrder({
-//                     products: [
-//                         {
-//                             id: item.id,
-//                             product: data.product1._id,
-//                             quantity: item.qty,
-//                             itemPrice: item.price,
-//                             originalItemPrice: item.ogPrice,
-//                             variant: {
-//                                 name: 'Test Variant',
-//                                 quantity: item.variantQty,
-//                             },
-//                         },
-//                     ],
-//                     orderDate: moment().subtract(1, 'minute').unix(),
-//                     invoiceNumber: 'invoice-number-1',
-//                 })
-//             )
-//         )
+            // [(550 * 10) + (600 * 10) + (650 * 30) + (500 * 440)] / (50 + 440)
+            // => (5500 + 6000 + 19,500 + 220,000) / 490
+            // => 251,000 / 490
+            // => 512.24
 
-//         const { token } = await login({
-//             email: testdata.admin1.email,
-//             password: testdata.admin1.password,
-//         })
+            // price change
+            {
+                id: '1',
+                qty: 10,
+                price: 550,
+                variantQty: 1,
+                product: product2.id,
+            },
+            {
+                id: '2',
+                qty: 10,
+                price: 600,
+                variantQty: 2,
+                product: product2.id,
+            },
+            {
+                id: '3',
+                qty: 3,
+                price: 650,
+                variantQty: 10,
+                product: product2.id,
+            },
 
-//         const res = await request(app)
-//             .get(`/api/v1/stats/sales-reports`)
-//             .set('Authorization', token)
+            // [(550 * 10) + (600 * 10) + (650 * 30) + (550 * 440)] / (50 + 440)
+            // => (5500 + 6000 + 19,500 + 242,000) / 490
+            // => 273,000 / 490
+            // => 557.14
+        ]
 
-//         expect(res.statusCode).to.equal(200)
-//         expect(res.body.salesReports.length).to.equal(2)
-//         expect(res.body.salesReports[0].avePrice).to.be.closeTo(512.5, 0.01)
-//         expect(res.body.salesReports[1].avePrice).to.be.closeTo(557.14, 0.01)
-//     })
-// })
+        await Promise.all(
+            items.map((item) =>
+                SalesOrderModule.createSalesOrder({
+                    products: [
+                        {
+                            id: item.id,
+                            product: item.product,
+                            quantity: item.qty,
+                            itemPrice: item.price,
+                            variant: {
+                                name: 'Test Variant',
+                                quantity: item.variantQty,
+                            },
+                        },
+                    ],
+                    orderDate: moment().subtract(1, 'minute').unix(),
+                    invoiceNumber: 'invoice-number-1',
+                })
+            )
+        )
 
-// describe('Controller: list product purchases reports', () => {
-//     setup()
-//     const data = {}
+        const res = await request(app)
+            .get(`/api/v1/stats/sales-reports`)
+            .set('Authorization', token)
 
-//     beforeEach(async () => {
-//         await UsersModule.createUser(testdata.admin1)
-//         data.vendor1 = (await VendorsModule.createVendor(testdata.vendor1))[1]
-//         data.product1 = (
-//             await ProductsModule.createProduct({
-//                 ...testdata.product1,
-//                 sellingPrice: 500,
-//                 stock: 500,
-//             })
-//         )[1]
-//         data.warehouse1 = (
-//             await WarehousesModule.createWarehouse({
-//                 ...testdata.warehouse1,
-//                 products: [{ source: data.product1._id, stock: 60 }],
-//             })
-//         )[1]
-//     })
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.salesReports.length).to.equal(2)
+        expect(res.body.salesReports[0].avePrice).to.be.closeTo(512.5, 0.01)
+        expect(res.body.salesReports[1].avePrice).to.be.closeTo(557.14, 0.01)
+    })
+})
 
-//     it('Success return correct average', async () => {
-//         const items = [
-//             { id: '1', qty: 10, price: 550, variantQty: 1 },
-//             { id: '2', qty: 10, price: 600, variantQty: 2 },
-//             { id: '3', qty: 3, price: 650, variantQty: 10 },
-//         ]
+describe('Controller: list product purchases reports', () => {
+    setup()
+    const data = {}
 
-//         await Promise.all(
-//             items.map((item) =>
-//                 PurchaseOrderModule.createPurchaseOrder({
-//                     products: [
-//                         {
-//                             id: item.id,
-//                             product: data.product1._id,
-//                             quantity: item.qty,
-//                             itemPrice: item.price,
-//                             originalItemPrice: 500,
-//                             variant: {
-//                                 name: 'Test Variant',
-//                                 quantity: item.variantQty,
-//                             },
-//                         },
-//                     ],
-//                     orderDate: moment().subtract(1, 'minute').unix(),
-//                     invoiceNumber: 'invoice-number-1',
-//                     vendor: data.vendor1._id,
-//                 })
-//             )
-//         )
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+        data.vendor1 = (await VendorsModule.createVendor(testdata.vendor1))[1]
+        data.product1 = (
+            await ProductsModule.createProduct({
+                ...testdata.product1,
+                costPrice: 500,
+                stock: 500,
+            })
+        )[1]
+        data.warehouse1 = (
+            await WarehousesModule.createWarehouse({
+                ...testdata.warehouse1,
+                products: [{ source: data.product1._id, stock: 60 }],
+            })
+        )[1]
+    })
 
-//         const { token } = await login({
-//             email: testdata.admin1.email,
-//             password: testdata.admin1.password,
-//         })
+    it('Success return correct average', async () => {
+        const items = [
+            { id: '1', qty: 10, price: 550, variantQty: 1 },
+            { id: '2', qty: 10, price: 600, variantQty: 2 },
+            { id: '3', qty: 3, price: 650, variantQty: 10 },
+        ]
 
-//         const res = await request(app)
-//             .get(`/api/v1/stats/purchase-reports`)
-//             .set('Authorization', token)
+        await Promise.all(
+            items.map((item) =>
+                PurchaseOrderModule.createPurchaseOrder({
+                    products: [
+                        {
+                            id: item.id,
+                            product: data.product1._id,
+                            quantity: item.qty,
+                            itemPrice: item.price,
+                            originalItemPrice: 500,
+                            variant: {
+                                name: 'Test Variant',
+                                quantity: item.variantQty,
+                            },
+                        },
+                    ],
+                    orderDate: moment().subtract(1, 'minute').unix(),
+                    invoiceNumber: 'invoice-number-1',
+                    vendor: data.vendor1._id,
+                })
+            )
+        )
 
-//         expect(res.statusCode).to.equal(200)
-//         expect(res.body.purchaseReports.length).to.equal(1)
-//         expect(res.body.purchaseReports[0].aveCost).to.be.closeTo(512.5, 0.01)
-//     })
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
 
-//     it('Success return 2 items if original price changes', async () => {
-//         const items = [
-//             { id: '1', qty: 10, price: 550, variantQty: 1, ogPrice: 500 },
-//             { id: '2', qty: 10, price: 600, variantQty: 2, ogPrice: 500 },
-//             { id: '3', qty: 3, price: 650, variantQty: 10, ogPrice: 500 },
+        const res = await request(app)
+            .get(`/api/v1/stats/purchase-reports`)
+            .set('Authorization', token)
 
-//             { id: '1', qty: 10, price: 550, variantQty: 1, ogPrice: 550 },
-//             { id: '2', qty: 10, price: 600, variantQty: 2, ogPrice: 550 },
-//             { id: '3', qty: 3, price: 650, variantQty: 10, ogPrice: 550 },
-//         ]
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.purchaseReports.length).to.equal(1)
+        expect(res.body.purchaseReports[0].aveCost).to.be.closeTo(512.5, 0.01)
+    })
 
-//         await Promise.all(
-//             items.map((item) =>
-//                 PurchaseOrderModule.createPurchaseOrder({
-//                     products: [
-//                         {
-//                             id: item.id,
-//                             product: data.product1._id,
-//                             quantity: item.qty,
-//                             itemPrice: item.price,
-//                             originalItemPrice: item.ogPrice,
-//                             variant: {
-//                                 name: 'Test Variant',
-//                                 quantity: item.variantQty,
-//                             },
-//                         },
-//                     ],
-//                     orderDate: moment().subtract(1, 'minute').unix(),
-//                     invoiceNumber: 'invoice-number-1',
-//                     vendor: data.vendor1._id,
-//                 })
-//             )
-//         )
+    it('Success return 2 items if original price changes', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
 
-//         const { token } = await login({
-//             email: testdata.admin1.email,
-//             password: testdata.admin1.password,
-//         })
+        const updateRes = await request(app)
+            .put(`/api/v1/products/${data.product1._id}`)
+            .send({ costPrice: 550 })
+            .set('Authorization', token)
 
-//         const res = await request(app)
-//             .get(`/api/v1/stats/purchase-reports`)
-//             .set('Authorization', token)
+        expect(updateRes.statusCode).to.equal(200)
+        const product2 = updateRes.body.product
 
-//         expect(res.statusCode).to.equal(200)
-//         expect(res.body.purchaseReports.length).to.equal(2)
-//         expect(res.body.purchaseReports[1].aveCost).to.be.closeTo(557.14, 0.01)
-//         expect(res.body.purchaseReports[0].aveCost).to.be.closeTo(512.5, 0.01)
-//     })
-// })
+        const items = [
+            {
+                id: '1',
+                qty: 10,
+                price: 550,
+                variantQty: 1,
+                product: data.product1._id,
+            },
+            {
+                id: '2',
+                qty: 10,
+                price: 600,
+                variantQty: 2,
+                product: data.product1._id,
+            },
+            {
+                id: '3',
+                qty: 3,
+                price: 650,
+                variantQty: 10,
+                product: data.product1._id,
+            },
+
+            {
+                id: '1',
+                qty: 10,
+                price: 550,
+                variantQty: 1,
+                product: product2.id,
+            },
+            {
+                id: '2',
+                qty: 10,
+                price: 600,
+                variantQty: 2,
+                product: product2.id,
+            },
+            {
+                id: '3',
+                qty: 3,
+                price: 650,
+                variantQty: 10,
+                product: product2.id,
+            },
+        ]
+
+        await Promise.all(
+            items.map((item) =>
+                PurchaseOrderModule.createPurchaseOrder({
+                    products: [
+                        {
+                            id: item.id,
+                            product: item.product,
+                            quantity: item.qty,
+                            itemPrice: item.price,
+                            variant: {
+                                name: 'Test Variant',
+                                quantity: item.variantQty,
+                            },
+                        },
+                    ],
+                    orderDate: moment().subtract(1, 'minute').unix(),
+                    invoiceNumber: 'invoice-number-1',
+                    vendor: data.vendor1._id,
+                })
+            )
+        )
+
+        const res = await request(app)
+            .get(`/api/v1/stats/purchase-reports`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.purchaseReports.length).to.equal(2)
+        expect(res.body.purchaseReports[1].aveCost).to.be.closeTo(557.14, 0.01)
+        expect(res.body.purchaseReports[0].aveCost).to.be.closeTo(512.5, 0.01)
+    })
+})

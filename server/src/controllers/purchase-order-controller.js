@@ -35,23 +35,11 @@ module.exports.createPurchaseOrder = async (req, res) => {
         return res.status(404).json({ message: 'Product not found.' })
     }
 
-    // add original price to products
-    const products = (req.body.products || []).map((product) => {
-        const foundProduct = validatedProducts.find(
-            (p) => p[1]._id.toString() === product.product
-        )
-        return {
-            ...product,
-            originalItemPrice: foundProduct[1].costPrice,
-        }
-    })
-
     // Create purchase order
     const createdPurchaseOrderRes =
         await PurchaseOrdersModule.createPurchaseOrder(
             {
                 ...req.body,
-                products,
                 vendor: vendorRes[1]._id,
             },
             session
@@ -128,19 +116,6 @@ module.exports.updatePurchaseOrder = async (req, res) => {
         }
     }
 
-    const foundPurchaseOrderRes =
-        await PurchaseOrdersModule.getPurchaseOrderById(
-            purchaseOrderId,
-            session
-        )
-
-    if (foundPurchaseOrderRes[0] !== 200) {
-        await session.endSession()
-        return res
-            .status(foundPurchaseOrderRes[0])
-            .json(foundPurchaseOrderRes[1])
-    }
-
     if (req.body.products) {
         const validatedProducts = await Promise.all(
             (req.body.products || []).map((product) =>
@@ -154,24 +129,19 @@ module.exports.updatePurchaseOrder = async (req, res) => {
             await session.endSession()
             return res.status(404).json({ message: 'Product not found.' })
         }
+    }
 
-        // add original price to products
-        const products = req.body.products.map((product) => {
-            const foundProduct = validatedProducts.find(
-                (p) => p[1]._id.toString() === product.product
-            )
-            const orderProduct = foundPurchaseOrderRes[1].products.find(
-                (p) => p.product.toString() === product.product
-            )
-            return {
-                ...product,
-                originalItemPrice: orderProduct
-                    ? orderProduct.originalItemPrice
-                    : foundProduct[1].costPrice,
-            }
-        })
+    const foundPurchaseOrderRes =
+        await PurchaseOrdersModule.getPurchaseOrderById(
+            purchaseOrderId,
+            session
+        )
 
-        req.body.products = products
+    if (foundPurchaseOrderRes[0] !== 200) {
+        await session.endSession()
+        return res
+            .status(foundPurchaseOrderRes[0])
+            .json(foundPurchaseOrderRes[1])
     }
 
     // Update purchase order

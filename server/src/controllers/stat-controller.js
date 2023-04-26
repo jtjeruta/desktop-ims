@@ -92,14 +92,10 @@ module.exports.listProductPurchaseReports = async (req, res) => {
         const purchaseReports = purchaseOrdersRes[1]
             .reduce((acc, order) => {
                 order.products.forEach((product) => {
-                    const foundProduct = productsRes[1].find((p) =>
-                        p._id.equals(product.product.id)
-                    )
-
                     const warehouseStocks = warehousesRes[1].reduce(
                         (acc, wh) => {
                             wh.products.forEach((whp) => {
-                                if (!whp.source._id.equals(product.product.id))
+                                if (!whp.source._id.equals(product.product?.id))
                                     return
                                 acc += whp.stock
                             })
@@ -112,17 +108,16 @@ module.exports.listProductPurchaseReports = async (req, res) => {
                     const foundVariant = acc.find((variant) => {
                         return (
                             variant.productId.equals(product.product._id) &&
-                            variant.variant === product.variant.name &&
-                            variant.originalPrice === product.originalItemPrice
+                            variant.variant === product.variant.name
                         )
                     }) ?? {
                         productId: product.product._id,
                         productName: product.product.name,
                         variant: product.variant.name,
                         price: product.itemPrice,
-                        originalPrice: product.originalItemPrice,
+                        originalPrice: product.product?.costPrice ?? 0,
                         currentStock:
-                            (foundProduct?.stock ?? 0) + warehouseStocks,
+                            (product.product?.stock ?? 0) + warehouseStocks,
                         items: [],
                     }
 
@@ -137,8 +132,7 @@ module.exports.listProductPurchaseReports = async (req, res) => {
                         (v) =>
                             !(
                                 v.productId.equals(foundVariant.productId) &&
-                                v.variant === foundVariant.variant &&
-                                v.originalPrice === foundVariant.originalPrice
+                                v.variant === foundVariant.variant
                             )
                     )
                     acc.push(foundVariant)
@@ -158,11 +152,7 @@ module.exports.listProductPurchaseReports = async (req, res) => {
                     0
                 )
 
-                const id =
-                    variant.productId.toString() +
-                    variant.variant +
-                    variant.originalPrice
-
+                const id = variant.productId.toString() + variant.variant
                 return { ...variant, aveCost, qty: totalQty, id }
             })
 
@@ -201,14 +191,10 @@ module.exports.listProductSalesReports = async (req, res) => {
         const salesReports = salesOrdersRes[1]
             .reduce((acc, order) => {
                 order.products.forEach((product) => {
-                    const foundProduct = productsRes[1].find((p) =>
-                        p._id.equals(product.product.id)
-                    )
-
                     const warehouseStocks = warehousesRes[1].reduce(
                         (acc, wh) => {
                             wh.products.forEach((whp) => {
-                                if (!whp.source._id.equals(product.product.id))
+                                if (!whp.source._id.equals(product.product?.id))
                                     return
                                 acc += whp.stock
                             })
@@ -221,17 +207,16 @@ module.exports.listProductSalesReports = async (req, res) => {
                     const foundVariant = acc.find((variant) => {
                         return (
                             variant.productId.equals(product.product._id) &&
-                            variant.variant === product.variant.name &&
-                            variant.originalPrice === product.originalItemPrice
+                            variant.variant === product.variant.name
                         )
                     }) ?? {
                         productId: product.product._id,
                         productName: product.product.name,
                         variant: product.variant.name,
                         price: product.itemPrice,
-                        originalPrice: product.originalItemPrice,
+                        originalPrice: product.product?.sellingPrice ?? 0,
                         currentStock:
-                            (foundProduct?.stock ?? 0) + warehouseStocks,
+                            (product.product?.stock ?? 0) + warehouseStocks,
                         items: [],
                     }
 
@@ -246,8 +231,7 @@ module.exports.listProductSalesReports = async (req, res) => {
                         (v) =>
                             !(
                                 v.productId.equals(foundVariant.productId) &&
-                                v.variant === foundVariant.variant &&
-                                v.originalPrice === foundVariant.originalPrice
+                                v.variant === foundVariant.variant
                             )
                     )
                     acc.push(foundVariant)
@@ -267,11 +251,7 @@ module.exports.listProductSalesReports = async (req, res) => {
                     0
                 )
 
-                const id =
-                    variant.productId.toString() +
-                    variant.variant +
-                    variant.originalPrice
-
+                const id = variant.productId.toString() + variant.variant
                 return { ...variant, avePrice, qty: totalQty, id }
             })
 
