@@ -67,7 +67,7 @@ module.exports.createProduct = async (req, res) => {
 
 module.exports.getProduct = async (req, res) => {
     const [status, data] = await ProductsModule.getProduct({
-        $or: [{ id: req.params.productId }, { sku: req.params.productId }],
+        $or: [{ _id: req.params.productId }, { sku: req.params.productId }],
         archived: false,
     })
 

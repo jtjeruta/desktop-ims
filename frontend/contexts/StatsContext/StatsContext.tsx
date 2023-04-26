@@ -87,14 +87,7 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         )
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
+        if (!response[0]) return response
 
         setTotalProductSales(response[1])
         return response
@@ -110,14 +103,7 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         )
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
+        if (!response[0]) return response
 
         setTotalProductPurchases(response[1])
         return response
@@ -133,14 +119,7 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         )
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
+        if (!response[0]) return response
 
         setTotalExpenses(response[1])
         return response
@@ -156,14 +135,7 @@ const StatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         )
         AppContext.removeLoading(key)
 
-        if (!response[0]) {
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
-            return response
-        }
+        if (!response[0]) return response
 
         setTotalReceivables(response[1])
         return response

@@ -71,35 +71,41 @@ describe('Controller: List products', () => {
 })
 
 describe('Controller: Get product', () => {
-    let createdProduct = null
+    const createdProducts = {}
 
     setup()
     beforeEach(async () => {
         await UsersModule.createUser(testdata.admin1)
         await UsersModule.createUser(testdata.employee1)
-        const createProductRes = await ProductsModule.createProduct(
-            testdata.product1
-        )
-        createdProduct = createProductRes[1]
+        createdProducts.product1 = (
+            await ProductsModule.createProduct(testdata.product1)
+        )[1]
+        createdProducts.product2 = (
+            await ProductsModule.createProduct(testdata.product2)
+        )[1]
     })
 
-    it('Success: run as admin', (done) => {
-        login({
+    it('Success: run as admin', async () => {
+        const { token } = await login({
             email: testdata.admin1.email,
             password: testdata.admin1.password,
-        }).then(({ token }) => {
-            request(app)
-                .get(`/api/v1/products/${createdProduct._id}`)
-                .set('Authorization', token)
-                .then((res) => {
-                    expect(res.statusCode).to.equal(200)
-                    expect(res.body.product.name).to.equal(
-                        testdata.product1.name
-                    )
-                    done()
-                })
-                .catch((err) => done(err))
         })
+
+        const res = await request(app)
+            .get(`/api/v1/products/${createdProducts.product1.id}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.id).to.equal(createdProducts.product1.id)
+        expect(res.body.product.name).to.equal(testdata.product1.name)
+
+        const res2 = await request(app)
+            .get(`/api/v1/products/${createdProducts.product2.id}`)
+            .set('Authorization', token)
+
+        expect(res2.statusCode).to.equal(200)
+        expect(res2.body.product.id).to.equal(createdProducts.product2.id)
+        expect(res2.body.product.name).to.equal(testdata.product2.name)
     })
 
     it('Fail: run as employee', (done) => {
@@ -108,7 +114,7 @@ describe('Controller: Get product', () => {
             password: testdata.employee1.password,
         }).then(({ token }) => {
             request(app)
-                .get(`/api/v1/products/${createdProduct._id}`)
+                .get(`/api/v1/products/${createdProducts.product1.id}`)
                 .set('Authorization', token)
                 .then((res) => {
                     expect(res.statusCode).to.equal(401)
