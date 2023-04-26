@@ -27,7 +27,6 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
         AppContext.addLoading(key)
         const response = await UsersAPI.createUser(userDoc)
-        console.log(response)
         AppContext.removeLoading(key)
 
         if (!response[0]) {

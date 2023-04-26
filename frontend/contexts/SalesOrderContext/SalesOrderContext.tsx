@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import moment from 'moment'
 import * as SalesOrdersAPI from '../../apis/SalesOrderAPI'
 import { useAppContext } from '../AppContext/AppContext'
 import * as Types from './types'
@@ -19,7 +20,7 @@ const SalesOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         customer: null,
         total: 0,
         remarks: null,
-        orderDate: null,
+        orderDate: moment().unix(),
         invoiceNumber: null,
     })
 
@@ -120,7 +121,7 @@ const SalesOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await SalesOrdersAPI.deleteSalesOrder(id)
         AppContext.removeLoading(key)
 
-        return response;        
+        return response
     }
 
     const value: Types.Context = useMemo(

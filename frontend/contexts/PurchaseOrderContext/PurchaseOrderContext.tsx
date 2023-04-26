@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import moment from 'moment'
 import * as PurchaseOrdersAPI from '../../apis/PurchaseOrderAPI'
 import { useAppContext } from '../AppContext/AppContext'
 import * as Types from './types'
@@ -17,7 +18,7 @@ const PurchaseOrderContextProvider: React.FC<{ children: React.ReactNode }> = ({
         vendor: null,
         total: 0,
         remarks: null,
-        orderDate: null,
+        orderDate: moment().unix(),
         invoiceNumber: null,
     })
 
