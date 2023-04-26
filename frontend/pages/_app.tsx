@@ -21,7 +21,7 @@ function AppContent({ Component, pageProps }: AppProps) {
 
     useLayoutEffect(() => {
         AuthContext.verifyToken()
-    }, [AuthContext])
+    }, [])
 
     useLayoutEffect(() => {
         if (AppContext.isLoading('auth-verify-token')) return

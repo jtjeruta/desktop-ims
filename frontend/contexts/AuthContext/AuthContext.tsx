@@ -20,6 +20,7 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         AppContext.removeLoading(key)
 
         if (!resp[0]) {
+            Cookies.remove(COOKIES.SERVER_TOKEN)
             AppContext.addNotification({
                 title: 'Something went wrong.',
                 type: 'danger',
@@ -44,6 +45,8 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (resp[0] && (!user || user.id !== resp[1].id)) {
             setUser(resp[1])
+        } else {
+            Cookies.remove(COOKIES.SERVER_TOKEN)
         }
     }
 
