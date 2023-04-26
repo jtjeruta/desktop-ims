@@ -66,13 +66,19 @@ module.exports.createProduct = async (req, res) => {
 }
 
 module.exports.getProduct = async (req, res) => {
-    const [status, data] = await ProductsModule.getProduct({
-        $or: [{ _id: req.params.productId }, { sku: req.params.productId }],
-        archived: false,
-    })
+    const [idRes, skuRes] = await Promise.all([
+        ProductsModule.getProductById(req.params.productId),
+        ProductsModule.getProduct({
+            sku: req.params.productId,
+            archived: false,
+        }),
+    ])
 
-    if (status !== 200) return res.status(status).json(data)
-    return res.status(200).json({ product: ProductView(data) })
+    if (idRes[0] !== 200 && skuRes[0] !== 200)
+        return res.status(404).json({ message: 'Product not found.' })
+    if (idRes[0] === 200)
+        return res.status(200).json({ product: ProductView(idRes[1]) })
+    return res.status(200).json({ product: ProductView(skuRes[1]) })
 }
 
 module.exports.listProducts = async (req, res) => {
@@ -126,7 +132,7 @@ module.exports.updateProduct = async (req, res) => {
 
         if (warehousesRes[0] !== 200) {
             await session.endSession()
-            return res.status(warehousesRes[0]).json(warehousseRes[1])
+            return res.status(warehousesRes[0]).json(warehousesRes[1])
         }
 
         const orgProductRes = await ProductsModule.getProductById(

@@ -108,6 +108,21 @@ describe('Controller: Get product', () => {
         expect(res2.body.product.name).to.equal(testdata.product2.name)
     })
 
+    it('Success: get product using sku number', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .get(`/api/v1/products/${createdProducts.product1.sku}`)
+            .set('Authorization', token)
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.product.id).to.equal(createdProducts.product1.id)
+        expect(res.body.product.name).to.equal(testdata.product1.name)
+    })
+
     it('Fail: run as employee', (done) => {
         login({
             email: testdata.employee1.email,
