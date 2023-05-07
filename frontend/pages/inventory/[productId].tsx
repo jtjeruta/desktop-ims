@@ -33,7 +33,7 @@ const ProductPageContent = () => {
                     WarehouseContext.listWarehouses(),
                 ])
 
-                if (!productRes[0] && productRes[1].status === 404) {
+                if (!productRes[0] && productRes[1]?.status === 404) {
                     return router.replace('/404')
                 } else if (!productRes[0] || !warehouseRes[0]) {
                     return router.push('/500')

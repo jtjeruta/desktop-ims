@@ -12,7 +12,7 @@ const Login = () => {
 
     const onSubmit = async (data: FieldValues) => {
         const res = await AuthContext.login(data.email, data.password)
-        if (!res[0] && res[1].status === 400) {
+        if (!res[0] && res[1]?.status === 400) {
             methods.setError('email', {
                 type: 'custom',
                 message: 'Wrong email or password.',
