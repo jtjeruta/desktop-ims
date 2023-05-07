@@ -10,11 +10,13 @@ import {
     FaStore,
     FaTags,
     FaUsers,
+    FaWarehouse,
 } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import { FiLogOut } from 'react-icons/fi'
 import Button from '../Button/Button'
+import { GiExpense, GiReceiveMoney } from 'react-icons/gi'
 
 type PageGroupType = {
     title: string
@@ -73,19 +75,19 @@ const Sidebar = () => {
         {
             text: 'Warehouses',
             active: router.asPath === '/warehouses',
-            icon: FaStore,
+            icon: FaWarehouse,
             onClick: () => sideBarRedirect('/warehouses'),
         },
         {
             text: 'Expenses',
             active: router.asPath === '/expenses',
-            icon: FaMoneyBill,
+            icon: GiExpense,
             onClick: () => sideBarRedirect('/expenses'),
         },
         {
             text: 'Receivables',
             active: router.asPath === '/receivables',
-            icon: FaMoneyBillWave,
+            icon: GiReceiveMoney,
             onClick: () => sideBarRedirect('/receivables'),
         },
     ]
@@ -96,12 +98,6 @@ const Sidebar = () => {
     }
 
     const settingsPages: PageType[] = [
-        // {
-        //     text: 'Logs',
-        //     active: router.asPath === '/logs',
-        //     icon: FaListAlt,
-        //     onClick: () => sideBarRedirect('/logs'),
-        // },
         {
             text: 'Users',
             active: router.asPath === '/users',
