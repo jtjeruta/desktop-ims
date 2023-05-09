@@ -3,6 +3,7 @@ version: '3.8'
 services:
     frontend:
         image: jtjeruta/ims-frontend:latest
+        container_name: ims-frontend
         ports:
             - '3000:3000'
         networks:
@@ -11,8 +12,10 @@ services:
 
     server:
         image: jtjeruta/ims-server:latest
+        container_name: ims-server
         environment:
             NODE_ENV: production
+            MONGO_CONNECTION_STRING: mongodb://mongo1/ims
         ports:
             - '4000:4000'
         networks:
@@ -29,7 +32,7 @@ services:
         networks:
             - desktop-ims
         ports:
-            - 30001:27017
+            - 27017:30001
         logging:
             driver: none
         environment:
