@@ -6,8 +6,6 @@ services:
         build:
             context: ./
             dockerfile: dockerfile.frontend.prd
-        volumes:
-            - ./frontend:/opt/desktop-ims-frontend/
         ports:
             - '3000:3000'
         networks:
@@ -21,14 +19,12 @@ services:
             dockerfile: dockerfile.server.prd
         environment:
             NODE_ENV: production
-        volumes:
-            - ./server:/opt/desktop-ims-server/
         ports:
             - '4000:4000'
         networks:
             - desktop-ims
         depends_on:
-            - db
+            - mongo1
         restart: 'always'
 
     mongo1:
