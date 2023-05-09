@@ -3,15 +3,7 @@ import { useRouter } from 'next/router'
 import { IconType } from 'react-icons'
 import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
-import {
-    FaBoxes,
-    FaMoneyBill,
-    FaMoneyBillWave,
-    FaStore,
-    FaTags,
-    FaUsers,
-    FaWarehouse,
-} from 'react-icons/fa'
+import { FaBoxes, FaStore, FaTags, FaUsers, FaWarehouse } from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import { FiLogOut } from 'react-icons/fi'
