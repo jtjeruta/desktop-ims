@@ -3,6 +3,6 @@ FROM node:16-bullseye
 COPY server /opt/desktop-ims-server/
 WORKDIR /opt/desktop-ims-server/
 
-RUN npm install
+RUN npm install --omit=dev
 
 CMD [ "npm", "start" ]
