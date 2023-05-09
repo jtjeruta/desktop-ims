@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+    frontend:
+        container_name: desktop-ims-frontend
+        build:
+            context: ./
+            dockerfile: dockerfile.frontend.prd
+        volumes:
+            - ./frontend:/opt/desktop-ims-frontend/
+        ports:
+            - '3000:3000'
+        networks:
+            - desktop-ims
+        restart: 'always'
+
+    server:
+        container_name: desktop-ims-server
+        build:
+            context: ./
+            dockerfile: dockerfile.server.prd
+        environment:
+            NODE_ENV: production
+        volumes:
+            - ./server:/opt/desktop-ims-server/
+        ports:
+            - '4000:4000'
+        networks:
+            - desktop-ims
+        depends_on:
+            - db
+        restart: 'always'
+
+    mongo1:
+        container_name: mongo1
+        image: bitnami/mongodb:5.0
+        volumes:
+            - ./data:/data
+        networks:
+            - desktop-ims
+        ports:
+            - 30001:27017
+        logging:
+            driver: none
+        environment:
+            MONGODB_REPLICA_SET_MODE: 'primary'
+            ALLOW_EMPTY_PASSWORD: 'yes'
+        restart: 'always'
+
+networks:
+    desktop-ims:
+        name: desktop-ims
+        external: false
