@@ -2,10 +2,7 @@ version: '3.8'
 
 services:
     frontend:
-        container_name: desktop-ims-frontend
-        build:
-            context: ./
-            dockerfile: dockerfile.frontend.prd
+        image: jtjeruta/ims-frontend:latest
         ports:
             - '3000:3000'
         networks:
@@ -13,10 +10,7 @@ services:
         restart: 'always'
 
     server:
-        container_name: desktop-ims-server
-        build:
-            context: ./
-            dockerfile: dockerfile.server.prd
+        image: jtjeruta/ims-server:latest
         environment:
             NODE_ENV: production
         ports:
