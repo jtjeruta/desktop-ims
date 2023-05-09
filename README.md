@@ -116,3 +116,33 @@ Pushing to the production branch triggers deployment:
 ```
 avePrice = (Σ(purchases.price * purchase.qty) + (product.price * product.qty)) / (Σ(purchases.quantity) + product.quantity)
 ```
+
+## Docker Deployment
+
+1. Build the docker images
+
+```
+  docker-compose -f docker-compose.prd.yml build
+```
+
+2. Login to docker hub
+
+```
+  docker login
+```
+
+3. Tag the images
+
+```
+  docker tag desktop-ims-frontend:latest jtjeruta/ims-frontend:latest
+
+  docker tag desktop-ims-server:latest jtjeruta/ims-server:latest
+```
+
+4. Push the images
+
+```
+  docker push jtjeruta/ims-frontend:latest
+
+  docker push jtjeruta/ims-server:latest
+```
