@@ -16,6 +16,9 @@ services:
         environment:
             NODE_ENV: production
             MONGO_CONNECTION_STRING: mongodb://mongo1/ims
+        volumes:
+            - ./data:/opt/data
+            - ./backups:/opt/backups
         ports:
             - '4000:4000'
         networks:

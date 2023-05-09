@@ -23,6 +23,8 @@ services:
             MONGO_CONNECTION_STRING: ${MONGO_CONNECTION_STRING:-mongodb://mongo1:30001/ims}
         volumes:
             - ./server:/opt/desktop-ims-server/
+            - ./data:/opt/data
+            - ./backups:/opt/backups
         ports:
             - '4000:4000'
         networks:

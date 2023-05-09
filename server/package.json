@@ -7,9 +7,11 @@
         "lint": "eslint ./src/**/*.js",
         "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
         "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000",
-        "migrate": "migrate --md ./migrations -d ${MONGO_CONNECTION_STRING-mongodb://mongo1:30001/ims} --autosync"
+        "migrate": "migrate --md ./migrations -d ${MONGO_CONNECTION_STRING-mongodb://mongo1:30001/ims} --autosync",
+        "backup": "node ./src/lib/backup-script.js"
     },
     "dependencies": {
+        "adm-zip": "^0.5.10",
         "bcrypt": "^5.0.1",
         "cookie-parser": "~1.4.4",
         "cors": "^2.8.5",
@@ -23,6 +25,7 @@
         "moment": "^2.29.3",
         "mongoose": "^6.6.5",
         "morgan": "~1.9.1",
+        "node-cron": "^3.0.2",
         "nodemon": "^2.0.16",
         "validator": "^13.7.0"
     },
