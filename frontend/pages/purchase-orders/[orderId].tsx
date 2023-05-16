@@ -26,6 +26,7 @@ import {
     useWarehouseContext,
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
+import Alert from '../../components/Alert/Alert'
 
 const PurchaseOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -36,6 +37,8 @@ const PurchaseOrderPageContent = () => {
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
     const [vendorsError, setVendorsError] = useState<string>('')
+    const [hasAvailableProducts, setHasAvailableProducts] =
+        useState<boolean>(true)
     const isEditPage = ![undefined, 'new', ['']].includes(router.query.orderId)
 
     const submitButtonDisabled =
@@ -108,7 +111,8 @@ const PurchaseOrderPageContent = () => {
 
                 if (response[0]) {
                     PurOrdContext.setDraftOrder(response[1])
-                    response[1].vendor && VendorContext.setDraftVendor(response[1].vendor)
+                    response[1].vendor &&
+                        VendorContext.setDraftVendor(response[1].vendor)
                 }
             }
 
@@ -116,6 +120,10 @@ const PurchaseOrderPageContent = () => {
             if (ProductContext.products === null) {
                 const response = await ProductContext.listProducts()
                 if (!response[0]) return router.push('/500')
+
+                setHasAvailableProducts(
+                    response[1].some((product) => product.published)
+                )
             }
 
             // fetch vendors
@@ -136,6 +144,15 @@ const PurchaseOrderPageContent = () => {
     return (
         <>
             <UserLayout backButton>
+                {!hasAvailableProducts && (
+                    <Alert
+                        type="warning"
+                        title="No products added yet"
+                        content="You need to add products before you can create a purchase order."
+                        className="mb-3"
+                    />
+                )}
+
                 <div className="mb-4">
                     <h1>
                         {AppContext.isLoading('get-order') ? (

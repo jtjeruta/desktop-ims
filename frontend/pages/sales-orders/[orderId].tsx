@@ -27,6 +27,7 @@ import {
     useWarehouseContext,
     WarehouseContextProvider,
 } from '../../contexts/WarehouseContext/WarehouseContext'
+import Alert from '../../components/Alert/Alert'
 
 const SalesOrderPageContent = () => {
     const AppContext = useAppContext()
@@ -37,6 +38,8 @@ const SalesOrderPageContent = () => {
     const router = useRouter()
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
     const [customersError, setCustomersError] = useState<string>('')
+    const [hasAvailableProducts, setHasAvailableProducts] =
+        useState<boolean>(true)
     const isEditPage = ![undefined, 'new', ['']].includes(router.query.orderId)
 
     const submitButtonDisabled =
@@ -135,6 +138,12 @@ const SalesOrderPageContent = () => {
             if (responses.some((response) => !response[0])) {
                 return router.push('/500')
             }
+
+            if (responses[0][0]) {
+                setHasAvailableProducts(
+                    responses[0][1].some((product) => product.published)
+                )
+            }
         }
 
         init()
@@ -143,6 +152,15 @@ const SalesOrderPageContent = () => {
     return (
         <>
             <UserLayout backButton>
+                {!hasAvailableProducts && (
+                    <Alert
+                        type="warning"
+                        title="No products added yet"
+                        content="You need to add products before you can create a sales order."
+                        className="mb-3"
+                    />
+                )}
+
                 <div className="mb-4">
                     <h1>
                         {AppContext.isLoading('get-order') ? (

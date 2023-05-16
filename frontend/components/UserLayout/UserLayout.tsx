@@ -4,7 +4,7 @@ import Backdrop from '../Sidebar/Backdrop'
 import Sidebar from '../Sidebar/Sidebar'
 
 type Props = {
-    children: (JSX.Element | false)[]
+    children: React.ReactNode
     backButton?: boolean
 }
 
