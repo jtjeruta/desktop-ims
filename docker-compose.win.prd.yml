@@ -43,6 +43,14 @@ services:
             ALLOW_EMPTY_PASSWORD: 'yes'
         restart: 'always'
 
+    watchtower:
+        container_name: watchtower
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        command: --interval 30
+        restart: 'always'
+
 networks:
     desktop-ims:
         name: desktop-ims
