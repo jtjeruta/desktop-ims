@@ -310,3 +310,76 @@ describe('Delete user', () => {
         })
     })
 })
+
+describe('Change Password', () => {
+    const createdUsers = {}
+
+    setup()
+    beforeEach(async () => {
+        const admin = await UsersModule.createUser(testdata.admin1)
+        const employee = await UsersModule.createUser(testdata.employee1)
+        createdUsers.admin = admin[1]
+        createdUsers.employee = employee[1]
+    })
+
+    it('Success: run as admin with correct data', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/users/${createdUsers.admin.id}/password`)
+            .set('Authorization', token)
+            .send({ password: 'newpassword' })
+
+        expect(res.statusCode).to.equal(200)
+
+        const { token: newToken } = await login({
+            email: testdata.admin1.email,
+            password: 'newpassword',
+        })
+
+        expect(newToken).to.be.a('string')
+
+        const { token: oldToken, message } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        expect(oldToken).to.be.undefined
+        expect(message).to.equal('Wrong username or password.')
+    })
+
+    it('Fail: run as admin with incorrect data', async () => {
+        const { token } = await login({
+            email: testdata.admin1.email,
+            password: testdata.admin1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/users/${createdUsers.admin.id}/password`)
+            .set('Authorization', token)
+            .send({ password: '' })
+
+        expect(res.statusCode).to.equal(400)
+        expect(res.body.errors).to.deep.equal({
+            password: 'Password must be at least 8 characters long.',
+        })
+    })
+
+    it('Fail: run as employee', async () => {
+        const { token } = await login({
+            email: testdata.employee1.email,
+            password: testdata.employee1.password,
+        })
+
+        const res = await request(app)
+            .put(`/api/v1/users/${createdUsers.admin.id}/password`)
+            .set('Authorization', token)
+            .send({ password: 'newpassword' })
+
+        expect(res.statusCode).to.equal(401)
+        expect(res.body.message).to.equal('Unauthorized.')
+    })
+})

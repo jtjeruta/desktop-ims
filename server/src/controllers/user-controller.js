@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongoose').Types
+const bcrypt = require('bcrypt')
 const UsersModule = require('../modules/users-module')
 const { UsersView, UserView } = require('../views/user-view')
 
@@ -72,6 +73,22 @@ module.exports.updateUser = async (req, res) => {
 
     if (status !== 200) return res.status(status).json(data)
     return res.status(200).json({ user: UserView(data) })
+}
+
+module.exports.changePassword = async (req, res) => {
+    const { userId } = req.params
+    const { password } = req.body
+    if (!password || password.length < 8)
+        return res.status(400).json({
+            errors: {
+                password: 'Password must be at least 8 characters long.',
+            },
+        })
+    const encryptedPassword = await bcrypt.hash(password || '', 10)
+    const [status, data] = await UsersModule.updateUser(userId, {
+        password: encryptedPassword,
+    })
+    return res.status(status).json(data)
 }
 
 module.exports.archiveUser = async (req, res) => {

@@ -30,6 +30,11 @@ router.post('/api/v1/users', isAdmin, UserController.createUser)
 router.get('/api/v1/users', isAdmin, UserController.listUsers)
 router.put('/api/v1/users/:userId', isAdmin, UserController.updateUser)
 router.delete('/api/v1/users/:userId', isAdmin, UserController.archiveUser)
+router.put(
+    '/api/v1/users/:userId/password',
+    isAdmin,
+    UserController.changePassword
+)
 
 // products
 router.get('/api/v1/products/:productId', isAdmin, ProductController.getProduct)
