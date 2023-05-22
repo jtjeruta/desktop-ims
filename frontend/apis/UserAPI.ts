@@ -25,3 +25,9 @@ export const deleteUser = (id: string) =>
         .delete(`/api/v1/users/${id}`)
         .then((): [true] => [true])
         .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const changePassword = (userId: string, password: string) =>
+    Axios()
+        .put(`/api/v1/users/${userId}/password`, { password })
+        .then((): [true] => [true])
+        .catch((err): [false, AxiosResponse] => [false, err.response])

@@ -37,6 +37,10 @@ export type UpdateUser = (
 >
 export type RemoveUser = (id: User['id']) => void
 export type ListUsers = () => Promise<[true, User[]] | [false, string]>
+export type ChangePassword = (
+    userId: string,
+    password: string
+) => Promise<[true] | [false, { errors?: { password?: { message: string } } }]>
 
 export type Context = {
     users: User[] | null
@@ -48,4 +52,5 @@ export type Context = {
     setUserToEdit: (user: User | null) => void
     userToDelete: User | null
     setUserToDelete: (user: User | null) => void
+    changePassword: ChangePassword
 }

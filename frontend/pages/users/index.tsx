@@ -15,6 +15,7 @@ import {
     UserContextProvider,
     useUserContext,
 } from '../../contexts/UserContext/UserContext'
+import ChangePasswordDialog from '../../components/ChangePasswordDialog'
 
 const PageContent: FC = () => {
     const AppContext = useAppContext()
@@ -27,6 +28,11 @@ const PageContent: FC = () => {
     const openUserDialog = (user: User | null) => () => {
         UserContext.setUserToEdit(user)
         AppContext.openDialog('add-edit-user-dialog')
+    }
+
+    const openPasswordDialog = (user: User | null) => () => {
+        UserContext.setUserToEdit(user)
+        AppContext.openDialog('change-password-dialog')
     }
 
     useLayoutEffect(() => {
@@ -133,6 +139,12 @@ const PageContent: FC = () => {
                                         </Button>
                                         <Button
                                             style="link"
+                                            onClick={openPasswordDialog(user)}
+                                        >
+                                            Change Password
+                                        </Button>
+                                        <Button
+                                            style="link"
                                             onClick={() => {
                                                 UserContext.setUserToDelete(
                                                     user
@@ -156,6 +168,7 @@ const PageContent: FC = () => {
                 />
             </Card>
 
+            <ChangePasswordDialog />
             <AddEditUserDialog />
             <ConfirmDialog
                 text={`Delete user ${UserContext.userToDelete?.firstName} ${UserContext.userToDelete?.lastName}?`}

@@ -9,6 +9,7 @@ import {
     User,
     ListUsers,
     UpdateUser,
+    ChangePassword,
 } from './types'
 
 const UserContext = React.createContext<Context | any>({})
@@ -64,6 +65,20 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
         return [true, response[1]]
     }
 
+    const changePassword: ChangePassword = async (userId, newPassword) => {
+        const key = 'update-user'
+
+        AppContext.addLoading(key)
+        const response = await UsersAPI.changePassword(userId, newPassword)
+        AppContext.removeLoading(key)
+
+        if (!response[0]) {
+            return [false, response[1].data]
+        }
+
+        return response
+    }
+
     const removeUser: RemoveUser = async (id) => {
         const key = 'remove-user'
 
@@ -111,6 +126,7 @@ const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
             setUserToEdit,
             userToDelete,
             setUserToDelete,
+            changePassword,
         }),
         [users, userToEdit, userToDelete]
     )
