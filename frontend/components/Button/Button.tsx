@@ -18,7 +18,7 @@ const Button: FC<Props> = (props) => {
     const styles = {
         default: 'font-bold rounded',
         link: 'font-medium enabled:hover:underline',
-        outline: 'font-medium rouded',
+        outline: 'font-medium rounded',
     }
 
     const colors = {

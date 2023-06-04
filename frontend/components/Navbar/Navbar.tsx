@@ -5,8 +5,9 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import Button from '../Button/Button'
-import { FaArrowLeft } from 'react-icons/fa'
+import { FaArrowLeft, FaQrcode } from 'react-icons/fa'
 import { useRouter } from 'next/router'
+import { BiQrScan } from 'react-icons/bi'
 
 type Props = {
     backButton?: boolean
@@ -30,12 +31,23 @@ const Navbar: FC<Props> = (props) => {
                             )}
                             <Link href="/">
                                 <h2 className="text-lg font-bold cursor-pointer">
-                                    <span className='hidden md:block'>INVENTORY SYSTEM</span>
-                                    <span className='md:hidden'>IMS</span>
+                                    <span className="hidden md:block">
+                                        INVENTORY SYSTEM
+                                    </span>
+                                    <span className="md:hidden">IMS</span>
                                 </h2>
                             </Link>
                         </div>
-                        <div className="md:hidden">
+                        <div className="md:hidden flex gap-2">
+                            {AuthContext.user?.role === 'employee' && (
+                                <Button
+                                    style="outline"
+                                    color="secondary"
+                                    onClick={() => router.push('/connect')}
+                                >
+                                    <BiQrScan />
+                                </Button>
+                            )}
                             <Button
                                 onClick={() => {
                                     if (AuthContext.user?.role === 'admin') {
@@ -56,7 +68,19 @@ const Navbar: FC<Props> = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="hidden md:inline-block">
+                <div className="hidden md:flex gap-2">
+                    {AuthContext.user?.role === 'employee' && (
+                        <Button
+                            style="outline"
+                            color="secondary"
+                            onClick={() => router.push('/connect')}
+                        >
+                            <div className="flex items-center gap-2">
+                                <FaQrcode fontSize={18} />
+                                <span>Connect</span>
+                            </div>
+                        </Button>
+                    )}
                     <Button color="secondary" onClick={AuthContext.logout}>
                         <div className="flex items-center gap-2">
                             <FiLogOut fontSize={18} />

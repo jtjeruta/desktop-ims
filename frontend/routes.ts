@@ -71,6 +71,10 @@ export const routes: Route[] = [
         access: 'admin',
     },
     {
+        pathname: '/connect',
+        access: 'authenticated',
+    },
+    {
         pathname: '/500',
         access: 'everyone',
     },

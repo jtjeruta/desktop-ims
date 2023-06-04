@@ -3,7 +3,14 @@ import { useRouter } from 'next/router'
 import { IconType } from 'react-icons'
 import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
-import { FaBoxes, FaStore, FaTags, FaUsers, FaWarehouse } from 'react-icons/fa'
+import {
+    FaBoxes,
+    FaQrcode,
+    FaStore,
+    FaTags,
+    FaUsers,
+    FaWarehouse,
+} from 'react-icons/fa'
 import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import { FiLogOut } from 'react-icons/fi'
@@ -95,6 +102,12 @@ const Sidebar = () => {
             active: router.asPath === '/users',
             icon: FaUsers,
             onClick: () => sideBarRedirect('/users'),
+        },
+        {
+            text: 'Connect',
+            active: router.asPath === '/connect',
+            icon: FaQrcode,
+            onClick: () => sideBarRedirect('/connect'),
         },
     ]
 
