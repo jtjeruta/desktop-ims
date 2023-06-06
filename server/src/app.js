@@ -5,7 +5,6 @@ const cors = require('cors')
 
 const Routes = require('./routes')
 const { dbConnect } = require('./lib/db')
-const intCrons = require('./lib/crons')
 
 const app = express()
 app.db = dbConnect()
@@ -21,7 +20,5 @@ app.use('/', Routes)
 app.use(function (req, res) {
     return res.status(404).json({ message: 'Route does not exist.' })
 })
-
-intCrons()
 
 module.exports = app

@@ -23,8 +23,6 @@ services:
             MONGO_CONNECTION_STRING: ${MONGO_CONNECTION_STRING:-mongodb://mongo1:30001/ims}
         volumes:
             - ./server:/opt/desktop-ims-server/
-            - ./data:/opt/data
-            - ./backups:/opt/backups
         ports:
             - '4000:4000'
         networks:
@@ -35,9 +33,10 @@ services:
     mongo1:
         image: mongo:5.0
         container_name: mongo1
-        command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30001"]
+        command:
+            ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30001']
         volumes:
-            - ./data/mongo-1:/data/db
+            - data_1:/data/db
         ports:
             - 30001:30001
         healthcheck:
@@ -50,9 +49,10 @@ services:
     mongo2:
         image: mongo:5.0
         container_name: mongo2
-        command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30002"]
+        command:
+            ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30002']
         volumes:
-            - ./data/mongo-2:/data/db
+            - data_2:/data/db
         ports:
             - 30002:30002
         networks:
@@ -61,9 +61,10 @@ services:
     mongo3:
         image: mongo:5.0
         container_name: mongo3
-        command: ["--replSet", "my-replica-set", "--bind_ip_all", "--port", "30003"]
+        command:
+            ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30003']
         volumes:
-            - ./data/mongo-3:/data/db
+            - data_3:/data/db
         ports:
             - 30003:30003
         networks:
@@ -72,4 +73,12 @@ services:
 networks:
     desktop-ims:
         name: desktop-ims
+        external: false
+
+volumes:
+    data_1:
+        external: false
+    data_2:
+        external: false
+    data_3:
         external: false
