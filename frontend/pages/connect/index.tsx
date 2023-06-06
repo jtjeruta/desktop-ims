@@ -33,7 +33,12 @@ const ConnectPage = () => {
 
                 <p>
                     Or you can use this link:{' '}
-                    <a className="text-blue-400" target="_blank" href={APP_URL}>
+                    <a
+                        className="text-blue-400"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={APP_URL}
+                    >
                         {APP_URL}
                     </a>
                 </p>
