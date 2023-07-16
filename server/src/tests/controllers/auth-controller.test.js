@@ -121,3 +121,56 @@ describe('Verify Token', () => {
         )
     })
 })
+
+describe('Setup', () => {
+    setup()
+
+    it('Success: correct details', async () => {
+        const res = await request(app).post('/api/v1/auth/setup').send({
+            username: 'admin',
+            firstName: 'admin',
+            lastName: 'admin',
+            email: 'admin@gmail.com',
+            password: 'password',
+        })
+
+        expect(res.statusCode).to.equal(201)
+        expect(Object.keys(res.body)).to.include('token')
+        expect(Object.keys(res.body)).to.include('user')
+    })
+
+    it('Fail: missing details', async () => {
+        const res = await request(app).post('/api/v1/auth/setup').send({})
+        expect(res.statusCode).to.equal(400)
+        expect(res.body.errors.lastName.message).is.equal(
+            'Path `lastName` is required.'
+        )
+        expect(res.body.errors.firstName.message).is.equal(
+            'Path `firstName` is required.'
+        )
+        expect(res.body.errors.email.message).is.equal(
+            'Path `email` is required.'
+        )
+        expect(res.body.errors.username.message).is.equal(
+            'Path `username` is required.'
+        )
+    })
+
+    it('Fail: user already exists', async () => {
+        const user = {
+            username: 'admin',
+            firstName: 'admin',
+            lastName: 'admin',
+            email: 'admin@gmail.com',
+            password: 'password',
+            role: 'admin',
+        }
+
+        await UsersModule.createUser(user)
+        const res = await request(app).post('/api/v1/auth/setup').send(user)
+        expect(res.statusCode).to.equal(400)
+        expect(res.body).to.include({
+            message: 'User already exists.',
+        })
+    })
+})

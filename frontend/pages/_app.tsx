@@ -13,7 +13,7 @@ import {
 import NotificationsList from '../components/NotificationList/NotificationList'
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import { routes } from '../routes'
-import { healthCheck } from '../apis/AuthAPI'
+import { healthCheck, needsSetup } from '../apis/AuthAPI'
 
 function AppContent({ Component, pageProps }: AppProps) {
     const AppContext = useAppContext()
@@ -32,6 +32,11 @@ function AppContent({ Component, pageProps }: AppProps) {
         async function init() {
             await waitForHealthCheck()
             AppContext.removeLoading('health-check')
+
+            const needsSetupRes = await needsSetup()
+            if (!needsSetupRes[0]) return router.push('/500')
+            if (needsSetupRes[1]) return router.push('/setup')
+
             AuthContext.verifyToken()
         }
 

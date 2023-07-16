@@ -15,6 +15,10 @@ export const routes: Route[] = [
         access: 'everyone',
     },
     {
+        pathname: '/setup',
+        access: 'un-authenticated',
+    },
+    {
         pathname: '/login',
         access: 'un-authenticated',
     },

@@ -1,5 +1,5 @@
 import Axios from './AxiosAPI'
-import { User } from '../contexts/AuthContext/types'
+import { SetupSchema, User } from '../contexts/AuthContext/types'
 import { AxiosResponse } from 'axios'
 
 export const login = (email: string, password: string) =>
@@ -21,4 +21,19 @@ export const healthCheck = () =>
     Axios()
         .get('/api/v1/health-check')
         .then((): [true] => [true])
+        .catch((err): [false, string] => [false, err.response?.message])
+
+export const setup = (setupSchema: SetupSchema) =>
+    Axios()
+        .post('/api/v1/auth/setup', setupSchema)
+        .then((response): [true, { user: User; token: string }] => [
+            true,
+            response.data,
+        ])
+        .catch((err): [false, AxiosResponse] => [false, err.response])
+
+export const needsSetup = () =>
+    Axios()
+        .get('/api/v1/auth/needs-setup')
+        .then((res): [true, boolean] => [true, res.data.needsSetup])
         .catch((err): [false, string] => [false, err.response?.message])

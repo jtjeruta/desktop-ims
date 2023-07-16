@@ -86,3 +86,25 @@ module.exports.isAdmin = async (req, res, next) => {
     req.con = userResponse[1]
     return next()
 }
+
+module.exports.setup = async (req, res) => {
+    const userRes = await UsersModule.getUser({})
+    if (userRes[0] !== 404)
+        return res.status(400).json({ message: 'User already exists.' })
+
+    const [status, data] = await UsersModule.createUser({
+        ...req.body,
+        role: 'admin',
+    })
+    if (status !== 201) return res.status(status).json(data)
+
+    const token = AuthModule.generateAccessToken(data)
+    return res.status(201).json({ user: UserView(data), token })
+}
+
+module.exports.needsSetup = async (req, res, next) => {
+    const userRes = await UsersModule.getUser({})
+    if (![404, 200].includes(userRes[0]))
+        return res.status(userRes[0]).json(userRes[1])
+    return res.status(200).json({ needsSetup: userRes[0] === 404 })
+}
