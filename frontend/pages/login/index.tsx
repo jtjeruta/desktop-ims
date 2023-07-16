@@ -4,6 +4,7 @@ import { useAppContext } from '../../contexts/AppContext/AppContext'
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import Button from '../../components/Button/Button'
 import TextField from '../../components/TextField/TextField'
+import Link from 'next/link'
 
 const Login = () => {
     const AppContext = useAppContext()
@@ -44,13 +45,16 @@ const Login = () => {
                                         label="Username/Email"
                                         name="email"
                                     />
-
                                     <TextField
                                         label="Password"
                                         type="password"
                                         name="password"
                                     />
-
+                                    <Link href="/forgot-password">
+                                        <span className="hover:text-blue-400 cursor-pointer">
+                                            Forgot Password?
+                                        </span>
+                                    </Link>
                                     <Button
                                         loading={AppContext.isLoading(
                                             'auth-login'

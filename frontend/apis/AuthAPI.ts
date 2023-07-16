@@ -37,3 +37,9 @@ export const needsSetup = () =>
         .get('/api/v1/auth/needs-setup')
         .then((res): [true, boolean] => [true, res.data.needsSetup])
         .catch((err): [false, string] => [false, err.response?.message])
+
+export const forgotPassword = (email: string, code: string) =>
+    Axios()
+        .post('/api/v1/auth/forgot-password', { email, code })
+        .then((res): [true, { user: User; token: string }] => [true, res.data])
+        .catch((err): [false, AxiosResponse] => [false, err.response])

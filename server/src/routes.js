@@ -26,6 +26,7 @@ router.post('/api/v1/auth/login', AuthController.login)
 router.post('/api/v1/auth/verify-token', AuthController.verifyToken)
 router.post('/api/v1/auth/setup', AuthController.setup)
 router.get('/api/v1/auth/needs-setup', AuthController.needsSetup)
+router.post('/api/v1/auth/forgot-password', AuthController.forgotPassword)
 
 // users
 router.post('/api/v1/users', isAdmin, UserController.createUser)

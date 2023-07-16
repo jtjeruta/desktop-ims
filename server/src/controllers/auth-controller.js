@@ -108,3 +108,24 @@ module.exports.needsSetup = async (req, res, next) => {
         return res.status(userRes[0]).json(userRes[1])
     return res.status(200).json({ needsSetup: userRes[0] === 404 })
 }
+
+module.exports.forgotPassword = async (req, res) => {
+    // hacky way of handling forgotten password since app is offline only
+    const { email, code } = req.body
+    const currentCode = 'b4d72cb6-b13a-4f19-8b26-b9abe3b7aee0'
+
+    if (code !== currentCode) {
+        return res.status(400).json({ message: 'Invalid code.' })
+    }
+
+    const getUserResponse = await UsersModule.getUser({
+        $or: [{ email }, { username: email }],
+    })
+
+    if (getUserResponse[0] !== 200) {
+        return res.status(getUserResponse[0]).json(getUserResponse[1])
+    }
+
+    const token = AuthModule.generateAccessToken(getUserResponse[1])
+    return res.status(200).json({ token, user: UserView(getUserResponse[1]) })
+}

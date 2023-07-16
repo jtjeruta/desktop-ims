@@ -30,6 +30,10 @@ export type SetUser = (user: User) => void
 export type Setup = (
     setupSchema: SetupSchema
 ) => Promise<[true, { user: User; token: string }] | [false, AxiosResponse]>
+export type ForgotPassword = (
+    email: string,
+    code: string
+) => Promise<[true, { user: User; token: string }] | [false, AxiosResponse]>
 
 export type Context = {
     user: User | null
@@ -38,4 +42,5 @@ export type Context = {
     logout: Logout
     setUser: SetUser
     setup: Setup
+    forgotPassword: ForgotPassword
 }

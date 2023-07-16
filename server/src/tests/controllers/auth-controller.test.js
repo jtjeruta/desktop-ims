@@ -5,6 +5,7 @@ const setup = require('../setup')
 const app = require('../../app')
 const UsersModule = require('../../modules/users-module')
 const { login } = require('../helpers')
+const testdata = require('../testdata')
 
 describe('Login User', () => {
     setup()
@@ -172,5 +173,36 @@ describe('Setup', () => {
         expect(res.body).to.include({
             message: 'User already exists.',
         })
+    })
+})
+
+describe('Forgot password', () => {
+    setup()
+    beforeEach(async () => {
+        await UsersModule.createUser(testdata.admin1)
+    })
+
+    it('Success: correct details', async () => {
+        const res = await request(app)
+            .post('/api/v1/auth/forgot-password')
+            .send({
+                email: testdata.admin1.email,
+                code: 'b4d72cb6-b13a-4f19-8b26-b9abe3b7aee0',
+            })
+
+        expect(res.statusCode).to.equal(200)
+        expect(Object.keys(res.body)).to.include('token')
+        expect(Object.keys(res.body)).to.include('user')
+    })
+
+    it('Fail: incorrect code', async () => {
+        const res = await request(app)
+            .post('/api/v1/auth/forgot-password')
+            .send({
+                email: 'admin@gmail.com',
+                code: 'b4d72cb6-b13a-4f19-8b26-b9abe3b7aee',
+            })
+        expect(res.statusCode).to.equal(400)
+        expect(res.body).to.include({ message: 'Invalid code.' })
     })
 })
