@@ -16,3 +16,9 @@ export const verifyToken = (token: string) =>
         .post('/api/v1/auth/verify-token', { token })
         .then((response): [true, User] => [true, response.data.user])
         .catch((err): [false, string] => [false, err.response?.message])
+
+export const healthCheck = () =>
+    Axios()
+        .get('/api/v1/health-check')
+        .then((): [true] => [true])
+        .catch((err): [false, string] => [false, err.response?.message])

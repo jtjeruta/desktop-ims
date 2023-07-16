@@ -65,7 +65,9 @@ const LoadingScreen = () => {
     const [status, setStatus] = useState<'visible' | 'fading' | 'removed'>(
         'visible'
     )
-    const loading = AppContext.isLoading('auth-verify-token')
+    const loading =
+        AppContext.isLoading('auth-verify-token') ||
+        AppContext.isLoading('health-check')
 
     useLayoutEffect(() => {
         if (loading && status === 'visible') return

@@ -13,14 +13,29 @@ import {
 import NotificationsList from '../components/NotificationList/NotificationList'
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import { routes } from '../routes'
+import { healthCheck } from '../apis/AuthAPI'
 
 function AppContent({ Component, pageProps }: AppProps) {
     const AppContext = useAppContext()
     const AuthContext = useAuthContext()
     const router = useRouter()
 
+    async function waitForHealthCheck() {
+        while (true) {
+            const [success] = await healthCheck()
+            if (success) return success
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
+    }
+
     useLayoutEffect(() => {
-        AuthContext.verifyToken()
+        async function init() {
+            await waitForHealthCheck()
+            AppContext.removeLoading('health-check')
+            AuthContext.verifyToken()
+        }
+
+        init()
     }, [])
 
     useLayoutEffect(() => {
