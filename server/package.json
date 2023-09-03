@@ -7,8 +7,7 @@
         "lint": "eslint ./src/**/*.js",
         "lint:strict": "eslint ./src/**/*.js --max-warnings 0",
         "test": "mocha 'src/tests/**/*.test.js' --bail --recursive --exit --timeout 10000",
-        "migrate": "migrate --md ./migrations -d ${MONGO_CONNECTION_STRING-mongodb://mongo1:30001/ims} --autosync",
-        "backup": "node ./src/lib/backup-script.js"
+        "migrate": "migrate --md ./migrations -d ${MONGO_CONNECTION_STRING-mongodb://mongo1:30001/ims} --autosync"
     },
     "dependencies": {
         "adm-zip": "^0.5.10",
