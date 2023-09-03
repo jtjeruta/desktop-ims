@@ -13,6 +13,7 @@ const StatController = require('./controllers/stat-controller')
 const ExpenseController = require('./controllers/expense-controller')
 const ReceivableController = require('./controllers/receivable-controller')
 const PingController = require('./controllers/ping-controller')
+const BackupController = require('./controllers/backup-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -20,6 +21,9 @@ const router = express.Router()
 
 // health check
 router.get('/api/v1/health-check', HealthCheckController.healthCheck)
+
+// backup
+router.get('/api/v1/backup', BackupController.backup)
 
 // auth
 router.post('/api/v1/auth/login', AuthController.login)

@@ -2,6 +2,16 @@ const moment = require('moment')
 const { getMongoError } = require('../lib/mongo-errors')
 const { VariantModel } = require('../schemas/variant-schema')
 
+module.exports.listVariants = async (query = {}) => {
+    try {
+        const variants = await VariantModel.find(query)
+        return [200, variants]
+    } catch (error) {
+        console.error('Failed to get variants')
+        return getMongoError(error)
+    }
+}
+
 module.exports.createVariant = async (data) => {
     const doc = {
         ...data,
