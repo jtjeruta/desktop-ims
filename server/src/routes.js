@@ -6,24 +6,22 @@ const VariantController = require('./controllers/variant-controller')
 const WarehouseController = require('./controllers/warehouse-controller')
 const VendorController = require('./controllers/vendor-controller')
 const PurchaseOrderController = require('./controllers/purchase-order-controller')
-const HealthCheckController = require('./controllers/health-check-controller')
 const CustomerController = require('./controllers/customer-controller')
 const SalesOrderController = require('./controllers/sales-order-controller')
 const StatController = require('./controllers/stat-controller')
 const ExpenseController = require('./controllers/expense-controller')
 const ReceivableController = require('./controllers/receivable-controller')
-const PingController = require('./controllers/ping-controller')
-const BackupController = require('./controllers/backup-controller')
+const TaskController = require('./controllers/task-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
 const router = express.Router()
 
 // health check
-router.get('/api/v1/health-check', HealthCheckController.healthCheck)
-
-// backup
-router.get('/api/v1/backup', BackupController.backup)
+router.get('/api/v1/tasks/health-check', TaskController.healthCheck)
+router.get('/api/v1/tasks/list-backups', TaskController.listBackups)
+router.get('/api/v1/tasks/backup-db', TaskController.backupDB)
+router.post('/api/v1/tasks/restore-db', TaskController.restoreDB)
 
 // auth
 router.post('/api/v1/auth/login', AuthController.login)
@@ -237,8 +235,5 @@ router.delete(
     isAdmin,
     ReceivableController.deleteReceivable
 )
-
-// ping
-router.get('/api/v1/ping', PingController.ping)
 
 module.exports = router

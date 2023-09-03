@@ -19,7 +19,7 @@ export const verifyToken = (token: string) =>
 
 export const healthCheck = () =>
     Axios()
-        .get('/api/v1/health-check')
+        .get('/api/v1/tasks/health-check')
         .then((): [true] => [true])
         .catch((err): [false, string] => [false, err.response?.message])
 
