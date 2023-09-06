@@ -29,6 +29,8 @@ services:
         image: bitnami/mongodb:5.0
         volumes:
             - data:/bitnami/mongodb/data
+        ports:
+            - 27017:30001
         networks:
             - desktop-ims
         logging:
