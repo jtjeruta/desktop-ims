@@ -36,7 +36,7 @@ services:
         command:
             ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30001']
         volumes:
-            - data_1:/data/db
+            - ./data/mongo-1:/data/db
         ports:
             - 30001:30001
         healthcheck:
@@ -52,7 +52,7 @@ services:
         command:
             ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30002']
         volumes:
-            - data_2:/data/db
+            - ./data/mongo-2:/data/db
         ports:
             - 30002:30002
         networks:
@@ -64,7 +64,7 @@ services:
         command:
             ['--replSet', 'my-replica-set', '--bind_ip_all', '--port', '30003']
         volumes:
-            - data_3:/data/db
+            - ./data/mongo-3:/data/db
         ports:
             - 30003:30003
         networks:

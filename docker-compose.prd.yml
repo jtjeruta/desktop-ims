@@ -19,8 +19,6 @@ services:
             dockerfile: dockerfile.server.prd
         environment:
             NODE_ENV: production
-        volumes:
-            - ./data:/opt/data
         ports:
             - '4000:4000'
         networks:
