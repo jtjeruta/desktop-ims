@@ -5,7 +5,7 @@ import { RiDashboardLine } from 'react-icons/ri'
 import { MdPointOfSale } from 'react-icons/md'
 import {
     FaBoxes,
-    FaQrcode,
+    // FaQrcode,
     FaStore,
     FaTags,
     FaUsers,
@@ -103,12 +103,12 @@ const Sidebar = () => {
             icon: FaUsers,
             onClick: () => sideBarRedirect('/users'),
         },
-        {
-            text: 'Connect',
-            active: router.asPath === '/connect',
-            icon: FaQrcode,
-            onClick: () => sideBarRedirect('/connect'),
-        },
+        // {
+        //     text: 'Connect',
+        //     active: router.asPath === '/connect',
+        //     icon: FaQrcode,
+        //     onClick: () => sideBarRedirect('/connect'),
+        // },
     ]
 
     const pageGroups: PageGroupType[] = [

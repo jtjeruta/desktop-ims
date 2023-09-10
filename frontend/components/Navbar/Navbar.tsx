@@ -40,13 +40,15 @@ const Navbar: FC<Props> = (props) => {
                         </div>
                         <div className="md:hidden flex gap-2">
                             {AuthContext.user?.role === 'employee' && (
-                                <Button
-                                    style="outline"
-                                    color="secondary"
-                                    onClick={() => router.push('/connect')}
-                                >
-                                    <BiQrScan />
-                                </Button>
+                                <div className="hidden">
+                                    <Button
+                                        style="outline"
+                                        color="secondary"
+                                        onClick={() => router.push('/connect')}
+                                    >
+                                        <BiQrScan />
+                                    </Button>
+                                </div>
                             )}
                             <Button
                                 onClick={() => {
@@ -71,16 +73,18 @@ const Navbar: FC<Props> = (props) => {
                 </div>
                 <div className="hidden md:flex gap-2">
                     {AuthContext.user?.role === 'employee' && (
-                        <Button
-                            style="outline"
-                            color="secondary"
-                            onClick={() => router.push('/connect')}
-                        >
-                            <div className="flex items-center gap-2">
-                                <FaQrcode fontSize={18} />
-                                <span>Connect</span>
-                            </div>
-                        </Button>
+                        <div className="hidden">
+                            <Button
+                                style="outline"
+                                color="secondary"
+                                onClick={() => router.push('/connect')}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <FaQrcode fontSize={18} />
+                                    <span>Connect</span>
+                                </div>
+                            </Button>
+                        </div>
                     )}
                     <Button
                         color="secondary"
