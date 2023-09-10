@@ -30,6 +30,10 @@ function AppContent({ Component, pageProps }: AppProps) {
 
     useLayoutEffect(() => {
         async function init() {
+            const foundRoute = routes.find(
+                (route) => route.pathname === router.pathname
+            )
+
             await waitForHealthCheck()
             AppContext.removeLoading('health-check')
 
@@ -37,40 +41,30 @@ function AppContent({ Component, pageProps }: AppProps) {
             if (!needsSetupRes[0]) return router.push('/500')
             if (needsSetupRes[1]) return router.push('/setup')
 
-            AuthContext.verifyToken()
+            const verifyRes = await AuthContext.verifyToken()
+            if (!verifyRes[0]) {
+                return router.push('/login')
+            } else if (!foundRoute) {
+                return router.push('/404')
+            } else if (
+                verifyRes[1].role === 'employee' &&
+                !['everyone', 'employee', 'authenticated'].includes(
+                    foundRoute.access
+                )
+            ) {
+                return router.push('/sales-orders')
+            } else if (
+                verifyRes[1].role === 'admin' &&
+                !['everyone', 'admin', 'authenticated'].includes(
+                    foundRoute.access
+                )
+            ) {
+                return router.push('/reporting')
+            }
         }
 
         init()
     }, [])
-
-    useLayoutEffect(() => {
-        if (AppContext.isLoading('auth-verify-token')) return
-
-        const foundRoute = routes.find(
-            (route) => route.pathname === router.pathname
-        )
-
-        if (!foundRoute) return
-
-        if (
-            !AuthContext.user &&
-            !['everyone', 'un-authenticated'].includes(foundRoute.access)
-        ) {
-            router.replace('/login')
-        } else if (
-            AuthContext.user?.role === 'employee' &&
-            !['everyone', 'employee', 'authenticated'].includes(
-                foundRoute.access
-            )
-        ) {
-            router.replace('/sales-orders')
-        } else if (
-            AuthContext.user?.role === 'admin' &&
-            !['everyone', 'admin', 'authenticated'].includes(foundRoute.access)
-        ) {
-            router.replace('/reporting')
-        }
-    }, [AppContext, AuthContext.user, router])
 
     return (
         <>

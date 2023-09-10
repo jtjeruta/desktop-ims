@@ -5,24 +5,37 @@ import { useAuthContext } from '../../contexts/AuthContext/AuthContext'
 import Button from '../../components/Button/Button'
 import TextField from '../../components/TextField/TextField'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const Login = () => {
     const AppContext = useAppContext()
     const AuthContext = useAuthContext()
     const methods = useForm()
+    const router = useRouter()
 
     const onSubmit = async (data: FieldValues) => {
         const res = await AuthContext.login(data.email, data.password)
+
         if (!res[0] && res[1]?.status === 400) {
             methods.setError('email', {
                 type: 'custom',
                 message: 'Wrong email or password.',
             })
-            methods.setError('password', {
+            return methods.setError('password', {
                 type: 'custom',
                 message: 'Wrong email or password.',
             })
+        } else if (!res[0]) {
+            return AppContext.addNotification({
+                title: 'Something went wrong.',
+                type: 'danger',
+                body: 'Please try again later.',
+            })
         }
+
+        return res[1].user.role === 'admin'
+            ? router.push('/reporting')
+            : router.push('/sales-orders')
     }
 
     return (
@@ -73,10 +86,10 @@ const Login = () => {
                                 <Button
                                     loading={AppContext.isLoading('auth-login')}
                                     onClick={() =>
-                                        AuthContext.login(
-                                            'admin@gmail.com',
-                                            'password'
-                                        )
+                                        onSubmit({
+                                            email: 'admin@gmail.com',
+                                            password: 'password',
+                                        })
                                     }
                                 >
                                     Login as Admin
@@ -84,10 +97,10 @@ const Login = () => {
                                 <Button
                                     loading={AppContext.isLoading('auth-login')}
                                     onClick={() =>
-                                        AuthContext.login(
-                                            'employee@gmail.com',
-                                            'password'
-                                        )
+                                        onSubmit({
+                                            email: 'employee@gmail.com',
+                                            password: 'password',
+                                        })
                                     }
                                 >
                                     Login as Employee

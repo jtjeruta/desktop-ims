@@ -56,6 +56,8 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
             Cookies.remove(COOKIES.SERVER_TOKEN)
         }
+
+        return resp
     }
 
     const setup: Setup = async (attrs) => {

@@ -166,7 +166,10 @@ const Sidebar = () => {
                 <Button
                     className="md:hidden"
                     color="secondary"
-                    onClick={AuthContext.logout}
+                    onClick={() => {
+                        AuthContext.logout()
+                        router.push('/login')
+                    }}
                 >
                     <div className="flex items-center gap-2">
                         <FiLogOut fontSize={18} />

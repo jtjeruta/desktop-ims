@@ -56,6 +56,7 @@ const Navbar: FC<Props> = (props) => {
                                         )
                                     } else {
                                         AuthContext.logout()
+                                        router.push('/login')
                                     }
                                 }}
                             >
@@ -81,7 +82,13 @@ const Navbar: FC<Props> = (props) => {
                             </div>
                         </Button>
                     )}
-                    <Button color="secondary" onClick={AuthContext.logout}>
+                    <Button
+                        color="secondary"
+                        onClick={() => {
+                            AuthContext.logout()
+                            router.push('/login')
+                        }}
+                    >
                         <div className="flex items-center gap-2">
                             <FiLogOut fontSize={18} />
                             <span>Logout</span>
