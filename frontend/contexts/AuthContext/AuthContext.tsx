@@ -29,11 +29,6 @@ const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (!resp[0]) {
             Cookies.remove(COOKIES.SERVER_TOKEN)
-            AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later',
-            })
         } else {
             Cookies.set(COOKIES.SERVER_TOKEN, resp[1].token)
             setUser(resp[1].user)

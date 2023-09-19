@@ -16,20 +16,10 @@ const Login = () => {
     const onSubmit = async (data: FieldValues) => {
         const res = await AuthContext.login(data.email, data.password)
 
-        if (!res[0] && res[1]?.status === 400) {
-            methods.setError('email', {
-                type: 'custom',
-                message: 'Wrong email or password.',
-            })
+        if (!res[0]) {
             return methods.setError('password', {
                 type: 'custom',
                 message: 'Wrong email or password.',
-            })
-        } else if (!res[0]) {
-            return AppContext.addNotification({
-                title: 'Something went wrong.',
-                type: 'danger',
-                body: 'Please try again later.',
             })
         }
 
