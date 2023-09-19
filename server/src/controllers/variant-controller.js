@@ -38,9 +38,10 @@ module.exports.deleteVariant = async (req, res) => {
         return res.status(getVariantRes[0]).json(getVariantRes[1])
 
     // Check if product has more than one variants
-    const getProductRes = await ProductsModule.getProductById(
-        getVariantRes[1].product
-    )
+    const getProductRes = await ProductsModule.getProduct({
+        archived: false,
+        variants: getVariantRes[1]._id,
+    })
     if (getProductRes[0] !== 200)
         return res.status(getProductRes[0]).json(getProductRes[1])
 
