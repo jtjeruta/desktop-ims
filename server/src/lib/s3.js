@@ -1,11 +1,11 @@
 const AWS = require('aws-sdk')
 
 const AWS_ACCESS_KEY_ID =
-    process.env.AWS_ACCESS_KEY_ID || 'AKIAXKBVIUMHZQ2TVY7H'
+    process.env.AWS_ACCESS_KEY_ID || 'AKIAXKBVIUMHZQI3MYM5'
 
 const AWS_SECRET_ACCESS_KEY =
     process.env.AWS_SECRET_ACCESS_KEY ||
-    'QfksNbhtJlFUuLnKj9/l38BOomgRTNWDUz3soPjq'
+    'uOZU7UmILLRBeYvCFvjo4ns2bdb1ep98usaIFKlj'
 
 const AWS_REGION = process.env.AWS_REGION || 'ap-northeast-1'
 
