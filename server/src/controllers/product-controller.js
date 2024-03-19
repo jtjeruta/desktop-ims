@@ -285,7 +285,7 @@ module.exports.transferStock = async (req, res) => {
     if (!transferFrom) {
         await session.endSession()
         return res.status(404).json({
-            errors: { transferFrom: { message: 'Source not found.' } },
+            message: 'No product found in Warehouse.',
         })
     }
 

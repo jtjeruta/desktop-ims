@@ -51,12 +51,11 @@ const OrderSummary: FC<Props> = (props) => {
                         <TextField name="invoiceNumber" label="Invoice #" />
                     </form>
                 </FormProvider>
-                <div className="flex justify-between text-2xl mb-5">
-                    <b>TOTAL:</b>
-                    <b>{formatCurrency(props.total)}</b>
+                <div className="flex justify-between text-lg mb-5">
+                    <b>TOTAL: {formatCurrency(props.total)}</b>
                 </div>
                 <Button
-                    className="text-2xl w-full mb-3"
+                    className="text-lg w-full mb-3"
                     disabled={props.disabled}
                     loading={props.loading}
                     onClick={props.onSubmit}
@@ -66,7 +65,7 @@ const OrderSummary: FC<Props> = (props) => {
                 {props.showDeleteButton && (
                     <Button
                         color="secondary"
-                        className="text-2xl w-full"
+                        className="text-lg w-full"
                         disabled={props.disabled}
                         loading={props.loading}
                         onClick={props.onDelete}

@@ -11,6 +11,7 @@ import { useProductContext } from '../../contexts/ProductContext/ProductContext'
 import Select from '../Select/Select'
 import { useWarehouseContext } from '../../contexts/WarehouseContext/WarehouseContext'
 import Button from '../Button/Button'
+import SelectPicker from '../Select/SelectPicker'
 
 const transferStockSchema = yup
     .object({
@@ -136,17 +137,25 @@ const TransferStockDialog: FC<Props> = (props) => {
                     <form>
                         <div className="flex flex-col gap-2">
                             {props.showProductSelect && (
-                                <Select
+                                <SelectPicker
                                     label="Product"
                                     name="product"
                                     options={
                                         ProductContext.products?.map(
                                             (product) => ({
-                                                text: product.name,
+                                                label: product.name,
                                                 value: product.id,
                                             })
                                         ) ?? []
                                     }
+                                    onChange={(newValue) => {
+                                        if (!newValue) return
+                                        ProductContext.setProduct(
+                                            ProductContext.products?.find(
+                                                (p) => p.id === newValue.value
+                                            ) ?? null
+                                        )
+                                    }}
                                     required
                                 />
                             )}
