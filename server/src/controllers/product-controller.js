@@ -167,11 +167,14 @@ module.exports.updateProduct = async (req, res) => {
 
             await Promise.all(
                 warehousesRes[1].map((wh) => {
-                    const p = wh.products.find((p) => p.source.id === productId)
+                    const foundProduct = wh.products.find(
+                        (p) => p.source.id === productId
+                    )
+                    if (!foundProduct) return
                     return WarehousesModule.updateWarehouseProduct(
                         wh.id,
                         newProductId,
-                        p.stock,
+                        foundProduct.stock,
                         session
                     )
                 })
