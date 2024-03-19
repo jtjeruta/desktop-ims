@@ -190,8 +190,13 @@ const WarehousesPageContent = () => {
                                         >
                                             {searchedProducts.map((whp) => (
                                                 <div
-                                                    className="flex justify-between border rounded border-blue-400 p-2"
+                                                    className="flex justify-between border rounded border-blue-400 p-2 cursor-pointer hover:bg-gray-50"
                                                     key={whp.source.id}
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `/inventory/${whp.source.id}`
+                                                        )
+                                                    }
                                                 >
                                                     <span>
                                                         {whp.source.name}
