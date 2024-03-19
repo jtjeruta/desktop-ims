@@ -40,7 +40,7 @@ const AddEditVendorFormForPurchaseOrder: FC<Props> = (props) => {
         methods.setValue('phone', VendorContext.draftVendor?.phone)
         methods.setValue('email', VendorContext.draftVendor?.email)
         methods.setValue('address', VendorContext.draftVendor?.address)
-        methods.setValue('remarks', VendorContext.draftVendor?.address)
+        methods.setValue('remarks', VendorContext.draftVendor?.remarks)
     }, [VendorContext, methods])
 
     // set on change
