@@ -12,6 +12,7 @@ const AddProductDialog = () => {
             content={<AddEditProductForm />}
             showSaveButton={false}
             showCancelButton={false}
+            className="sm:w-1/2 lg:w-1/3 sm:h-min"
         />
     )
 }

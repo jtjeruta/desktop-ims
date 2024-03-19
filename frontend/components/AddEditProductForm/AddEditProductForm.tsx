@@ -94,7 +94,7 @@ const AddEditProductForm: FC<Props> = (props) => {
                     disabled={isDisabled}
                     required
                 />
-                <div className={clsx('grid gap-3 mb-2', 'lg:grid-cols-2')}>
+                <div className={clsx('grid gap-3 mb-2', 'sm:grid-cols-2')}>
                     <TextField
                         name="sellingPrice"
                         type="number"

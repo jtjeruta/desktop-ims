@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FC } from 'react'
+import { FC, RefObject } from 'react'
 import { FaSpinner } from 'react-icons/fa'
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
     color?: 'primary' | 'secondary' | 'light'
     disabled?: boolean
     disabledText?: string
+    buttonRef?: RefObject<HTMLButtonElement>
 }
 
 const Button: FC<Props> = (props) => {
@@ -58,6 +59,7 @@ const Button: FC<Props> = (props) => {
             disabled={props.loading || props.disabled}
             onClick={props.onClick}
             title={props.disabled ? props.disabledText : ''}
+            ref={props.buttonRef}
         >
             {props.loading && <FaSpinner className="animate-spin" />}
             {props.children}

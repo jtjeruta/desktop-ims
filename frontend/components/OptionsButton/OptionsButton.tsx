@@ -15,17 +15,35 @@ type Props = {
 
 const OptionsButton: FC<Props> = (props) => {
     const [open, setOpen] = useState<boolean>(false)
-    const ref = useRef<HTMLDivElement>(null)
+    const [buttonPosition, setButtonPosition] = useState<{
+        top: number
+        left: number
+    }>({ top: 0, left: 0 })
+    const buttonRef = useRef<HTMLButtonElement>(null)
+    const popupRef = useRef<HTMLDivElement>(null)
+
+    function updateButtonPosition() {
+        if (!buttonRef.current || !popupRef.current) return
+        const buttonRect = buttonRef.current.getBoundingClientRect()
+        const popupRect = popupRef.current.getBoundingClientRect()
+
+        setButtonPosition({
+            top: buttonRect.top - popupRect.height,
+            left: buttonRect.left - popupRect.width,
+        })
+    }
 
     return (
-        <div className="relative">
+        <div>
             <Button
                 style="link"
                 color="secondary"
                 onClick={() => {
-                    ref.current?.focus()
+                    updateButtonPosition()
+                    popupRef.current?.focus()
                     setOpen(true)
                 }}
+                buttonRef={buttonRef}
             >
                 <FaEllipsisV />
             </Button>
@@ -34,11 +52,14 @@ const OptionsButton: FC<Props> = (props) => {
                 onBlur={() => setOpen(false)}
                 className={clsx(
                     'absolute rounded-lg shadow-lg select-none bg-white z-10 w-min',
-                    'right-0',
                     !open && 'opacity-0 pointer-events-none'
                 )}
                 tabIndex={-1}
-                ref={ref}
+                ref={popupRef}
+                style={{
+                    top: buttonPosition.top,
+                    left: buttonPosition.left,
+                }}
             >
                 <ul>
                     {props.options.map((option, i, arr) => {
