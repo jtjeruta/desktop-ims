@@ -19,6 +19,8 @@ services:
             dockerfile: dockerfile.server.prd
         environment:
             NODE_ENV: production
+            AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+            AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
         ports:
             - '4000:4000'
         networks:
