@@ -17,7 +17,7 @@ module.exports.createVendor = async (data, session = null) => {
             : vendor.save())
         return [201, createdVendor]
     } catch (error) {
-        console.error('Failed to create vendor')
+        console.error('Failed to create vendor: ', error)
         return getMongoError(error)
     }
 }
@@ -27,7 +27,7 @@ module.exports.listVendors = async (query = {}) => {
         const vendors = await VendorModel.find(query)
         return [200, vendors]
     } catch (error) {
-        console.error('Failed to list vendors')
+        console.error('Failed to list vendors: ', error)
         return getMongoError(error)
     }
 }
@@ -46,7 +46,7 @@ module.exports.updateVendor = async (id, data) => {
         )
         return [200, updatedVendor]
     } catch (error) {
-        console.error('Failed to update vendor')
+        console.error('Failed to update vendor: ', error)
         return getMongoError(error)
     }
 }
@@ -58,7 +58,7 @@ module.exports.getVendorById = async (id, session = null) => {
         if (!vendor) return [404, { message: 'Vendor not found.' }]
         return [200, vendor]
     } catch (error) {
-        console.error('Failed to get vendor by id')
+        console.error('Failed to get vendor by id: ', error)
         return getMongoError(error)
     }
 }
@@ -72,7 +72,7 @@ module.exports.archiveVendorById = async (vendorId, session = null) => {
         ).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to archive vendor by id')
+        console.error('Failed to archive vendor by id: ', error)
         return getMongoError(error)
     }
 }
@@ -82,7 +82,7 @@ module.exports.deleteVendors = async (query = {}, session = null) => {
         await VendorModel.deleteMany(query).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete vendors')
+        console.error('Failed to delete vendors: ', error)
         return getMongoError(error)
     }
 }

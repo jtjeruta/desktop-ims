@@ -12,7 +12,7 @@ module.exports.verifyToken = (token) => {
         const data = jwt.verify(token, JWT_SECRET)
         return [true, data]
     } catch (error) {
-        console.error('Failed to verify token')
+        console.error('Failed to verify token: ', error)
         return [false]
     }
 }

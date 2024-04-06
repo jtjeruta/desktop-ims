@@ -17,7 +17,7 @@ module.exports.createExpense = async (data, session = null) => {
             : expense.save())
         return [201, createdExpense]
     } catch (error) {
-        console.error('Failed to create expense')
+        console.error('Failed to create expense: ', error)
         return getMongoError(error)
     }
 }
@@ -31,7 +31,7 @@ module.exports.listExpenses = async (query = {}, session = null) => {
 
         return [200, expenses]
     } catch (error) {
-        console.error('Failed to list expenses')
+        console.error('Failed to list expenses: ', error)
         return getMongoError(error)
     }
 }
@@ -50,7 +50,7 @@ module.exports.updateExpense = async (id, data, session) => {
         )
         return [200, updatedExpense]
     } catch (error) {
-        console.error('Failed to update expense')
+        console.error('Failed to update expense: ', error)
         return getMongoError(error)
     }
 }
@@ -64,7 +64,7 @@ module.exports.getExpenseById = async (id, session) => {
         if (!expense) return [404, { message: 'Expense not found.' }]
         return [200, expense]
     } catch (error) {
-        console.error('Failed to get expense by id')
+        console.error('Failed to get expense by id: ', error)
         return getMongoError(error)
     }
 }
@@ -74,7 +74,7 @@ module.exports.deleteExpense = async (id, session = null) => {
         await ExpenseModel.findByIdAndDelete(id).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete expense')
+        console.error('Failed to delete expense: ', error)
         return getMongoError(error)
     }
 }
@@ -84,7 +84,7 @@ module.exports.deleteExpenses = async (query = {}, session) => {
         await ExpenseModel.deleteMany(query).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete expenses')
+        console.error('Failed to delete expenses: ', error)
         return getMongoError(error)
     }
 }

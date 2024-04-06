@@ -21,7 +21,7 @@ module.exports.createPurchaseOrder = async (data = {}, session = null) => {
         const createdPurchaseOrder = await purchaseOrder.save({ session })
         return [201, createdPurchaseOrder]
     } catch (error) {
-        console.error('Failed to create purchase order')
+        console.error('Failed to create purchase order: ', error)
         return getMongoError(error)
     }
 }
@@ -45,7 +45,7 @@ module.exports.updatePurchaseOrder = async (id, data, session = null) => {
         )
         return [200, updatedPurchaseOrder]
     } catch (error) {
-        console.error('Failed to update purchase order')
+        console.error('Failed to update purchase order: ', error)
         return getMongoError(error)
     }
 }
@@ -62,7 +62,7 @@ module.exports.getPurchaseOrderById = async (id, session = null) => {
             return [404, { message: 'Purchase order not found.' }]
         return [200, purchaseOrder]
     } catch (error) {
-        console.error('Failed to get purchase order by id')
+        console.error('Failed to get purchase order by id: ', error)
         return getMongoError(error)
     }
 }
@@ -76,7 +76,7 @@ module.exports.listPurchaseOrders = async (query = {}, session = null) => {
             .session(session)
         return [200, purchaseOrders]
     } catch (error) {
-        console.error('Failed to list purchase orders')
+        console.error('Failed to list purchase orders: ', error)
         return getMongoError(error)
     }
 }
@@ -157,7 +157,7 @@ module.exports.deletePurchaseOrderById = async (orderId, session = null) => {
         )
         return [200, deletedPurchaseOrder]
     } catch (error) {
-        console.error('Failed to delete purchase order by id')
+        console.error('Failed to delete purchase order by id: ', error)
         return getMongoError(error)
     }
 }
@@ -167,7 +167,7 @@ module.exports.deletePurchaseOrders = async (query = {}, session = null) => {
         await PurchaseOrderModel.deleteMany(query, { session })
         return [200]
     } catch (error) {
-        console.error('Failed to delete purchase orders')
+        console.error('Failed to delete purchase orders: ', error)
         return getMongoError(error)
     }
 }

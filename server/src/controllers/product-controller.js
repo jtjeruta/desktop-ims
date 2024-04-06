@@ -96,120 +96,113 @@ module.exports.updateProduct = async (req, res) => {
     const session = await mongoose.startSession()
     session.startTransaction()
 
-    try {
-        const { productId } = req.params
-        let updateDoc = [
-            'name',
-            'sellingPrice',
-            'costPrice',
-            'company',
-            'category',
-            'subCategory',
-            'published',
-            'reorderPoint',
-        ].reduce((acc, key) => {
-            if (req.body[key] !== undefined) acc[key] = req.body[key]
-            return acc
-        }, {})
-        updateDoc.modifiedBy = req.con._id
+    const { productId } = req.params
+    let updateDoc = [
+        'name',
+        'sellingPrice',
+        'costPrice',
+        'company',
+        'category',
+        'subCategory',
+        'published',
+        'reorderPoint',
+    ].reduce((acc, key) => {
+        if (req.body[key] !== undefined) acc[key] = req.body[key]
+        return acc
+    }, {})
+    updateDoc.modifiedBy = req.con._id
 
-        const [duplicateProductRes, warehousesRes] = await Promise.all([
-            ProductsModule.getProduct(
-                {
-                    $or: [{ name: updateDoc.name }, { sku: updateDoc.sku }],
-                    archived: false,
-                    _id: { $ne: productId },
-                },
-                session
-            ),
-            WarehousesModule.listWarehouses({ product: productId }, session),
-        ])
-
-        if (duplicateProductRes[0] !== 404) {
-            await session.endSession()
-            return res.status(409).json({ message: 'Product already exists.' })
-        }
-
-        if (warehousesRes[0] !== 200) {
-            await session.endSession()
-            return res.status(warehousesRes[0]).json(warehousesRes[1])
-        }
-
-        const orgProductRes = await ProductsModule.getProductById(
-            productId,
+    const [duplicateProductRes, warehousesRes] = await Promise.all([
+        ProductsModule.getProduct(
+            {
+                $or: [{ name: updateDoc.name }, { sku: updateDoc.sku }],
+                archived: false,
+                _id: { $ne: productId },
+            },
             session
-        )
-        if (orgProductRes[0] !== 200) {
-            await session.endSession()
-            return res.status(orgProductRes[0]).json(orgProductRes[1])
-        }
+        ),
+        WarehousesModule.listWarehouses({ product: productId }, session),
+    ])
 
-        let newProductId = null
-        if (
-            (updateDoc.sellingPrice || updateDoc.costPrice) &&
-            (orgProductRes[1].sellingPrice !== updateDoc.sellingPrice ||
-                orgProductRes[1].costPrice !== updateDoc.costPrice)
-        ) {
-            const doc = { ...orgProductRes[1]._doc, ...updateDoc }
-            delete doc._id
-            const createProductRes = await ProductsModule.createProduct(
-                doc,
-                session
-            )
-
-            if (createProductRes[0] !== 201) {
-                await session.endSession()
-                return res.status(createProductRes[0]).json(createProductRes[1])
-            }
-
-            newProductId = createProductRes[1].id
-            updateDoc = { archived: true }
-
-            await Promise.all(
-                warehousesRes[1].map((wh) => {
-                    const foundProduct = wh.products.find(
-                        (p) => p.source.id === productId
-                    )
-                    if (!foundProduct) return
-                    return WarehousesModule.updateWarehouseProduct(
-                        wh.id,
-                        newProductId,
-                        foundProduct.stock,
-                        session
-                    )
-                })
-            )
-        }
-
-        const updateProductRes = await ProductsModule.updateProduct(
-            productId,
-            updateDoc,
-            session
-        )
-        if (updateProductRes[0] !== 200) {
-            await session.endSession()
-            return res.status(updateProductRes[0]).json(updateProductRes[1])
-        }
-
-        const getProductRes = await ProductsModule.getProductById(
-            newProductId ?? productId,
-            session
-        )
-        if (getProductRes[0] !== 200) {
-            await session.endSession()
-            return res.status(getProductRes[0]).json(getProductRes[1])
-        }
-
-        await session.commitTransaction()
+    if (duplicateProductRes[0] !== 404) {
         await session.endSession()
-
-        return res.status(200).json({ product: ProductView(getProductRes[1]) })
-    } catch (e) {
-        console.error(e)
-        await session.abortTransaction()
-        await session.endSession()
-        return res.status(500).json({ message: 'Internal server error.' })
+        return res.status(409).json({ message: 'Product already exists.' })
     }
+
+    if (warehousesRes[0] !== 200) {
+        await session.endSession()
+        return res.status(warehousesRes[0]).json(warehousesRes[1])
+    }
+
+    const orgProductRes = await ProductsModule.getProductById(
+        productId,
+        session
+    )
+    if (orgProductRes[0] !== 200) {
+        await session.endSession()
+        return res.status(orgProductRes[0]).json(orgProductRes[1])
+    }
+
+    let newProductId = null
+    if (
+        (updateDoc.sellingPrice || updateDoc.costPrice) &&
+        (orgProductRes[1].sellingPrice !== updateDoc.sellingPrice ||
+            orgProductRes[1].costPrice !== updateDoc.costPrice)
+    ) {
+        const doc = { ...orgProductRes[1]._doc, ...updateDoc }
+        delete doc._id
+        const createProductRes = await ProductsModule.createProduct(
+            doc,
+            session
+        )
+
+        if (createProductRes[0] !== 201) {
+            await session.endSession()
+            return res.status(createProductRes[0]).json(createProductRes[1])
+        }
+
+        newProductId = createProductRes[1].id
+        updateDoc = { archived: true }
+
+        await Promise.all(
+            warehousesRes[1].map((wh) => {
+                const foundProduct = wh.products.find(
+                    (p) => p.source.id === productId
+                )
+                if (!foundProduct) return
+                return WarehousesModule.updateWarehouseProduct(
+                    wh.id,
+                    newProductId,
+                    foundProduct.stock,
+                    session
+                )
+            })
+        )
+    }
+
+    const updateProductRes = await ProductsModule.updateProduct(
+        productId,
+        updateDoc,
+        session
+    )
+    if (updateProductRes[0] !== 200) {
+        await session.endSession()
+        return res.status(updateProductRes[0]).json(updateProductRes[1])
+    }
+
+    const getProductRes = await ProductsModule.getProductById(
+        newProductId ?? productId,
+        session
+    )
+    if (getProductRes[0] !== 200) {
+        await session.endSession()
+        return res.status(getProductRes[0]).json(getProductRes[1])
+    }
+
+    await session.commitTransaction()
+    await session.endSession()
+
+    return res.status(200).json({ product: ProductView(getProductRes[1]) })
 }
 
 module.exports.deleteProduct = async (req, res) => {

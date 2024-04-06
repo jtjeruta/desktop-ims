@@ -7,7 +7,7 @@ module.exports.listVariants = async (query = {}) => {
         const variants = await VariantModel.find(query)
         return [200, variants]
     } catch (error) {
-        console.error('Failed to get variants')
+        console.error('Failed to get variants: ', error)
         return getMongoError(error)
     }
 }
@@ -25,7 +25,7 @@ module.exports.createVariant = async (data) => {
         const createdVariant = await variant.save()
         return [201, createdVariant]
     } catch (error) {
-        console.error('Failed to create variant')
+        console.error('Failed to create variant: ', error)
         return getMongoError(error)
     }
 }
@@ -37,7 +37,7 @@ module.exports.getVariantById = async (id) => {
         if (!variant) return [404, { message: 'Variant not found.' }]
         return [200, variant]
     } catch (error) {
-        console.error('Failed to get variant by id')
+        console.error('Failed to get variant by id: ', error)
         return getMongoError(error)
     }
 }
@@ -47,7 +47,7 @@ module.exports.deleteVariantById = async (id) => {
         await VariantModel.deleteOne({ _id: id })
         return [200]
     } catch (error) {
-        console.error('Failed to delete variant by id')
+        console.error('Failed to delete variant by id: ', error)
         return getMongoError(error)
     }
 }
@@ -57,7 +57,7 @@ module.exports.deleteVariants = async (query = {}) => {
         await VariantModel.deleteMany(query)
         return [200]
     } catch (err) {
-        console.error('Failed to delete variants')
+        console.error('Failed to delete variants: ', error)
         return getMongoError(err)
     }
 }

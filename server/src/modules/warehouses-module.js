@@ -15,7 +15,7 @@ module.exports.createWarehouse = async (data) => {
         const createdWarehouse = await warehouse.save()
         return [201, createdWarehouse]
     } catch (error) {
-        console.error('Failed to create warehouse')
+        console.error('Failed to create warehouse: ', error)
         return getMongoError(error)
     }
 }
@@ -34,7 +34,7 @@ module.exports.updateWarehouse = async (id, data, session = null) => {
         )
         return [200, updatedWarehouse]
     } catch (error) {
-        console.error('Failed to update warehouse')
+        console.error('Failed to update warehouse: ', error)
         return getMongoError(error)
     }
 }
@@ -50,7 +50,7 @@ module.exports.updateWarehouseProduct = async (
     try {
         warehouse = await WarehouseModel.findById(warehouseId).session(session)
     } catch (err) {
-        console.error('Failed to get warehouse')
+        console.error('Failed to get warehouse: ', error)
         return getMongoError(err)
     }
 
@@ -73,7 +73,7 @@ module.exports.updateWarehouseProduct = async (
             { new: true, runValidators: true, session }
         )
     } catch (err) {
-        console.error('Failed to update warehouse product')
+        console.error('Failed to update warehouse product: ', error)
         return getMongoError(err)
     }
 
@@ -89,7 +89,7 @@ module.exports.getWarehouseById = async (id, session = null) => {
         if (!warehouse) return [404, { message: 'Warehouse not found.' }]
         return [200, warehouse]
     } catch (error) {
-        console.error('Failed to get warehouse by id')
+        console.error('Failed to get warehouse by id: ', error)
         return getMongoError(error)
     }
 }
@@ -102,7 +102,7 @@ module.exports.listWarehouses = async (query = {}, session = null) => {
 
         return [200, warehouses]
     } catch (error) {
-        console.error('Failed to get warehouses')
+        console.error('Failed to get warehouses: ', error)
         return getMongoError(error)
     }
 }
@@ -112,7 +112,7 @@ module.exports.deleteWarehouseById = async (id) => {
         await WarehouseModel.deleteOne({ _id: id })
         return [200]
     } catch (error) {
-        console.error('Failed to delete warehouse by id')
+        console.error('Failed to delete warehouse by id: ', error)
         return getMongoError(error)
     }
 }
@@ -122,7 +122,7 @@ module.exports.deleteWarehouses = async (query = {}) => {
         await WarehouseModel.deleteMany(query)
         return [200]
     } catch (error) {
-        console.error('Failed to delete warehouses')
+        console.error('Failed to delete warehouses: ', error)
         return getMongoError(error)
     }
 }

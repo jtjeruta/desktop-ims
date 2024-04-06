@@ -18,7 +18,7 @@ module.exports.createProduct = async (data, session) => {
             : product.save())
         return [201, createdProduct]
     } catch (error) {
-        console.error('Failed to create product')
+        console.error('Failed to create product: ', error)
         return getMongoError(error)
     }
 }
@@ -28,7 +28,7 @@ module.exports.listProducts = async (query = {}) => {
         const products = await ProductModel.find(query).populate('variants')
         return [200, products]
     } catch (error) {
-        console.error('Failed to list products')
+        console.error('Failed to list products: ', error)
         return getMongoError(error)
     }
 }
@@ -45,7 +45,7 @@ module.exports.getProductById = async (id, session = null) => {
 
         return [200, product]
     } catch (error) {
-        console.error('Failed to find product by id')
+        console.error('Failed to find product by id: ', error)
         return getMongoError(error)
     }
 }
@@ -62,7 +62,7 @@ module.exports.getProduct = async (query, session = null) => {
 
         return [200, product]
     } catch (error) {
-        console.error('Failed to find product')
+        console.error('Failed to find product: ', error)
         return getMongoError(error)
     }
 }
@@ -81,7 +81,7 @@ module.exports.updateProduct = async (id, data, session = null) => {
         )
         return [200, updatedProduct]
     } catch (error) {
-        console.error('Failed to update product')
+        console.error('Failed to update product: ', error)
         return getMongoError(error)
     }
 }
@@ -95,7 +95,7 @@ module.exports.deleteProducts = async (query = {}) => {
         await ProductModel.deleteMany(query)
         return [200]
     } catch (err) {
-        console.error('Failed to delete products')
+        console.error('Failed to delete products: ', error)
         return getMongoError(err)
     }
 }

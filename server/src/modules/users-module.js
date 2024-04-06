@@ -10,7 +10,7 @@ module.exports.createUser = async ({ password, ...rawUser }) => {
         const createUser = await user.save()
         return [201, createUser]
     } catch (error) {
-        console.error('Failed to create user')
+        console.error('Failed to create user: ', error)
         return getMongoError(error)
     }
 }
@@ -20,7 +20,7 @@ module.exports.listUsers = async (query = {}) => {
         const users = await UserModel.find(query)
         return [200, users]
     } catch (error) {
-        console.error('Failed to list users')
+        console.error('Failed to list users: ', error)
         return getMongoError(error)
     }
 }
@@ -35,7 +35,7 @@ module.exports.getUserById = async (id) => {
 
         return [200, user]
     } catch (error) {
-        console.error('Failed to find user by id')
+        console.error('Failed to find user by id: ', error)
         return getMongoError(error)
     }
 }
@@ -50,7 +50,7 @@ module.exports.getUser = async (query = {}) => {
 
         return [200, user]
     } catch (error) {
-        console.error('Failed to find user by email')
+        console.error('Failed to find user by email: ', error)
         return getMongoError(error)
     }
 }
@@ -60,7 +60,7 @@ module.exports.deleteUser = async (query) => {
         await UserModel.deleteOne(query)
         return [200]
     } catch (error) {
-        console.error('Failed to delete user')
+        console.error('Failed to delete user: ', error)
         return getMongoError(error)
     }
 }
@@ -74,7 +74,7 @@ module.exports.updateUser = async (id, data) => {
         )
         return [200, updateUser]
     } catch (error) {
-        console.error('Failed to update user')
+        console.error('Failed to update user: ', error)
         return getMongoError(error)
     }
 }

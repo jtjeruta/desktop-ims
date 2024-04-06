@@ -17,7 +17,7 @@ module.exports.createCustomer = async (data, session = null) => {
             : customer.save())
         return [201, createdCustomer]
     } catch (error) {
-        console.error('Failed to create customer')
+        console.error('Failed to create customer: ', error)
         return getMongoError(error)
     }
 }
@@ -27,7 +27,7 @@ module.exports.listCustomers = async (query = {}, session = null) => {
         const customers = await CustomerModel.find(query).session(session)
         return [200, customers]
     } catch (error) {
-        console.error('Failed to list customers')
+        console.error('Failed to list customers: ', error)
         return getMongoError(error)
     }
 }
@@ -46,7 +46,7 @@ module.exports.updateCustomer = async (id, data, session) => {
         )
         return [200, updatedCustomer]
     } catch (error) {
-        console.error('Failed to update customer')
+        console.error('Failed to update customer: ', error)
         return getMongoError(error)
     }
 }
@@ -58,7 +58,7 @@ module.exports.getCustomerById = async (id, session) => {
         if (!customer) return [404, { message: 'Customer not found.' }]
         return [200, customer]
     } catch (error) {
-        console.error('Failed to get customer by id')
+        console.error('Failed to get customer by id: ', error)
         return getMongoError(error)
     }
 }
@@ -68,7 +68,7 @@ module.exports.deleteCustomers = async (query = {}, session) => {
         await CustomerModel.deleteMany(query).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete customers')
+        console.error('Failed to delete customers: ', error)
         return getMongoError(error)
     }
 }

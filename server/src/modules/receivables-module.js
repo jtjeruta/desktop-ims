@@ -17,7 +17,7 @@ module.exports.createReceivable = async (data, session = null) => {
             : receivable.save())
         return [201, createdReceivable]
     } catch (error) {
-        console.error('Failed to create receivable')
+        console.error('Failed to create receivable: ', error)
         return getMongoError(error)
     }
 }
@@ -31,7 +31,7 @@ module.exports.listReceivables = async (query = {}, session = null) => {
 
         return [200, receivables]
     } catch (error) {
-        console.error('Failed to list receivables')
+        console.error('Failed to list receivables: ', error)
         return getMongoError(error)
     }
 }
@@ -50,7 +50,7 @@ module.exports.updateReceivable = async (id, data, session) => {
         )
         return [200, updatedReceivable]
     } catch (error) {
-        console.error('Failed to update receivable')
+        console.error('Failed to update receivable: ', error)
         return getMongoError(error)
     }
 }
@@ -64,7 +64,7 @@ module.exports.getReceivableById = async (id, session) => {
         if (!receivable) return [404, { message: 'Receivable not found.' }]
         return [200, receivable]
     } catch (error) {
-        console.error('Failed to get receivable by id')
+        console.error('Failed to get receivable by id: ', error)
         return getMongoError(error)
     }
 }
@@ -74,7 +74,7 @@ module.exports.deleteReceivable = async (id, session = null) => {
         await ReceivableModel.findByIdAndDelete(id).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete receivable')
+        console.error('Failed to delete receivable: ', error)
         return getMongoError(error)
     }
 }
@@ -84,7 +84,7 @@ module.exports.deleteReceivables = async (query = {}, session) => {
         await ReceivableModel.deleteMany(query).session(session)
         return [200]
     } catch (error) {
-        console.error('Failed to delete receivables')
+        console.error('Failed to delete receivables: ', error)
         return getMongoError(error)
     }
 }

@@ -21,7 +21,7 @@ module.exports.createSalesOrder = async (data = {}, session = null) => {
         const createdSalesOrder = await salesOrder.save({ session })
         return [201, createdSalesOrder]
     } catch (error) {
-        console.error('Failed to create sales order')
+        console.error('Failed to create sales order: ', error)
         return getMongoError(error)
     }
 }
@@ -45,7 +45,7 @@ module.exports.updateSalesOrder = async (id, data, session = null) => {
         )
         return [200, updatedSalesOrder]
     } catch (error) {
-        console.error('Failed to update sales order')
+        console.error('Failed to update sales order: ', error)
         return getMongoError(error)
     }
 }
@@ -61,7 +61,7 @@ module.exports.getSalesOrderById = async (id, session = null) => {
         if (!salesOrder) return [404, { message: 'Sales order not found.' }]
         return [200, salesOrder]
     } catch (error) {
-        console.error('Failed to get sales order by id')
+        console.error('Failed to get sales order by id: ', error)
         return getMongoError(error)
     }
 }
@@ -75,7 +75,7 @@ module.exports.listSalesOrders = async (query = {}, session = null) => {
             .session(session)
         return [200, salesOrders]
     } catch (error) {
-        console.error('Failed to list sales orders')
+        console.error('Failed to list sales orders: ', error)
         return getMongoError(error)
     }
 }
@@ -171,7 +171,7 @@ module.exports.deleteSalesOrderById = async (orderId, session = null) => {
         )
         return [200, deletedSalesOrder]
     } catch (error) {
-        console.error('Failed to delete sales order by id')
+        console.error('Failed to delete sales order by id: ', error)
         return getMongoError(error)
     }
 }
@@ -184,7 +184,7 @@ module.exports.deleteSalesOrders = async (query = {}, session = null) => {
         )
         return [200, deletedSalesOrders]
     } catch (error) {
-        console.error('Failed to delete sales orders')
+        console.error('Failed to delete sales orders: ', error)
         return getMongoError(error)
     }
 }
