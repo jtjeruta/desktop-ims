@@ -8,6 +8,7 @@ import {
     // FaQrcode,
     FaStore,
     FaTags,
+    FaTape,
     FaUsers,
     FaWarehouse,
 } from 'react-icons/fa'
@@ -109,6 +110,12 @@ const Sidebar = () => {
         //     icon: FaQrcode,
         //     onClick: () => sideBarRedirect('/connect'),
         // },
+        {
+            text: 'Backups',
+            active: router.asPath === '/backups',
+            icon: FaTape,
+            onClick: () => sideBarRedirect('/backups'),
+        },
     ]
 
     const pageGroups: PageGroupType[] = [

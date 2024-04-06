@@ -30,6 +30,8 @@ type Props = {
     page: number
     handlePageChange: (page: number) => void
     defaultSort?: number // refers to the column number
+    hasError?: boolean
+    colKey?: string
 }
 
 const Table: FC<Props> = (props) => {
@@ -72,6 +74,14 @@ const Table: FC<Props> = (props) => {
             handleSort(props.columns[props.defaultSort])()
         }
     }, [props, handleSort])
+
+    if (props.hasError) {
+        return (
+            <div className="p-4 bg-red-200 text-red-800">
+                There was an error loading the data. Please try again.
+            </div>
+        )
+    }
 
     return (
         <>
@@ -122,7 +132,7 @@ const Table: FC<Props> = (props) => {
                         ) : filteredRows.length > 0 ? (
                             filteredRows.map((row) => (
                                 <TableRow
-                                    key={row.id}
+                                    key={row[props.colKey ?? 'id']}
                                     row={row}
                                     columns={props.columns}
                                 />

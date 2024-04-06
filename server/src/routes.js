@@ -12,6 +12,7 @@ const StatController = require('./controllers/stat-controller')
 const ExpenseController = require('./controllers/expense-controller')
 const ReceivableController = require('./controllers/receivable-controller')
 const TaskController = require('./controllers/task-controller')
+const BackupController = require('./controllers/backup-controller')
 
 const { isAdmin, isAuthenticated } = AuthController
 
@@ -19,9 +20,6 @@ const router = express.Router()
 
 // health check
 router.get('/api/v1/tasks/health-check', TaskController.healthCheck)
-router.get('/api/v1/tasks/list-backups', TaskController.listBackups)
-router.get('/api/v1/tasks/backup-db', TaskController.backupDB)
-router.post('/api/v1/tasks/restore-db', TaskController.restoreDB)
 
 // auth
 router.post('/api/v1/auth/login', AuthController.login)
@@ -29,6 +27,11 @@ router.post('/api/v1/auth/verify-token', AuthController.verifyToken)
 router.post('/api/v1/auth/setup', AuthController.setup)
 router.get('/api/v1/auth/needs-setup', AuthController.needsSetup)
 router.post('/api/v1/auth/forgot-password', AuthController.forgotPassword)
+
+// backups
+router.get('/api/v1/backups', isAdmin, BackupController.listBackups)
+router.post('/api/v1/backups', isAdmin, BackupController.backupDB)
+router.post('/api/v1/backups/restore', isAdmin, BackupController.restoreDB)
 
 // users
 router.post('/api/v1/users', isAdmin, UserController.createUser)

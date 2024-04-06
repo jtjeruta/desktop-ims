@@ -75,6 +75,10 @@ export const routes: Route[] = [
         access: 'admin',
     },
     {
+        pathname: '/backups',
+        access: 'admin',
+    },
+    {
         pathname: '/connect',
         access: 'authenticated',
     },
