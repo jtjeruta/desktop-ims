@@ -11,6 +11,6 @@ module.exports.backupDB = async (req, res) => {
 }
 
 module.exports.restoreDB = async (req, res) => {
-    const [status, data] = await backupModule.restore(req.query.key)
+    const [status, data] = await backupModule.restore(req.body.key)
     return res.status(status).json(data)
 }

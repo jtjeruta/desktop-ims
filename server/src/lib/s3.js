@@ -67,6 +67,9 @@ module.exports.getObject = async (bucket, key) => {
                     return resolve([500, { message: 'Error parsing S3 JSON' }])
                 }
             })
-            .on('error', (err) => resolve([err.statusCode ?? 500, err]))
+            .on('error', (err) => {
+                console.error(err)
+                resolve([err.statusCode ?? 500, err])
+            })
     })
 }
